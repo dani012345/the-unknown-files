@@ -17,8 +17,8 @@ if not mongo_uri:
 
 cliente = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
 
-base_datos = cliente["escuela_practica"]
-alumnos = base_datos["alumnos"]
+base_datos = cliente["the_unknown-files"]
+alumnos = base_datos["archivos"]
 
 
 def leer_formulario():
