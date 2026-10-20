@@ -3,24 +3,33 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>The Unknown Files</title>
+
+    <title>{% block titulo %}The Unknown Files{% endblock %}</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static',
           filename='bootstrap/css/bootstrap.min.css') }}">
 
     <link rel="stylesheet"
-      href="{{ url_for('static', filename='estilos.css') }}">
+          href="{{ url_for('static',
+          filename='estilos.css') }}">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg bg-dark"
-         data-bs-theme="dark"
-         aria-label="Menú principal">
+    <div class="system-bar">
+        <span>U.F. / SISTEMA DE ARCHIVO</span>
+        <span class="system-status">
+            <span class="status-dot"></span>
+            CONEXIÓN ESTABLE
+        </span>
+    </div>
 
-        <div class="container">
+    <nav class="navbar navbar-expand-lg archive-navbar">
+        <div class="container-fluid px-4">
+
             <a class="navbar-brand" href="{{ url_for('inicio') }}">
-                The Unknown Files
+                <span class="brand-symbol">U.F.</span>
+                THE UNKNOWN FILES
             </a>
 
             <button class="navbar-toggler"
@@ -33,32 +42,36 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="menuPrincipal">
+            <div class="collapse navbar-collapse"
+                 id="menuPrincipal">
+
                 <ul class="navbar-nav ms-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('inicio') }}">
-                            Inicio
+                        <a class="nav-link"
+                           href="{{ url_for('inicio') }}">
+                            ARCHIVO
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link"
                            href="{{ url_for('inicio') }}#registro">
-                            Agregar archivo
+                            NUEVO EXPEDIENTE
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link"
                            href="{{ url_for('inicio') }}#lista">
-                            Lista de archivos
+                            REGISTROS
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('ayuda') }}">
-                            Ayuda
+                        <a class="nav-link"
+                           href="{{ url_for('ayuda') }}">
+                            MANUAL
                         </a>
                     </li>
 
@@ -67,27 +80,41 @@
         </div>
     </nav>
 
-    <main class="container py-4">
-        <header class="mb-4">
-            <p class="text-uppercase text-secondary small mb-1">
-                Aplicaciones Web · Práctica 05
-            </p>
+    <main class="archive-shell">
 
-            <h1 class="h2">The Unknown Files</h1>
+        <header class="archive-heading">
+            <div>
+                <p class="eyebrow">
+                    DEPARTAMENTO DE INVESTIGACIÓN
+                </p>
 
-            <p class="text-secondary">
-                Consulta y organiza tus archivos.
-            </p>
+                <h1>THE UNKNOWN FILES</h1>
+
+                <p class="heading-description">
+                    Expedientes sin resolver.
+                    Historias que no deberían existir.
+                </p>
+            </div>
+
+            <div class="classification-stamp">
+                ACCESO RESTRINGIDO
+            </div>
         </header>
 
+        <div class="archive-divider"></div>
+
         {% block contenido %}{% endblock %}
+
     </main>
 
-    <footer class="container py-3 border-top text-secondary small">
-        The Unknown Files · Datos de práctica
+    <footer class="archive-footer">
+        <span>THE UNKNOWN FILES</span>
+        <span>DOCUMENTOS DE USO INTERNO</span>
+        <span>NO DISTRIBUIR</span>
     </footer>
 
     <script src="{{ url_for('static',
-        filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        filename='bootstrap/js/bootstrap.bundle.min.js') }}">
+    </script>
 </body>
 </html>

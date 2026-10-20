@@ -4,46 +4,63 @@
 
 <section class="card shadow-sm">
     <div class="card-body p-4">
-        <h2 class="h4">Ayuda del registro</h2>
 
-    <p class="text-secondary">
-        Fecha del equipo: {{ fecha }}
-    </p>
+        <h2 class="h4">Ayuda de The Unknown Files</h2>
 
-    <div class="alert alert-info" role="note">
-        Utiliza datos ficticios durante la práctica.
+        <p class="text-secondary">
+            Fecha del equipo: {{ fecha }}
+        </p>
+
+        <div class="alert alert-info" role="note">
+            Bienvenido al archivo de expedientes.
+            Utiliza datos ficticios durante las pruebas.
+        </div>
+
+        <h3 class="h5">Administración de casos</h3>
+
+        <ol class="mb-4">
+            <li class="mb-2">
+                En Agregar caso, escribe el nombre y la categoría,
+                y selecciona un estado.
+            </li>
+
+            <li class="mb-2">
+                Presiona Guardar caso para registrar el expediente.
+            </li>
+
+            <li class="mb-2">
+                Consulta los casos registrados en la lista principal.
+            </li>
+
+            <li class="mb-2">
+                Usa Editar para modificar los datos de un caso.
+            </li>
+
+            <li class="mb-2">
+                Usa Eliminar únicamente con los expedientes
+                que quieras quitar de la base de datos.
+            </li>
+
+            <li class="mb-2">
+                Los estados disponibles son Disponible,
+                Bloqueado y Completado.
+            </li>
+        </ol>
+
+        <div class="alert alert-warning" role="note">
+            Importante: eliminar un caso lo quita de la base
+            de datos. Por ahora, los estados son etiquetas
+            administrativas y no desbloquean mecánicas del juego.
+        </div>
+
+        <a
+            class="btn btn-primary"
+            href="{{ url_for('inicio') }}"
+        >
+            Volver a los expedientes
+        </a>
+
     </div>
-
-    <ol class="mb-4">
-        <li>
-            En Registrar, escribe nombre, grupo y selecciona turno.
-        </li>
-
-        <li>
-            Presiona Guardar alumno y consulta la lista.
-        </li>
-
-        <li>
-            Usa Editar para corregir los datos de un alumno.
-        </li>
-
-        <li>
-            Usa Eliminar solo con tus registros de prueba.
-        </li>
-
-        <li>
-            En pantalla pequeña, abre el menú con su botón.
-        </li>
-    </ol>
-
-    <a
-        class="btn btn-primary"
-        href="{{ url_for('inicio') }}"
-    >
-        Volver al registro
-    </a>
-</div>
-
 </section>
 
 {% endblock %}

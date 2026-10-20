@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ scene.case_code }} | The Unknown Files</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='juego.css') }}">
+</head>
+
+<body class="game-page">
+
+    <main class="game-screen">
+
+        <header class="game-header">
+            <span>THE UNKNOWN FILES</span>
+            <span>{{ scene.case_code }}: {{ scene.case_name }}</span>
+        </header>
+
+        <section class="game-scene">
+
+            <div class="scene-placeholder">
+                <span>{{ scene.archive_label }}</span>
+                <h1>{{ scene.title }}</h1>
+                <p>{{ scene.description }}</p>
+            </div>
+
+        </section>
+
+        <section class="game-interface">
+
+            <div class="dialogue-box">
+                <p class="character-name">{{ scene.character }}</p>
+
+                <p class="dialogue-text">
+                    {{ scene.dialogue }}
+                </p>
+            </div>
+
+            <div class="choice-panel">
+
+                <p class="choice-title">{{ scene.choice_title }}</p>
+
+                {% for choice in scene.choices %}
+                    <form action="{{ url_for('juego_bryan') }}"
+                          method="POST">
+
+                        <input type="hidden"
+                               name="scene_id"
+                               value="{{ choice.next_scene }}">
+
+                        <button class="choice-button" type="submit">
+                            {{ choice.text }}
+                        </button>
+                    </form>
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

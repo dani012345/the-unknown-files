@@ -1,0 +1,157 @@
+/* ========================================
+   THE UNKNOWN FILES - PANTALLA DEL JUEGO
+   ======================================== */
+
+.game-page {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #171512;
+    color: #eee4d2;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.game-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabecera */
+
+.game-header {
+    min-height: 52px;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background-color: #211d18;
+    border-bottom: 1px solid #574735;
+    color: #d8c5a4;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+/* Escenario */
+
+.game-scene {
+    flex: 1;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background:
+        radial-gradient(
+            ellipse at center,
+            #514436 0%,
+            #302820 48%,
+            #171512 100%
+        );
+}
+
+.scene-placeholder {
+    text-align: center;
+    max-width: 600px;
+}
+
+.scene-placeholder span {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #b9a17c;
+}
+
+.scene-placeholder h1 {
+    margin: 14px 0;
+    font-size: clamp(36px, 7vw, 76px);
+    letter-spacing: 8px;
+}
+
+.scene-placeholder p {
+    color: #c4b7a3;
+    font-size: 15px;
+}
+
+/* Zona inferior */
+
+.game-interface {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+    padding: 24px;
+    background-color: #211d18;
+    border-top: 1px solid #574735;
+}
+
+/* Diálogo */
+
+.dialogue-box {
+    padding: 18px;
+    border-left: 3px solid #9a7950;
+    background-color: #29231d;
+}
+
+.character-name {
+    margin-top: 0;
+    color: #d8b783;
+    font-size: 12px;
+    letter-spacing: 3px;
+}
+
+.dialogue-text {
+    line-height: 1.8;
+    font-size: 16px;
+}
+
+/* Opciones */
+
+.choice-title {
+    margin-top: 0;
+    color: #b9a17c;
+    font-size: 11px;
+    letter-spacing: 3px;
+}
+
+.choice-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.choice-button {
+    padding: 12px 14px;
+    border: 1px solid #67543d;
+    background-color: #302820;
+    color: #eee4d2;
+    text-align: left;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.choice-button:hover {
+    background-color: #493a2a;
+    border-color: #c0a078;
+}
+
+/* Adaptación a pantallas pequeñas */
+
+@media (max-width: 700px) {
+    .game-header {
+        padding: 14px;
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+
+    .game-interface {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .game-scene {
+        min-height: 280px;
+        padding: 20px;
+    }
+}

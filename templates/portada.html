@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>The Unknown Files | Acceso restringido</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='estilos.css') }}"
+    >
+</head>
+
+<body class="pantalla-inicio">
+
+    <main class="inicio-contenido">
+
+        <p class="inicio-etiqueta">
+            DEPARTAMENTO DE INVESTIGACIÓN · ARCHIVO 000
+        </p>
+
+        <h1 class="inicio-titulo"> 
+            THE UNKNOWN&nbsp;<span>FILES</span> 
+        </h1>
+
+        <div class="inicio-separador"></div>
+
+        <p class="inicio-descripcion">
+            Existen historias que nunca debieron ser documentadas.
+            Otras esperan a que alguien las descubra.
+        </p>
+
+        <p class="inicio-advertencia">
+            CLASIFICACIÓN: CONFIDENCIAL
+        </p>
+
+        <a href="{{ url_for('inicio') }}" class="boton-iniciar">
+            CONTINUAR
+            <span aria-hidden="true">→</span>
+        </a>
+     
+        <nav class="menu-principal" aria-label="Menú principal">
+
+            <button type="button" class="boton-menu" disabled>
+                NUEVA PARTIDA
+            </button>
+
+            <button type="button" class="boton-menu" disabled>
+                ARCHIVO DE CASOS
+            </button>
+
+            <button type="button" class="boton-menu" disabled>
+                CONFIGURACIÓN
+            </button>
+
+            <button type="button" class="boton-menu" disabled>
+                SALIR
+            </button>
+
+        </nav>
+
+        <p class="inicio-pie">
+            ACCESO AUTORIZADO · SISTEMA DE ARCHIVOS DESCONOCIDOS
+        </p>
+
+    </main>
+
+</body>
+</html>

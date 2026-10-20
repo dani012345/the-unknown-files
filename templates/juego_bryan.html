@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Caso 001 | The Unknown Files</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='juego.css') }}">
+</head>
+
+<body class="game-page">
+
+    <main class="game-screen">
+
+        <!-- Encabezado del caso -->
+        <header class="game-header">
+            <span>THE UNKNOWN FILES</span>
+            <span>CASO 001: BRYAN</span>
+        </header>
+
+        <!-- Escenario principal -->
+        <section class="game-scene">
+
+            <div class="scene-placeholder">
+                <span>ARCHIVO 001</span>
+                <h1>BRYAN</h1>
+                <p>La historia está a punto de comenzar...</p>
+            </div>
+
+        </section>
+
+        <!-- Diálogo y decisiones -->
+        <section class="game-interface">
+
+            <div class="dialogue-box">
+                <p class="character-name">BRYAN</p>
+
+                <p class="dialogue-text">
+                    Bueno... ¿vas a quedarte ahí mirando
+                    o piensas ayudarme?
+                </p>
+            </div>
+
+            <div class="choice-panel">
+
+                <p class="choice-title">¿QUÉ HACES?</p>
+
+                <button class="choice-button" type="button">
+                    Preguntarle qué pasó.
+                </button>
+
+                <button class="choice-button" type="button">
+                    Revisar lo que hay alrededor.
+                </button>
+
+                <button class="choice-button" type="button">
+                    Dejar que Bryan siga hablando solo.
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
