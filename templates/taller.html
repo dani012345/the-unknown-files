@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block titulo %}Taller de casos | The Unknown Files{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}">{% endblock %}
+{% block contenido %}
+<div class="taller-intro">
+    <p class="eyebrow">ESPACIO DE CREACIÓN</p>
+    <h2>Taller de casos</h2>
+    <p>Organiza tus expedientes: crea, edita y elimina sus registros. Este será el espacio para desarrollar nuevas historias.</p>
+    <p class="text-secondary">Por ahora se guardan los datos de cada caso. El editor de historias y la publicación de juegos llegarán más adelante.</p>
+    <a href="{{ url_for('inicio') }}">← Volver al archivo de juegos</a>
+</div>
+<section id="lista" class="mb-4">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">TALLER DE CASOS</p>
+            <h2 class="h4 mb-1">Expedientes registrados</h2>
+            <p class="text-secondary mb-0">
+                Estos son los casos guardados en la base de datos.
+            </p>
+        </div>
+
+        <span class="case-count">{{ alumnos|length }} REGISTROS</span>
+    </div>
+
+    <div class="case-grid">
+        {% for alumno in alumnos %}
+        <article class="case-card">
+            <div class="case-card__top">
+                <span>CASE #{{ "%03d"|format(loop.index) }}</span>
+                <span>{{ alumno.get('estado', 'Sin asignar') }}</span>
+            </div>
+
+            <div class="case-card__image">
+                <span>U.F.</span>
+            </div>
+
+            <div class="case-card__body">
+                <p class="case-card__category">
+                    {{ alumno.categoria }}
+                </p>
+
+                <h3>{{ alumno.nombre }}</h3>
+
+                <p>
+                    Expediente clasificado dentro del taller de casos.
+                    Su contenido puede cambiar despues de la investigacion.
+                </p>
+            </div>
+
+            <div class="case-card__actions">
+                <a
+                    class="btn btn-outline-dark btn-sm"
+                    href="{{ url_for('editar', id=alumno._id) }}"
+                >
+                    Editar
+                </a>
+
+                <form
+                    method="post"
+                    action="{{ url_for('eliminar', id=alumno._id) }}"
+                    onsubmit="return confirm('¿Eliminar este caso?');"
+                >
+                    <button
+                        type="submit"
+                        class="btn btn-outline-danger btn-sm"
+                    >
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+        </article>
+
+        {% else %}
+        <div class="empty-archive">
+            <p class="eyebrow">SIN REGISTROS</p>
+            <h3>Todavia no hay expedientes guardados.</h3>
+            <p>
+                Agrega el primer registro para organizar tus futuros casos.
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section id="registro" class="card shadow-sm">
+    <div class="card-body p-4">
+        <p class="eyebrow">ADMINISTRACION CRUD</p>
+        <h2 class="h4 mb-3">Registrar nuevo expediente</h2>
+
+        <form method="post" action="{{ url_for('agregar') }}" class="row g-3">
+            <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre del caso</label>
+                <input
+                    id="nombre"
+                    name="nombre"
+                    class="form-control"
+                    required
+                    maxlength="80"
+                    placeholder="Ejemplo: La suerte de Bryan"
+                >
+            </div>
+
+            <div class="col-md-3">
+                <label for="categoria" class="form-label">Categoria</label>
+                <input
+                    id="categoria"
+                    name="categoria"
+                    class="form-control"
+                    required
+                    maxlength="20"
+                    placeholder="Ejemplo: Escuela"
+                >
+            </div>
+
+            <div class="col-md-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select id="estado" name="estado" class="form-select" required>
+                    <option value="">Selecciona</option>
+                    <option value="Disponible">Disponible</option>
+                    <option value="Bloqueado">Bloqueado</option>
+                    <option value="Completado">Completado</option>
+                </select>
+            </div>
+
+            <div class="col-12 d-flex gap-2 flex-wrap">
+                <button type="submit" class="btn btn-dark">
+                    Guardar expediente
+                </button>
+
+                <button type="reset" class="btn btn-outline-secondary">
+                    Limpiar formulario
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

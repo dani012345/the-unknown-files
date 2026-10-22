@@ -148,8 +148,12 @@ def portada():
 
 @app.route("/inicio")
 def inicio():
+    return render_template("index.html")
+
+@app.route("/taller")
+def taller():
     lista = list(alumnos.find().sort("nombre", 1))
-    return render_template("index.html", alumnos=lista)
+    return render_template("taller.html", alumnos=lista)
 
 @app.route("/caso/bryan", methods=["GET", "POST"])
 def juego_bryan():
@@ -166,7 +170,7 @@ def juego_bryan():
 def agregar():
     datos = leer_formulario()
     alumnos.insert_one(datos)
-    return redirect(url_for("inicio"))
+    return redirect(url_for("taller", _anchor="lista"))
 
 @app.route("/editar/<id>", methods=["GET", "POST"])
 def editar(id):
@@ -174,14 +178,14 @@ def editar(id):
     if request.method == "POST":
         datos = leer_formulario()
         alumnos.update_one({"_id": alumno["_id"]}, {"$set": datos})
-        return redirect(url_for("inicio"))
+        return redirect(url_for("taller", _anchor="lista"))
     return render_template("editar.html", alumno=alumno)
 
 @app.route("/eliminar/<id>", methods=["POST"])
 def eliminar(id):
     alumno = buscar_alumno(id)
     alumnos.delete_one({"_id": alumno["_id"]})
-    return redirect(url_for("inicio"))
+    return redirect(url_for("taller", _anchor="lista"))
     
 @app.errorhandler(PyMongoError)
 def error_mongo(error):

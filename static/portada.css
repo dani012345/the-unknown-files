@@ -1,0 +1,214 @@
+/* =====================================
+   THE UNKNOWN FILES
+   Archivo de investigación
+   ===================================== */
+
+/* 1. Colores principales */
+:root {
+    --negro: #171613;
+    --negro-suave: #24211c;
+    --papel: #e8dfcd;
+    --beige: #d6c5a3;
+    --marron: #a18b68;
+    --marron-oscuro: #6c5940;
+    --rojo-sello: #762f29;
+    --texto: #29251f;
+    --texto-suave: #756b5c;
+    --borde: #c4b496;
+}
+
+/* 2. Página general */
+body {
+    margin: 0;
+    background-color: var(--papel);
+    color: var(--texto);
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+
+a {
+    text-underline-offset: 3px;
+}
+
+/* =====================================
+   20. PORTADA PRINCIPAL
+   ===================================== */
+
+/* 1. Fondo y distribución de la pantalla */
+.pantalla-inicio {
+    box-sizing: border-box;
+    display: block;
+    min-height: 100vh;
+    padding: 2rem 4%;
+    color: var(--papel);
+
+    background-image: url("img/kittyy.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* 2. Contenedor del contenido */
+.inicio-contenido {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    min-height: calc(100vh - 4rem);
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* 3. Textos pequeños de la interfaz */
+.inicio-etiqueta,
+.inicio-advertencia,
+.inicio-pie {
+    font-family: Consolas, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+}
+
+/* 4. Etiqueta superior */
+.inicio-etiqueta {
+    margin: 0 0 2rem;
+    color: var(--beige);
+}
+
+/* 5. Título principal */
+.inicio-titulo {
+    width: 100%;
+    margin: 0 0 1.5rem;
+
+    color: var(--papel);
+    font-family: Consolas, monospace;
+    font-size: clamp(2.2rem, 5.5vw, 5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -2px;
+    white-space: nowrap;
+}
+
+.inicio-titulo span {
+    display: inline;
+    margin-left: 0.1em;
+    color: var(--rojo-sello);
+}
+
+/* 6. Separador decorativo */
+.inicio-separador {
+    width: 48%;
+    height: 3px;
+    margin-bottom: 1rem;
+    background-color: var(--rojo-sello);
+    max-width: 100%;
+}
+
+/* 7. Descripción */
+.inicio-descripcion {
+    max-width: 650px;
+    margin-bottom: 1rem;
+    width: 100%;
+    margin-top: 0;
+
+    color: #d6cfc2;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+/* 8. Advertencia de clasificación */
+.inicio-advertencia {
+    margin-bottom: 1.5rem;
+    color: #c77c70;
+}
+
+/* 9. Botón CONTINUAR */
+.boton-iniciar {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: min(100%, 320px);
+    padding: 1rem 1.2rem;
+
+    background-color: var(--papel);
+    color: var(--negro);
+    border: 1px solid var(--beige);
+    text-decoration: none;
+
+    font-family: Consolas, monospace;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.boton-iniciar:hover {
+    background-color: var(--rojo-sello);
+    color: #ffffff;
+    transform: translateX(5px);
+}
+
+/* 10. Menú de opciones futuras */
+.menu-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    width: min(100%, 320px);
+    margin-top: 1rem;
+}
+
+.boton-menu {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.85rem 1rem;
+
+    background: rgb(23 22 19 / 45%);
+    color: var(--papel);
+    border: 1px solid var(--marron-oscuro);
+
+    font-family: Consolas, monospace;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-align: left;
+
+    opacity: 0.85;
+}
+
+.boton-menu:disabled {
+    cursor: default;
+}
+
+/* 11. Pie de página */
+.inicio-pie {
+    margin: auto 0 0;
+    padding-top: 2rem;
+
+    color: #a69a86;
+    font-size: 0.65rem;
+    line-height: 1.6;
+}
+
+/* 12. Adaptación a pantallas pequeñas */
+@media (max-width: 600px) {
+    .pantalla-inicio {
+        padding: 1.25rem;
+    }
+
+    .inicio-contenido {
+        min-height: calc(100vh - 2.5rem);
+    }
+
+    .inicio-titulo {
+        font-size: clamp(1.65rem, 6vw, 2.5rem);
+        letter-spacing: -1px;
+    }
+}

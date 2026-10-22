@@ -13,9 +13,10 @@
     <link rel="stylesheet"
           href="{{ url_for('static',
           filename='estilos.css') }}">
+    {% block estilos %}{% endblock %}
 </head>
 
-<body>
+<body class="{% block clase_body %}{% endblock %}">
     <div class="system-bar">
         <span>U.F. / SISTEMA DE ARCHIVO</span>
         <span class="system-status">
@@ -56,15 +57,15 @@
 
                     <li class="nav-item">
                         <a class="nav-link"
-                           href="{{ url_for('inicio') }}#registro">
-                            NUEVO EXPEDIENTE
+                           href="{{ url_for('taller') }}#registro">
+                            CREAR CASO
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link"
-                           href="{{ url_for('inicio') }}#lista">
-                            REGISTROS
+                           href="{{ url_for('taller') }}#lista">
+                            TALLER DE CASOS
                         </a>
                     </li>
 
@@ -82,6 +83,7 @@
 
     <main class="archive-shell">
 
+        {% block encabezado %}
         <header class="archive-heading">
             <div>
                 <p class="eyebrow">
@@ -102,6 +104,7 @@
         </header>
 
         <div class="archive-divider"></div>
+        {% endblock %}
 
         {% block contenido %}{% endblock %}
 

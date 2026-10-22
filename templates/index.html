@@ -1,182 +1,104 @@
 {% extends 'base.html' %}
-
+{% block titulo %}Archivo de juegos | The Unknown Files{% endblock %}
+{% block estilos %}<link rel="preload" as="image" href="{{ url_for('static', filename='img/oficina-abandonada.png') }}"><link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='documentos-2') }}">{% endblock %}
+{% block clase_body %}archivo-juegos{% endblock %}
+{% block encabezado %}{% endblock %}
 {% block contenido %}
-
-<section class="case-hero mb-4">
-    <div class="case-hero__panel">
-        <p class="eyebrow">EXPEDIENTE DESTACADO</p>
-
-        <div class="case-file-code">
-            <span>CASE #001</span>
-            <span>STATUS: ACTIVE</span>
-        </div>
-
-        <h2>La suerte de Bryan</h2>
-
-        <div class="case-metadata">
-            <span>SUBJECT: BRYAN</span>
-            <span>DATE: 07/10/2026</span>
-            <span>LOCATION: UNKNOWN</span>
-        </div>
-
-        <div class="case-transcript">
-            <strong>07:13 AM</strong>
-            <p>Bryan desperto tarde.</p>
-            <p>Tiene examen en 47 minutos.</p>
-            <p>Su celular tiene 4%.</p>
-            <p>Y por alguna razon hay un pollo en su habitacion.</p>
-        </div>
-
-        <div class="case-actions">
-            <a href="{{url_for('juego_bryan')}}" class="btn btn-dark">
-                Consultar archivo
-            </a>
-
-            <a href="#registro" class="btn btn-outline-dark">
-                Registrar expediente
-            </a>
-        </div>
+<div class="room-intro" aria-hidden="true"></div>
+<button class="skip-intro" type="button">Omitir entrada · Esc</button>
+<div class="room-stage">
+<div class="room-backdrop" aria-hidden="true"></div>
+<header class="desk-heading">
+    <div>
+        <p class="desk-kicker">DEPARTAMENTO DE INVESTIGACIÓN / ARCHIVO CENTRAL</p>
+        <h1>Cada archivo, una historia.</h1>
+        <p>Algunos casos solo necesitan que alguien los abra.</p>
     </div>
+    <span class="desk-index">01 / CASO DISPONIBLE</span>
+</header>
 
-    <div class="case-hero__evidence" aria-label="Panel visual del expediente">
-        <div class="evidence-card evidence-card--photo">
-            <span>PHOTO_REF_001</span>
-        </div>
-
-        <div class="evidence-card evidence-card--note">
-            <strong>NOTA INTERNA</strong>
-            <p>
-                La organizacion recomienda no atacar al pollo
-                hasta identificar su nivel de peligro.
-            </p>
-        </div>
-    </div>
-</section>
-
-<section id="lista" class="mb-4">
-    <div class="section-heading">
-        <div>
-            <p class="eyebrow">ARCHIVO CENTRAL</p>
-            <h2 class="h4 mb-1">Expedientes registrados</h2>
-            <p class="text-secondary mb-0">
-                Estos son los casos guardados en la base de datos.
-            </p>
-        </div>
-
-        <span class="case-count">{{ alumnos|length }} REGISTROS</span>
-    </div>
-
-    <div class="case-grid">
-        {% for alumno in alumnos %}
-        <article class="case-card">
-            <div class="case-card__top">
-                <span>CASE #{{ "%03d"|format(loop.index) }}</span>
-                <span>{{ alumno.get('estado', 'Sin asignar') }}</span>
+<section class="investigation-desk" aria-labelledby="bryan-title">
+    <div class="desk-mark" aria-hidden="true">U.F. — MESA DE INVESTIGACIÓN 01</div>
+    <article class="bryan-folder">
+        <div class="folder-tab">EXPEDIENTE 001</div>
+        <span class="folder-backing" aria-hidden="true"></span>
+        <div class="folder-paper">
+            <header class="document-header">
+                <div>
+                    <p class="document-brand">THE UNKNOWN FILES</p>
+                    <p class="document-internal">ARCHIVO INTERNO · NO DISTRIBUIR</p>
+                </div>
+                <div class="document-code"><span>CÓDIGO DE ARCHIVO</span><strong>UF / 001</strong></div>
+            </header>
+            <div class="document-title">
+                <p class="file-category"><span>TIPO DE ARCHIVO</span> HISTORIA INTERACTIVA · ORIGINAL</p>
+                <h2 id="bryan-title">La suerte de Bryan</h2>
+                <p class="file-subtitle">Un mal día. Demasiadas coincidencias.</p>
             </div>
-
-            <div class="case-card__image">
-                <span>U.F.</span>
+            <dl class="document-metadata">
+                <div><dt>SUJETO</dt><dd>BRYAN</dd></div>
+                <div><dt>PRIMER REGISTRO</dt><dd>07:13 AM</dd></div>
+            </dl>
+            <section class="file-excerpt" aria-label="Resumen del expediente Bryan">
+                <h3 class="document-label">RESUMEN DEL CASO</h3>
+                <p>Bryan despertó tarde. Tiene examen en 47 minutos. Su celular tiene <span class="document-circled">4%</span>.</p>
+                <p>Y, por alguna razón, hay un pollo en su habitación.</p>
+            </section>
+            <div class="document-margin-note">Revisar las coincidencias.</div>
+            <div class="document-classification">
+                <div><span class="document-label">NIVEL DE ACCESO</span><strong>USO INTERNO</strong></div>
+                <span class="document-redaction" aria-hidden="true"></span>
             </div>
-
-            <div class="case-card__body">
-                <p class="case-card__category">
-                    {{ alumno.categoria }}
-                </p>
-
-                <h3>{{ alumno.nombre }}</h3>
-
-                <p>
-                    Expediente clasificado dentro del archivo central.
-                    Su contenido puede cambiar despues de la investigacion.
-                </p>
+            <div class="file-bottomline">
+                <span class="file-stamp">SIN RESOLVER</span>
+                <a class="consultar-archivo" href="{{ url_for('juego_bryan') }}">Consultar archivo <span aria-hidden="true">↗</span></a>
             </div>
-
-            <div class="case-card__actions">
-                <a
-                    class="btn btn-outline-dark btn-sm"
-                    href="{{ url_for('editar', id=alumno._id) }}"
-                >
-                    Editar
-                </a>
-
-                <form
-                    method="post"
-                    action="{{ url_for('eliminar', id=alumno._id) }}"
-                    onsubmit="return confirm('¿Eliminar este caso?');"
-                >
-                    <button
-                        type="submit"
-                        class="btn btn-outline-danger btn-sm"
-                    >
-                        Eliminar
-                    </button>
-                </form>
+            <div class="document-footer"><span>DOCUMENTO / UF-001-A</span><span>FOLIO 01</span></div>
+        </div>
+    </article>
+    <div class="desk-side">
+        <article class="bryan-folder registry-folder" aria-labelledby="registry-title">
+            <div class="folder-tab">REGISTRO GENERAL</div>
+            <span class="folder-backing" aria-hidden="true"></span>
+            <div class="folder-paper">
+                <header class="document-header">
+                    <div><p class="document-brand">U.F. / ARCHIVO</p><p class="document-internal">REGISTRO GENERAL</p></div>
+                    <div class="document-code"><span>VOLUMEN</span><strong>II</strong></div>
+                </header>
+                <div class="document-title">
+                    <p class="file-category"><span>CONTENIDO</span> ÍNDICE DE EXPEDIENTES</p>
+                    <h2 id="registry-title">Otros archivos</h2>
+                </div>
+                <section class="registry-description" aria-label="Descripción del registro">
+                    <h3 class="document-label">NOTAS DEL ARCHIVO</h3>
+                    <p>Cada historia comienza con un registro. Consulta y organiza los demás casos del archivo.</p>
+                </section>
+                <div class="document-classification"><span class="document-label">REGISTROS / CONSULTA Y EDICIÓN</span></div>
+                <div class="file-bottomline">
+                    <a class="consultar-archivo" href="{{ url_for('taller') }}">Abrir registro <span aria-hidden="true">↗</span></a>
+                </div>
+                <div class="document-footer"><span>ÍNDICE / UF-RG</span><span>FOLIO 02</span></div>
             </div>
         </article>
-
-        {% else %}
-        <div class="empty-archive">
-            <p class="eyebrow">SIN REGISTROS</p>
-            <h3>Todavia no hay expedientes guardados.</h3>
-            <p>
-                Agrega el primer caso para que aparezca en el archivo central.
-            </p>
-        </div>
-        {% endfor %}
+    <aside class="desk-note" aria-label="Nota del investigador">
+        <span class="note-pin" aria-hidden="true"></span>
+        <p class="note-label">NOTA INTERNA / 001</p>
+        <p>La organización recomienda no atacar al pollo hasta identificar su nivel de peligro.</p>
+        <span class="note-annotation">Revisar antes de las 08:00.</span>
+        <span class="note-signature">— Departamento de investigación</span>
+    </aside>
     </div>
+    <div class="desk-coffee" aria-hidden="true"></div>
+    <p class="desk-caption">ELIGE UN EXPEDIENTE. SIGUE LAS PISTAS.</p>
 </section>
 
-<section id="registro" class="card shadow-sm">
-    <div class="card-body p-4">
-        <p class="eyebrow">ADMINISTRACION CRUD</p>
-        <h2 class="h4 mb-3">Registrar nuevo expediente</h2>
-
-        <form method="post" action="{{ url_for('agregar') }}" class="row g-3">
-            <div class="col-md-6">
-                <label for="nombre" class="form-label">Nombre del caso</label>
-                <input
-                    id="nombre"
-                    name="nombre"
-                    class="form-control"
-                    required
-                    maxlength="80"
-                    placeholder="Ejemplo: La suerte de Bryan"
-                >
-            </div>
-
-            <div class="col-md-3">
-                <label for="categoria" class="form-label">Categoria</label>
-                <input
-                    id="categoria"
-                    name="categoria"
-                    class="form-control"
-                    required
-                    maxlength="20"
-                    placeholder="Ejemplo: Escuela"
-                >
-            </div>
-
-            <div class="col-md-3">
-                <label for="estado" class="form-label">Estado</label>
-                <select id="estado" name="estado" class="form-select" required>
-                    <option value="">Selecciona</option>
-                    <option value="Disponible">Disponible</option>
-                    <option value="Bloqueado">Bloqueado</option>
-                    <option value="Completado">Completado</option>
-                </select>
-            </div>
-
-            <div class="col-12 d-flex gap-2 flex-wrap">
-                <button type="submit" class="btn btn-dark">
-                    Guardar expediente
-                </button>
-
-                <button type="reset" class="btn btn-outline-secondary">
-                    Limpiar formulario
-                </button>
-            </div>
-        </form>
+<section class="community-shelf" aria-labelledby="community-title">
+    <div><p class="desk-kicker">PRÓXIMAMENTE / ARCHIVO DE LA COMUNIDAD</p>
+        <h2 id="community-title">Más historias por descubrir.</h2>
+        <p>Este espacio recibirá los juegos creados por la comunidad.</p>
     </div>
+    <a href="{{ url_for('taller') }}" class="taller-link">Ir al taller de casos <span aria-hidden="true">→</span></a>
 </section>
-
+</div>
+<script defer src="{{ url_for('static', filename='inicio.js', v='habitacion-1') }}"></script>
 {% endblock %}

@@ -1,0 +1,120 @@
+/* 19. Archivo central */
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.case-count {
+    color: var(--marron-oscuro);
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.case-card {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    background-color: #f0e8d8;
+    border: 1px solid var(--borde);
+    border-top: 3px solid var(--negro);
+    box-shadow: 3px 3px 0 rgb(108 89 64 / 12%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.case-card:hover {
+    transform: translateY(-4px);
+    border-top-color: var(--rojo-sello);
+    box-shadow: 6px 7px 0 rgb(108 89 64 / 18%);
+}
+
+.case-card__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.7rem;
+    padding: 0.65rem 0.8rem;
+    background-color: var(--negro);
+    color: var(--papel);
+    font-size: 0.7rem;
+}
+
+.case-card__image {
+    height: 145px;
+    display: grid;
+    place-items: center;
+    background:
+        linear-gradient(rgb(23 22 19 / 20%), rgb(23 22 19 / 45%)),
+        repeating-linear-gradient(135deg, #d6c5a3 0 10px, #c4b496 10px 20px);
+    color: rgb(255 250 240 / 80%);
+    font-family: Consolas, monospace;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.case-card__body {
+    flex: 1;
+    padding: 1rem;
+}
+
+.case-card__category {
+    margin-bottom: 0.5rem;
+    color: var(--rojo-sello);
+    font-family: Consolas, monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.case-card h3 {
+    margin-bottom: 0.65rem;
+    font-size: 1.25rem;
+}
+
+.case-card__body p:last-child {
+    margin-bottom: 0;
+    color: var(--texto-suave);
+    line-height: 1.5;
+}
+
+.case-card__actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    padding: 0 1rem 1rem;
+}
+
+.empty-archive {
+    grid-column: 1 / -1;
+    padding: 2rem;
+    text-align: center;
+}
+
+.empty-archive h3 {
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 800px) {
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* Reglas propias de las tarjetas del taller. */
+.case-card__top, .case-count { font-family: Consolas, monospace; letter-spacing: .5px; }
+.case-count { padding: .35rem .5rem; border: 1px solid var(--borde); background: #f8f3e9; }
+.empty-archive { background: #f0e8d8; border: 1px solid var(--borde); }
+.taller-intro { max-width: 720px; margin-bottom: 2rem; }
+
+@media (max-width: 400px) { 
+    .case-grid { 
+        grid-template-columns: minmax(0, 1fr); 
+    } 
+}
