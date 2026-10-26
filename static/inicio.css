@@ -1,42 +1,40 @@
-/* INICIO: habitación pintada, escritorio y documentos interactivos.
-   La portada de acceso tiene su propio archivo: portada.css. */
-
-/* 1. Habitación pintada y cámara. La portada conserva sus estilos. */
-.archivo-juegos {
-    min-height: 100vh; background: #100e0c; color: #eee1c9;
-    overflow-x: clip;
+/* INICIO: imagen y zonas pulsables comparten un único plano de cámara.
+   El fondo se cambia únicamente en la etiqueta img de inicio.html. */
+.archivo-juegos { min-height: 100vh; background: #100e0c; color: #eee1c9; }
+.archivo-juegos .archive-shell { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; background: transparent; }
+.archivo-juegos .archive-navbar { background: #171410; border-bottom: 1px solid #a2895e33; }
+.archivo-juegos .system-bar, .archivo-juegos .archive-footer { background: #110f0d; }
+.office-heading { padding: .65rem max(4%, calc((100vw - 1400px)/2)); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.desk-kicker { color: #bdae92; font: .6rem/1.4 Consolas, monospace; letter-spacing: .13em; margin: 0 0 .25rem; }
+.office-heading h1 { margin: 0; font-size: clamp(1.25rem, 1.8vw, 1.75rem); line-height: 1.2; color: #e8ddc6; }
+.office-heading > p { margin: 0; font: .74rem/1.7 Consolas, monospace; color: #c7bca8; }
+.office-viewport { position: relative; height: clamp(28rem, 78svh, 68rem); overflow: hidden; isolation: isolate; background: #100d0a; }
+.office-camera { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform-origin: 50% 56%; transform: scale(1.16) translateY(-2%); }
+.office-world { position: relative; width: max(100%, 52rem); flex-shrink: 0; aspect-ratio: 1672/941; }
+.office-image { display: block; width: 100%; height: 100%; }
+.office-hotspot { position: absolute; display: block; cursor: pointer; min-height: 44px; border-radius: 8%; text-decoration: none; color: #f2e4c6; }
+/* Coordenadas en porcentajes de la ilustración amplia (1672 × 941). */
+.office-hotspot--bryan { left: 37.1%; top: 49.4%; width: 13.3%; height: 12.1%; }
+.office-hotspot--registry { left: 50.9%; top: 50.1%; width: 13.5%; height: 11.4%; }
+.office-hotspot::before { content: ""; position: absolute; inset: 0; opacity: 0; background: #f4dfa42b; border: 1px solid #ebd7a97a; clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%); transition: opacity .2s; }
+.office-hotspot:hover::before, .office-hotspot:focus-visible::before { opacity: 1; }
+.office-hotspot:focus-visible { outline: 2px solid #f8e7bc; outline-offset: 4px; }
+.office-hotspot span { position: absolute; top: calc(100% + .7rem); left: 50%; width: max-content; max-width: 240px; transform: translateX(-50%); background: #14100eef; border: 1px solid #867153; padding: .5rem .7rem; font: .65rem/1.6 Consolas, monospace; text-align: center; opacity: 0; pointer-events: none; }
+.office-hotspot:hover span, .office-hotspot:focus-visible span { opacity: 1; }
+.office-hint { position: absolute; bottom: .8rem; left: 1rem; right: 1rem; margin: 0; color: #e5d5b8; text-align: center; text-shadow: 0 1px 5px #000; font: .68rem/1.7 Consolas, monospace; pointer-events: none; }
+.skip-approach { position: absolute; top: 1rem; right: 1rem; border: 1px solid #ad9874; background: #17110de8; color: #e9d8b6; padding: .7rem; font: .68rem Consolas, monospace; }
+.skip-approach[hidden] { display: none; }
+.office-shortcuts { display: flex; justify-content: center; flex-wrap: wrap; gap: .15rem 2.5rem; padding: .25rem 4%; }
+.office-shortcuts a { color: #d6c49f; font: .7rem/1.4 Consolas, monospace; min-height: 44px; display: inline-flex; align-items: center; gap: .4rem; padding: .25rem 0; text-decoration: none; border-bottom: 1px solid #6d5e44; }
+.office-shortcuts a:hover { color: #fff0cf; }
+.office-shortcuts a:focus-visible, .skip-approach:focus-visible { outline: 2px solid #e9d8b6; outline-offset: 4px; }
+.office-noscript { padding: 1rem; text-align: center; }
+@media (max-width: 650px) {
+    .office-heading { flex-direction: column; align-items: start; padding-block: .65rem; gap: .35rem; }
+    .office-viewport { height: 65svh; min-height: 25rem; }
+    .office-shortcuts { gap: .1rem 1.5rem; }
+    .office-hotspot span { max-width: 135px; font-size: .56rem; }
 }
-.archivo-juegos .archive-shell {
-    width: 100%; margin: 0; padding: 0;
-    background: transparent; border: 0; box-shadow: none;
-}
-.archivo-juegos .archive-navbar { background: #171410f2; border-bottom: 1px solid #a2895e33; }
-.archivo-juegos .system-bar, .archivo-juegos .archive-footer { background: #110f0df2; }
-.room-stage { position: relative; isolation: isolate; overflow: clip; min-height: 980px; padding: 2rem max(3%, calc((100vw - 1280px) / 2)); }
-.room-backdrop {
-    position: absolute; inset: 0; z-index: -2; pointer-events: none;
-    background: #201810 url("img/oficina-abandonada.png") center 80% / auto 140% no-repeat;
-}
-.room-stage::before {
-    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-    background: linear-gradient(#09080788, transparent 25%, transparent 75%, #100d0bd9),
-                radial-gradient(ellipse at 45% 55%, transparent 32%, #06050455 100%);
-}
-.desk-heading { display: flex; justify-content: space-between; align-items: end; gap: 2rem; padding: 0 1rem 1.2rem; text-shadow: 0 2px 8px #000; }
-.desk-kicker, .desk-index { color: #d2c3a7; font: .67rem Consolas, monospace; letter-spacing: 1.6px; }
-.desk-heading h1 { color: #eee5d3; font-size: clamp(1.8rem, 3.5vw, 3.1rem); margin: .6rem 0; }
-.desk-heading p:last-child { color: #d3c9b8; margin: 0; }
-.desk-index { white-space: nowrap; padding-bottom: .35rem; }
-
-/* 2. Documentos sobre la parte iluminada de la mesa */
-.investigation-desk {
-    isolation: isolate; position: relative; display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(290px, .9fr);
-    align-items: start; gap: clamp(2.5rem, 6vw, 6rem); min-height: 660px;
-    padding: 4.5rem 2% 4rem; border: 0; background: transparent;
-}
-.desk-mark { position: absolute; top: 1.4rem; left: 2rem; color: #ddc29b80; font: .58rem Consolas, monospace; letter-spacing: 2px; }
-.desk-caption { position: absolute; bottom: .6rem; left: 2rem; color: #c2a582; font: .6rem Consolas, monospace; letter-spacing: 1.5px; }
 
 /* 3. Carpeta y hoja del caso Bryan */
 /* Las siluetas recortan solo el material; el texto y el foco quedan libres. */
@@ -46,30 +44,32 @@
     position: relative; isolation: isolate; z-index: 1;
     padding: 1.1rem; margin-top: 1rem;
     transform: rotate(-2deg);
-    filter: drop-shadow(2px 4px 1px #21180c55) drop-shadow(8px 18px 14px #160e0980);
+    filter: drop-shadow(2px 3px 2px #21180c66) drop-shadow(7px 15px 16px #160e0970);
 }
 .bryan-folder::before {
     content: ""; position: absolute; inset: 0; z-index: -2;
     clip-path: var(--borde-carpeta);
     background:
-        radial-gradient(ellipse at 0 70%, #57331c55, transparent 28%),
-        radial-gradient(ellipse at 95% 4%, #55371a66, transparent 25%),
-        url("img/papel-grano.svg"),
-        linear-gradient(110deg, #bba16e, #a88a55 76%, #8c6b3c);
-    box-shadow: inset 0 0 22px #55381d80;
+        linear-gradient(110deg, #63503b75, #3c302355),
+        url("img/papel-pintado-v1.webp") center / 100% 100% no-repeat;
+    box-shadow: inset 0 0 24px #392b2270;
 }
 .folder-tab {
     position: absolute; left: 0; top: -1.8rem; z-index: -2;
     padding: .55rem 1.2rem .8rem;
-    background: url("img/papel-grano.svg"), linear-gradient(120deg, #baa16e, #a58a58);
+    background:
+        linear-gradient(#77634c50, #51423255),
+        url("img/papel-pintado-v1.webp") center 12% / 100% 500% no-repeat;
     clip-path: polygon(2% 12%, 7% 2%, 38% 4%, 63% 0, 94% 6%, 98% 19%, 100% 100%, 0 100%);
-    color: #382d1e; font: .65rem Consolas, monospace; letter-spacing: 1px;
+    color: #30291f; font: .65rem Consolas, monospace; letter-spacing: 1px;
 }
 .folder-backing {
     position: absolute; inset: 1rem .8rem .7rem 1.5rem; z-index: -1;
-    background: url("img/papel-grano.svg"), linear-gradient(110deg, #c4b38f, #d8c9a7);
+    background:
+        linear-gradient(#65534042, #52443150),
+        url("img/papel-pintado-v1.webp") center / 100% 100% no-repeat;
     clip-path: var(--borde-papel); transform: rotate(1.6deg);
-    box-shadow: inset 0 0 12px #7a552d50; pointer-events: none;
+    box-shadow: inset 0 0 15px #44362560; pointer-events: none;
 }
 .folder-paper {
     isolation: isolate; position: relative;
@@ -80,27 +80,31 @@
 .folder-paper::before {
     content: ""; position: absolute; inset: 0; z-index: -1;
     clip-path: var(--borde-papel); pointer-events: none;
+    /* Papel pintado: desgaste concentrado en el margen y centro legible. */
     background:
-        /* Manchas suaves y marca de café, cerca de los márgenes. */
-        radial-gradient(ellipse 55px 49px at 93% 39%, transparent 68%, #8c582119 72%, transparent 79%),
-        radial-gradient(ellipse at 3% 84%, #92592328, transparent 20%),
-        radial-gradient(ellipse at 99% 5%, #83502d38, transparent 22%),
-        radial-gradient(ellipse at 3% 0, #9b713530, transparent 30%),
-        linear-gradient(91deg, transparent 48%, #8b704012 49.6%, #fff8e527 50%, transparent 50.6%),
-        url("img/papel-grano.svg"),
-        linear-gradient(115deg, #eee2c7, #e1d2ae);
-    box-shadow: inset 0 0 18px #8f642b3d;
+        radial-gradient(ellipse at 50% 44%, #d6c8ad18, transparent 72%),
+        linear-gradient(#625c4c14, #554d3f14),
+        url("img/papel-pintado-v1.webp") center / 100% 100% no-repeat;
+    box-shadow: inset 0 0 20px #493c2b40;
 }
 /* Esquina doblada: reverso iluminado y sombra del pliegue. */
 .folder-paper::after {
     content: ""; position: absolute; right: 0; top: 0;
     width: 5.5%; height: 5.5%; min-height: 22px;
-    background: linear-gradient(45deg, #8a714c66 0, #e7d6b1 48%, #bd9e69 50%, #f5e6c3 85%);
+    background:
+        linear-gradient(45deg, #4d402f66, #b7a17b44 48%, #66513b55 50%, #c2b08e66),
+        url("img/papel-pintado-v1.webp") right top / 500% 500% no-repeat;
     clip-path: polygon(0 0, 100% 100%, 0 100%);
     pointer-events: none;
 }
 /* 3b. Hoja de archivo: jerarquía de máquina de escribir, reglas y notas. */
-.folder-paper { padding: clamp(2rem, 3vw, 3rem); }
+/* Proporción vertical de carta (8.5 × 11), con altura libre si el texto crece. */
+.folder-paper {
+    display: flex; flex-direction: column;
+    aspect-ratio: 8.5 / 11;
+    min-block-size: 62rem;
+    padding: clamp(2rem, 3vw, 3rem);
+}
 .document-header {
     display: grid; grid-template-columns: minmax(0, 1fr) auto;
     align-items: start; gap: 1.3rem; padding-bottom: 1.6rem;
@@ -119,10 +123,10 @@
 .document-internal { margin: 0; color: #514735; font-size: .59rem; }
 .document-code { border: 1px solid #64564099; padding: .55rem .7rem; min-width: 100px; }
 .document-code span { display: block; font-size: .55rem; }
-.document-code strong { display: block; color: #753e34; font-size: .85rem; margin-top: .25rem; font-weight: normal; }
-.document-title { margin: 2rem 0 1.8rem; }
+.document-code strong { display: block; color: #683e34; font-size: .85rem; margin-top: .25rem; font-weight: normal; }
+.document-title { margin: 2.6rem 0 2.2rem; }
 .file-category { color: #514735; font-size: .59rem; margin: 0 0 1.4rem; }
-.file-category > span { padding: .25rem .45rem; margin-right: .5rem; color: #f1e7cf; background: #28271f; }
+.file-category > span { padding: .25rem .45rem; margin-right: .5rem; color: #f1e7cf; background: #302c25; }
 .folder-paper h2 {
     color: #27251e; font-family: "Courier New", Consolas, monospace;
     font-size: clamp(2rem, 3.1vw, 2.9rem); font-weight: 900; line-height: 1.16;
@@ -137,19 +141,22 @@
 .file-excerpt p, .registry-description p { font: .89rem/1.95 "Courier New", Consolas, monospace; margin: 0 0 1rem; color: #352f25; }
 .document-circled { position: relative; white-space: nowrap; }
 .document-circled::after { content: ""; position: absolute; inset: -.25rem -.35rem; border: 1px solid #86483bc9; border-radius: 49% 56% 44% 52%; transform: rotate(-9deg); pointer-events: none; }
-.document-margin-note { color: #84463b; font: italic .94rem/1.6 Georgia, serif; transform: rotate(-2deg); margin: 1.6rem 0 1.8rem 7%; }
+.document-margin-note { color: #74483e; font: italic .94rem/1.6 Georgia, serif; transform: rotate(-2deg); margin: 1.6rem 0 1.8rem 7%; }
 .document-classification { margin-top: 1.9rem; padding-top: 1.3rem; border-top: 1px solid #8c7d6066; }
 .document-classification .document-label { margin-bottom: .4rem; font-size: .58rem; }
 .document-classification strong { color: #7c4137; display: block; font: .73rem "Courier New", monospace; letter-spacing: .06em; }
 .document-redaction { display: block; margin-top: .8rem; width: 38%; height: .6rem; background: #29271ff2; clip-path: polygon(0 12%, 15% 0, 55% 9%, 99% 0, 100% 82%, 62% 100%, 30% 89%, 0 100%); transform: rotate(-1deg); }
-.file-bottomline { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-top: 2.4rem; }
-.file-stamp { padding: .5rem .65rem; border: 2px solid #863e3180; border-radius: 2px 4px 1px 3px; color: #863e31; transform: rotate(-5deg); font: bold .65rem "Courier New", monospace; letter-spacing: .08em; opacity: .85; }
+.file-bottomline { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-top: auto; padding-top: 2.8rem; }
+.file-stamp { padding: .5rem .65rem; border: 2px double #79493d8c; border-radius: 2px 4px 1px 3px; color: #724236; text-shadow: .4px .2px #72423635; transform: rotate(-5deg); font: bold .65rem "Courier New", monospace; letter-spacing: .08em; opacity: .85; }
 .consultar-archivo { color: #403c30; padding: .7rem 0; border-bottom: 1px solid #8b7c60; text-decoration: none; font: .8rem/1.5 "Courier New", monospace; transition: color .2s, border-color .2s; }
 .consultar-archivo span { margin-left: .6rem; }
 .consultar-archivo:hover { color: #87382c; border-color: #87382c; }
 .consultar-archivo:focus-visible, .taller-link:focus-visible { outline: 3px solid #914b3c; outline-offset: 5px; }
 .document-footer { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1.3rem; border-top: 1px solid #8c7d6066; margin-top: 2rem; font-size: .52rem; color: #77694f; }
-.registry-folder .folder-paper { padding: clamp(1.6rem, 2.6vw, 2.4rem); }
+.registry-folder .folder-paper {
+    min-block-size: 48rem;
+    padding: clamp(1.6rem, 2.6vw, 2.4rem);
+}
 .registry-folder .document-header { grid-template-columns: minmax(0, 1fr) auto; gap: .8rem; }
 .registry-folder .document-brand { font-size: 1.02rem; }
 .registry-folder .document-code { min-width: 64px; }
@@ -167,10 +174,10 @@
 .desk-note::before {
     content: ""; position: absolute; inset: 0; z-index: -1;
     background:
-        radial-gradient(ellipse at 100% 90%, #88602640, transparent 40%),
-        url("img/papel-grano.svg"), linear-gradient(115deg, #dacfaa, #cbbb87);
+        linear-gradient(#8a785b18, #66543e28),
+        url("img/papel-pintado-v1.webp") center / 100% 100% no-repeat;
     clip-path: polygon(0 1%, 24% 0, 51% 1%, 75% .2%, 99% 1%, 100% 29%, 99% 52%, 99.7% 73%, 98% 100%, 90% 98.5%, 83% 100%, 76% 98%, 68% 99.5%, 60% 98.2%, 52% 100%, 44% 98.8%, 36% 100%, 28% 98.3%, 19% 99.6%, 10% 98%, 1% 99%, .4% 74%, 1% 49%, 0 24%);
-    box-shadow: inset 0 0 15px #8f642b30; pointer-events: none;
+    box-shadow: inset 0 0 14px #4c3b2938; pointer-events: none;
 }
 .note-annotation {
     display: block; margin-top: 1.3rem; color: #783e33;
@@ -182,95 +189,43 @@
 .note-label { font: .65rem Consolas, monospace; letter-spacing: 1px; border-bottom: 1px solid #82745166; padding-bottom: .8rem; }
 .desk-note p:not(.note-label) { font-size: 1.1rem; line-height: 1.65; font-style: italic; }
 .note-signature { font: .6rem Consolas, monospace; }
-.desk-coffee { position: absolute; right: 8%; bottom: 4rem; width: 95px; height: 95px; border: 6px double #241a1680; border-radius: 50%; transform: scaleY(.8); opacity: .7; }
 
-/* 5. Espacio futuro de la comunidad: separado del juego original */
-.community-shelf { text-shadow: 0 2px 8px #000; display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 2.6rem 1rem 1rem; }
-.community-shelf h2 { color: #e1d8c6; font-size: 1.5rem; }
-.community-shelf p:last-child { color: #d0c3ac; margin: 0; font-size: .95rem; }
-.taller-link { color: #cdbd99; font: .75rem Consolas, monospace; white-space: nowrap; text-decoration: none; border-bottom: 1px solid #7e7053; padding: .7rem 0; }
-.taller-link:hover { color: #fff0cf; }
-
-/* 6. Móviles y preferencias de accesibilidad */
-@media (max-width: 800px) {
-    .desk-heading { align-items: start; flex-direction: column; gap: 1rem; }
-    .investigation-desk { grid-template-columns: minmax(0, 1fr); padding: 5rem 7% 4rem; gap: 3rem; }
-    .desk-note { max-width: 320px; justify-self: end; margin: 0; transform: rotate(3deg); }
-    .community-shelf { align-items: start; flex-direction: column; gap: 1rem; }
-    .desk-coffee { right: auto; left: 10%; bottom: 6rem; }
-}
-@media (max-width: 450px) {
-    .archivo-juegos .archive-shell { width: 100%; padding-top: 1.8rem; }
-    .investigation-desk { border-right: 0; border-left: 0; padding-inline: 6%; }
-    .bryan-folder { transform: rotate(-1deg); padding: .65rem; }
-    .folder-paper { padding: 1.25rem; }
-    .desk-mark, .desk-caption { left: 6%; font-size: .5rem; }
-    .desk-note { max-width: 90%; }
-    .archivo-juegos .navbar-brand { font-size: .72rem; }
-}
-@media (prefers-reduced-motion: reduce) { .consultar-archivo { transition: none; } }
-
-/* 7. Segundo expediente: enlace real al registro de casos */
-.desk-side { display: grid; padding-top: 5rem; gap: 3.5rem; align-content: center; min-width: 0; }
-.registry-folder { margin: 1rem 0 0; transform: rotate(5deg); padding: .85rem; }
-.registry-folder .folder-tab { font-size: .6rem; }
-.desk-side .desk-note { transform: rotate(-3deg); margin: 0 0 0 10%; padding: 1.5rem 1.5rem 1.2rem; }
-.desk-side .desk-note p:not(.note-label) { font-size: .88rem; line-height: 1.5; }
-.desk-side .note-annotation { margin-top: .7rem; font-size: .85rem; }
-.desk-coffee { display: none; }
-
-/* 8. Entrada de cámara: una sola vez por pestaña, sin bloquear los enlaces. */
-.room-intro { display: none; position: fixed; inset: 0; z-index: 1040; pointer-events: none; overflow: hidden; background: #080706; }
-.room-intro::before {
-    content: ""; position: absolute; inset: 0;
-    background: url("img/oficina-abandonada.png") center / cover no-repeat;
-    transform-origin: 48% 70%;
-}
-.skip-intro { display: none; position: fixed; z-index: 1041; right: 1.5rem; bottom: 1.5rem; padding: .7rem 1rem; border: 1px solid #b9a47b88; background: #17110de8; color: #e9d8b6; font: .7rem Consolas, monospace; }
-.scene-entering .room-intro { display: block; animation: revelar-mesa 2.6s ease both; }
-.scene-entering .room-intro::before { animation: acercar-camara 2.6s cubic-bezier(.3, 0, .2, 1) both; }
-.scene-entering .skip-intro { display: block; }
-.scene-entering .room-stage { animation: enfocar-documentos 2.6s ease both; }
-.skip-intro:focus-visible { outline: 2px solid #e9d8b6; outline-offset: 4px; }
-@keyframes acercar-camara {
-    0%, 15% { transform: scale(1); filter: brightness(.7); }
-    100% { transform: scale(1.32) translateY(-3%); filter: brightness(1); }
-}
-@keyframes revelar-mesa { 0%, 65% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes enfocar-documentos { 0%, 45% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: none; } }
-@media (max-width: 800px) {
-    .room-stage { padding: 1.8rem 4% 1rem; min-height: 100svh; }
-    .room-backdrop { background-position: 48% center; }
-    .investigation-desk { grid-template-columns: minmax(0, 1fr); padding: 4rem 3% 3.5rem; gap: 3rem; }
-    .desk-side { width: min(100%, 480px); justify-self: center; }
-    .desk-side .desk-note { max-width: 90%; justify-self: end; }
-    .desk-index { display: none; }
-}
-@media (max-width: 450px) {
-    .room-stage { padding-inline: 4%; }
-    .desk-heading { padding-inline: 0; }
-    .desk-heading h1 { font-size: 1.8rem; }
-}
-@media (prefers-reduced-motion: reduce) {
-    .scene-entering .room-intro, .scene-entering .skip-intro { display: none; }
-    .scene-entering .room-stage { animation: none; }
-}
-
-/* Distribución: espacio entre expedientes y lectura cómoda en pantallas pequeñas. */
-@media (max-width: 1100px) {
-    .investigation-desk { grid-template-columns: minmax(0, 1fr); gap: 4rem; padding-inline: 5%; }
-    .investigation-desk > .bryan-folder { width: min(100%, 650px); justify-self: start; }
-    .desk-side { padding-top: 0; width: min(100%, 500px); justify-self: end; }
-}
+/* Expediente levantado: ventana con lectura vertical, teclado y retorno a la mesa. */
+.document-view { width: min(720px, calc(100vw - 24px)); max-width: none; max-height: 92svh; padding: 0 1.5rem 2rem; border: 0; background: transparent; color: #3e392d; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #a89265 #17120d; }
+.document-view::backdrop { background: #100d0a9c; backdrop-filter: blur(1.5px); }
+body.document-open { overflow: hidden; }
+.document-toolbar { position: sticky; top: 0; z-index: 5; display: flex; justify-content: end; padding: .8rem 0 2.2rem; }
+.document-toolbar button { border: 1px solid #aa9670; border-radius: 2px; background: #211a13f5; color: #efdfbf; padding: .8rem 1rem; font: .71rem/1.5 Consolas, monospace; box-shadow: 0 4px 12px #0008; }
+.document-toolbar button:focus-visible { outline: 2px solid #f5d9a5; outline-offset: 4px; }
+.document-carrier { transform-origin: center top; }
+.document-carrier .bryan-folder { margin: 0; transform: none; }
+.document-carrier .registry-folder { padding: 1.1rem; }
+.document-note { padding: 2rem 1rem 0; }
+.document-note .desk-note { max-width: 360px; margin: 0 auto; transform: rotate(-2deg); }
 @media (max-width: 600px) {
-    .investigation-desk { padding: 3.5rem 1% 3rem; }
-    .folder-paper, .registry-folder .folder-paper { padding: 1.6rem 1.25rem; }
-    .document-header { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
+    .document-view { padding-inline: .7rem; }
+    .document-carrier .bryan-folder, .document-carrier .registry-folder { padding: .65rem; }
+    .folder-paper, .registry-folder .folder-paper { padding: 1.8rem 1.3rem; min-block-size: auto; }
+    .document-header, .registry-folder .document-header { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
     .document-code { justify-self: start; }
-    .folder-paper h2 { font-size: clamp(1.65rem, 7vw, 2.2rem); }
-    .document-metadata { gap: 1.2rem; }
-    .document-brand { font-size: 1.05rem; }
+    .folder-paper h2 { font-size: clamp(1.6rem, 7vw, 2.5rem); }
+    .document-brand { font-size: 1rem; }
+    .document-title { margin-block: 2rem; }
     .file-category { line-height: 1.9; }
     .file-category > span { display: block; width: fit-content; margin-bottom: .6rem; }
     .document-footer { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .office-hotspot::before { transition: none; }
+}
+
+/* Franjas discretas: dejar protagonismo y altura a la ilustración. */
+.archivo-juegos .archive-footer {
+    padding: .4rem 4%; gap: .2rem 1rem;
+    font-size: .58rem; line-height: 1.4;
+    flex-direction: row; justify-content: space-between;
+}
+@media (max-width: 650px) {
+    .office-heading > p { font-size: .66rem; line-height: 1.4; }
+    .archivo-juegos .archive-footer { justify-content: center; letter-spacing: .6px; }
 }

@@ -1,0 +1,1687 @@
+[
+  {
+    "_id": "bryan_s01",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 1,
+    "title": "El despertador",
+    "background": "img/escenas/BG01_dormitorio_bryan.png",
+    "objective": "Revisa tu teléfono.",
+    "dialogues": [
+      {
+        "character": "NARRADOR",
+        "text": "10:37. El teléfono vibra. A lo lejos se oye un cacareo."
+      },
+      {
+        "character": "BRYAN",
+        "text": "Cinco minutos más"
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿No tienen otra persona a quien molestar?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Ah. Sí tienen. Pero me eligieron a mí"
+      }
+    ],
+    "choices": [
+      {
+        "id": "telefono",
+        "text": "Revisar el teléfono",
+        "next": "bryan_s01_mensaje"
+      }
+    ]
+  },
+  {
+    "_id": "bryan_s01_mensaje",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 1,
+    "title": "El mensaje de Mamá",
+    "background": "img/escenas/BG01_dormitorio_bryan.png",
+    "objective": "Encuentra la mesa y sal antes del mediodía.",
+    "dialogues": [
+      {
+        "character": "MAMÁ",
+        "text": "La mesa plegable. Al salón. Antes de las 12. Prometiste ayudar. No me hagas ir por ti"
+      },
+      {
+        "character": "BRYAN",
+        "text": "La mesa…"
+      },
+      {
+        "character": "BRYAN",
+        "text": "¡LA MESA!"
+      }
+    ],
+    "choices": [
+      {
+        "id": "zapato",
+        "text": "Mirar el zapato",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "¿Por qué hay un zapato en medio del piso? Ah. Es mío"
+          }
+        ],
+        "once": true
+      },
+      {
+        "id": "ventilador",
+        "text": "Mirar el ventilador",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Llevas toda la noche haciendo ruido y ni siquiera enfrías"
+          }
+        ],
+        "once": true
+      },
+      {
+        "id": "mochila",
+        "text": "Mirar la mochila",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Mañana organizo mi vida. Hoy no"
+          }
+        ],
+        "once": true
+      },
+      {
+        "id": "cocina",
+        "text": "Ir a la cocina",
+        "next": "bryan_s02"
+      }
+    ],
+    "entry_effects": {
+      "add_inventory": [
+        "Teléfono"
+      ]
+    }
+  },
+  {
+    "_id": "bryan_s02",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 2,
+    "title": "El jefe de la casa",
+    "background": "img/escenas/BG02_cocina_bryan.png",
+    "objective": "Decide qué hacer con Pollo y sal al patio.",
+    "dialogues": [
+      {
+        "character": "BRYAN",
+        "text": "Buenos días, su majestad"
+      },
+      {
+        "character": "POLLO",
+        "text": "¡Co-co!"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Veo que ya desayunaste. ¿Invitas?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Qué considerado"
+      }
+    ],
+    "choices": [
+      {
+        "id": "alimentar",
+        "text": "Darle alimento",
+        "next": "bryan_s03",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Toma. Comida para pollos. Una idea revolucionaria"
+          },
+          {
+            "character": "NARRADOR",
+            "text": "Pollo baja de la mesa."
+          }
+        ],
+        "effects": {
+          "set": {
+            "pollo_alimentado": true
+          }
+        }
+      },
+      {
+        "id": "cargar",
+        "text": "Cargarlo",
+        "next": "bryan_s03",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Ven, campeón"
+          },
+          {
+            "character": "NARRADOR",
+            "text": "Pollo bate las alas."
+          },
+          {
+            "character": "BRYAN",
+            "text": "¡Está bien! ¡Perdón!"
+          },
+          {
+            "character": "NARRADOR",
+            "text": "Pollo queda junto a la puerta."
+          }
+        ]
+      },
+      {
+        "id": "dejar",
+        "text": "Dejarlo tranquilo",
+        "next": "bryan_s03",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Haz lo que quieras. Ya eres dueño de la casa"
+          },
+          {
+            "character": "NARRADOR",
+            "text": "Pollo sigue sobre la mesa."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "bryan_s03",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 3,
+    "title": "Operación mesa",
+    "background": "img/escenas/BG03_patio_bryan.png",
+    "objective": "Libera la mesa sin tirar los objetos.",
+    "dialogues": [
+      {
+        "character": "BRYAN",
+        "text": "¿Quién construyó una pirámide encima de la mesa?"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "¿Ya saliste?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Estoy en la fase final"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "¿De qué?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "De prepararme para salir"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Bryan"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Estoy sacando la mesa"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "¡Pues apúrate!"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Siempre tan motivadora"
+      }
+    ],
+    "choices": [],
+    "next": "bryan_s03_orden"
+  },
+  {
+    "_id": "bryan_s03_orden",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 3,
+    "title": "La pirámide del patio",
+    "background": "img/escenas/BG03_patio_bryan.png",
+    "objective": "Retira los objetos en el orden correcto.",
+    "dialogues": [
+      {
+        "character": "NARRADOR",
+        "text": "La mesa está debajo de una caja, una cubeta y una maceta."
+      }
+    ],
+    "choices": [],
+    "puzzle": {
+      "type": "sequence",
+      "sequence": [
+        "caja",
+        "cubeta",
+        "maceta",
+        "mesa"
+      ],
+      "options": [
+        {
+          "id": "mesa",
+          "text": "Mesa"
+        },
+        {
+          "id": "caja",
+          "text": "Caja"
+        },
+        {
+          "id": "maceta",
+          "text": "Maceta"
+        },
+        {
+          "id": "cubeta",
+          "text": "Cubeta"
+        }
+      ],
+      "hint": "Primero caja, luego cubeta, después maceta y por último mesa.",
+      "wrong": [
+        {
+          "character": "BRYAN",
+          "text": "La maceta decidió independizarse"
+        },
+        {
+          "character": "NARRADOR",
+          "text": "Puedes volver a ordenar los objetos; la historia no se bloquea."
+        }
+      ],
+      "success": [
+        {
+          "character": "BRYAN",
+          "text": "Listo. Soy oficialmente un profesional de mover cosas"
+        },
+        {
+          "character": "NARRADOR",
+          "text": "Al levantar la mesa, una pata chirría."
+        }
+      ],
+      "next": "bryan_s03_pata"
+    }
+  },
+  {
+    "_id": "bryan_s03_pata",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 3,
+    "title": "El seguro de la pata",
+    "background": "img/escenas/BG03_patio_bryan.png",
+    "objective": "Prepara la mesa para llevarla al salón.",
+    "dialogues": [
+      {
+        "character": "BRYAN",
+        "text": "No empieces"
+      }
+    ],
+    "choices": [
+      {
+        "id": "revisar",
+        "text": "Revisar el seguro de la pata",
+        "next": "bryan_s04",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Ahora sí. Una mesa con todas sus funciones"
+          }
+        ],
+        "effects": {
+          "set": {
+            "mesa_intacta": true
+          },
+          "responsibility": 1,
+          "add_inventory": [
+            "Mesa plegable"
+          ]
+        }
+      },
+      {
+        "id": "salir",
+        "text": "Cerrar y salir de inmediato",
+        "next": "bryan_s04",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Si no la veo, no está rota"
+          }
+        ],
+        "effects": {
+          "set": {
+            "mesa_intacta": false
+          },
+          "add_inventory": [
+            "Mesa plegable"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "_id": "bryan_s04",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 4,
+    "title": "La tienda",
+    "background": "img/escenas/BG04_calle_tienda_salon.png",
+    "objective": "Lleva la mesa al salón comunitario.",
+    "dialogues": [
+      {
+        "character": "NORA",
+        "text": "Buenos días, Bryan. ¿Y esa mesa?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Es mi guardaespaldas"
+      },
+      {
+        "character": "NORA",
+        "text": "Se ve cansado"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Trabaja mucho"
+      },
+      {
+        "character": "NORA",
+        "text": "¿Qué necesitas?"
+      }
+    ],
+    "choices": [
+      {
+        "id": "gato",
+        "text": "Observar al gato",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Por lo menos alguien aquí tiene su vida resuelta"
+          }
+        ],
+        "once": true
+      },
+      {
+        "id": "agua",
+        "text": "Comprar agua",
+        "next": "bryan_s05",
+        "response": [
+          {
+            "character": "NORA",
+            "text": "Son quince"
+          },
+          {
+            "character": "BRYAN",
+            "text": "¿No eran doce?"
+          },
+          {
+            "character": "NORA",
+            "text": "Ayer"
+          },
+          {
+            "character": "BRYAN",
+            "text": "Impecable lógica"
+          }
+        ],
+        "effects": {
+          "set": {
+            "agua": true
+          },
+          "add_inventory": [
+            "Botella de agua"
+          ]
+        }
+      },
+      {
+        "id": "saludar",
+        "text": "No comprar nada",
+        "next": "bryan_s05",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Vine a saludar"
+          },
+          {
+            "character": "NORA",
+            "text": "Entonces ya saludaste"
+          },
+          {
+            "character": "BRYAN",
+            "text": "Siempre un placer"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "bryan_s05",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 5,
+    "title": "Efecto dominó",
+    "background": "img/escenas/BG04_calle_tienda_salon.png",
+    "objective": "Decide qué hacer con la bicicleta caída.",
+    "dialogues": [
+      {
+        "character": "NIÑO",
+        "text": "¡Cuidado!"
+      },
+      {
+        "character": "NARRADOR",
+        "text": "La pelota golpea la mesa. Bryan la sujeta, pero golpea un bote que tumba una bicicleta.",
+        "when": {
+          "mesa_intacta": true
+        }
+      },
+      {
+        "character": "NARRADOR",
+        "text": "La pelota golpea la mesa. La pata se despliega y la mesa cae contra un bote que tumba una bicicleta.",
+        "when": {
+          "mesa_intacta": false
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "No, no, no… ¡NO!"
+      },
+      {
+        "character": "NIÑO",
+        "text": "Yo vi todo"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Felicidades. ¿Quieres un diploma?"
+      },
+      {
+        "character": "NIÑO",
+        "text": "Tú tiraste la bici"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Y tú inventaste el fútbol callejero"
+      }
+    ],
+    "choices": [
+      {
+        "id": "recoger",
+        "text": "Levantar la bicicleta y el bote",
+        "next": "bryan_s06",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "La civilización continúa"
+          }
+        ],
+        "effects": {
+          "set": {
+            "bicicleta_arreglada": true
+          },
+          "responsibility": 1
+        }
+      },
+      {
+        "id": "irse",
+        "text": "Seguir caminando",
+        "next": "bryan_s06",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Voy tarde. El universo sabrá perdonarme"
+          }
+        ],
+        "effects": {
+          "set": {
+            "bicicleta_arreglada": false
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_id": "bryan_s06",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 6,
+    "title": "La mesa fatal",
+    "background": "img/escenas/BG05_salon_comunitario.png",
+    "objective": "Consigue una mesa de repuesto.",
+    "dialogues": [
+      {
+        "character": "MAMÁ",
+        "text": "¡Por fin!"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Antes de las doce. Técnicamente soy puntual"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Déjala aquí"
+      },
+      {
+        "character": "NARRADOR",
+        "text": "Bryan abre bien la mesa, pero apoya una caja pesada en una esquina y la pata se vence.",
+        "when": {
+          "mesa_intacta": true
+        }
+      },
+      {
+        "character": "NARRADOR",
+        "text": "La pata ya dañada cede al abrir la mesa.",
+        "when": {
+          "mesa_intacta": false
+        }
+      },
+      {
+        "character": "NARRADOR",
+        "text": "La mesa cae con un estruendo."
+      },
+      {
+        "character": "BRYAN",
+        "text": "…"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Bryan"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Tengo buenas y malas noticias"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "¿Cuáles son las buenas?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Llegué"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "¿Y las malas?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "La mesa llegó con menos entusiasmo"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Ve con Ramiro. Pídele una mesa de repuesto. Y por favor, no hagas un desastre"
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿Podrías definir desastre?"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "¡BRYAN!"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Voy"
+      }
+    ],
+    "choices": [],
+    "next": "bryan_s07",
+    "entry_effects": {
+      "remove_inventory": [
+        "Mesa plegable"
+      ]
+    }
+  },
+  {
+    "_id": "bryan_s07",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 7,
+    "title": "Ramiro y la llave",
+    "background": "img/escenas/BG05_salon_comunitario.png",
+    "objective": "Habla con Ramiro y abre el almacén.",
+    "dialogues": [
+      {
+        "character": "BRYAN",
+        "text": "Buenas. Me mandaron por una mesa"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "¿Quién te mandó?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Mi mamá"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "¿Quién es tu mamá?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "La señora que está organizando todo"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Eso no ayuda"
+      },
+      {
+        "character": "BRYAN",
+        "text": "La que tiene cara de querer matarme"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Ah. Ya sé cuál"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Pasillo del fondo, puerta gris. Las mesas están a la derecha. No muevas las cajas de fotos, luego las dejan tiradas"
+      },
+      {
+        "character": "BRYAN",
+        "text": "No se preocupe. Yo soy muy cuidadoso"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Ajá"
+      }
+    ],
+    "choices": [
+      {
+        "id": "almacen",
+        "text": "Abrir el almacén",
+        "next": "bryan_s08"
+      }
+    ],
+    "entry_effects": {
+      "add_inventory": [
+        "Llave del almacén"
+      ]
+    }
+  },
+  {
+    "_id": "bryan_s08",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 8,
+    "title": "Las sillas",
+    "background": "img/escenas/BG06_almacen_pasillo.png",
+    "objective": "Libera la mesa de repuesto.",
+    "dialogues": [
+      {
+        "character": "BRYAN",
+        "text": "¿Guardan las cosas o las entierran?"
+      }
+    ],
+    "choices": [],
+    "puzzle": {
+      "type": "sequence",
+      "sequence": [
+        "pila_b",
+        "pila_a",
+        "mesa"
+      ],
+      "options": [
+        {
+          "id": "pila_a",
+          "text": "Pila A"
+        },
+        {
+          "id": "pila_b",
+          "text": "Pila B"
+        },
+        {
+          "id": "mesa",
+          "text": "Mesa"
+        }
+      ],
+      "hint": "Aparta primero la pila B y después la pila A. Al final recoge la mesa.",
+      "wrong": [
+        {
+          "character": "NARRADOR",
+          "text": "Las sillas caen. Ramiro entra."
+        },
+        {
+          "character": "RAMIRO",
+          "text": "¿Qué pasó aquí?"
+        },
+        {
+          "character": "BRYAN",
+          "text": "Una demostración práctica de gravedad"
+        },
+        {
+          "character": "RAMIRO",
+          "text": "Recoge eso"
+        },
+        {
+          "character": "BRYAN",
+          "text": "Sí, señor"
+        }
+      ],
+      "cleanup": true,
+      "success": [
+        {
+          "character": "NARRADOR",
+          "text": "La mesa de repuesto queda libre."
+        }
+      ],
+      "next": "bryan_s08_explorar"
+    }
+  },
+  {
+    "_id": "bryan_s08_explorar",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 8,
+    "title": "La caja de fotos",
+    "background": "img/escenas/BG06_almacen_pasillo.png",
+    "objective": "Recoge la mesa de repuesto y vuelve al salón.",
+    "dialogues": [],
+    "choices": [
+      {
+        "id": "foto",
+        "text": "Inspeccionar la caja de fotos",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "¿Fotos viejas? A ver…"
+          },
+          {
+            "character": "NARRADOR",
+            "text": "Una fotografía descolorida muestra una celebración en el salón. Hay un hombre con gafete al fondo. Todavía no se distingue su nombre."
+          },
+          {
+            "character": "BRYAN",
+            "text": "¿Este salón existía desde la prehistoria?"
+          },
+          {
+            "character": "NARRADOR",
+            "text": "Al dar vuelta a la fotografía, se lee «1987»."
+          },
+          {
+            "character": "BRYAN",
+            "text": "Bueno, casi"
+          }
+        ],
+        "effects": {
+          "set": {
+            "foto_encontrada": true
+          },
+          "add_inventory": [
+            "Foto antigua"
+          ]
+        },
+        "once": true
+      },
+      {
+        "id": "puerta",
+        "text": "Escuchar junto a la puerta del fondo",
+        "response": [
+          {
+            "character": "EMPLEADO",
+            "text": "¿Quién cerró el cuarto del final?"
+          },
+          {
+            "character": "OTRA VOZ",
+            "text": "Siempre ha estado cerrado"
+          },
+          {
+            "character": "EMPLEADO",
+            "text": "Ayer lo vi abierto"
+          },
+          {
+            "character": "OTRA VOZ",
+            "text": "Pregúntale a Ramiro"
+          },
+          {
+            "character": "BRYAN",
+            "text": "No es asunto mío. Y qué bonito se siente decir eso"
+          }
+        ],
+        "once": true
+      },
+      {
+        "id": "mesa",
+        "text": "Recoger mesa y volver al salón",
+        "next": "bryan_s09",
+        "effects": {
+          "add_inventory": [
+            "Mesa de repuesto"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "_id": "bryan_s09",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 9,
+    "title": "El favor se multiplica",
+    "background": "img/escenas/BG05_salon_comunitario.png",
+    "objective": "Ayuda a Ramiro a identificar las luces del salón.",
+    "dialogues": [
+      {
+        "character": "MAMÁ",
+        "text": "¿Ya la trajiste?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Sí. Y esta viene con garantía emocional"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Bien. Gracias. Ahora falta que prendan las luces de este lado"
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿Cómo que falta?"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Ramiro está revisando el tablero. Ve a ayudarle"
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿No había un límite legal de favores por día?"
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Uno más, por favor"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "El tablero tiene etiquetas. Solo dime cuál interruptor corresponde a las luces del salón; yo lo acciono"
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿No lo sabe usted?"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Las etiquetas se despegaron. Por eso necesito que leas el plano"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Ah. Trabajo de detective eléctrico"
+      }
+    ],
+    "choices": [],
+    "next": "bryan_s09_tablero",
+    "entry_effects": {
+      "remove_inventory": [
+        "Mesa de repuesto"
+      ]
+    }
+  },
+  {
+    "_id": "bryan_s09_tablero",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 9,
+    "title": "El plano de las luces",
+    "background": "img/escenas/BG05_salon_comunitario.png",
+    "objective": "Señala el circuito de las luces del salón.",
+    "dialogues": [
+      {
+        "character": "NARRADOR",
+        "text": "El plano indica: A → cocina; B → pasillo; C → salón. Ramiro accionará el interruptor que señales."
+      }
+    ],
+    "choices": [],
+    "puzzle": {
+      "type": "single",
+      "answer": "c",
+      "options": [
+        {
+          "id": "b",
+          "text": "B / Pasillo"
+        },
+        {
+          "id": "c",
+          "text": "C / Salón"
+        },
+        {
+          "id": "a",
+          "text": "A / Cocina"
+        }
+      ],
+      "hint": "Busca «salón» en el plano. Corresponde al circuito C.",
+      "wrong": [
+        {
+          "character": "RAMIRO",
+          "text": "Ese no, revisa el papel"
+        }
+      ],
+      "success": [
+        {
+          "character": "RAMIRO",
+          "text": "C. Muy bien"
+        },
+        {
+          "character": "BRYAN",
+          "text": "Contráteme"
+        },
+        {
+          "character": "RAMIRO",
+          "text": "No"
+        },
+        {
+          "character": "BRYAN",
+          "text": "Ni lo pensó"
+        }
+      ],
+      "next": "bryan_s09_luces"
+    }
+  },
+  {
+    "_id": "bryan_s09_luces",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 9,
+    "title": "Una luz en el pasillo",
+    "background": "img/escenas/BG05_salon_comunitario.png",
+    "objective": "Decide si te quedas a ayudar.",
+    "dialogues": [
+      {
+        "character": "NARRADOR",
+        "text": "Las luces encienden. Por un instante, una luz del pasillo parece seguir encendida aunque Ramiro apaga B. Al volver a mirar, está apagada."
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿No se había quedado prendida aquella?"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "¿Cuál?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "La del pasillo"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Está apagada"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Sí… ya vi"
+      },
+      {
+        "character": "RAMIRO",
+        "text": "¿Te encuentras bien?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Desde que salí de mi casa, no mucho"
+      }
+    ],
+    "choices": [
+      {
+        "id": "ayudar",
+        "text": "Quedarse a ayudar a acomodar",
+        "next": "bryan_s10",
+        "effects": {
+          "set": {
+            "ayudo_fiesta": true
+          },
+          "responsibility": 1
+        }
+      },
+      {
+        "id": "marcharse",
+        "text": "Pedir permiso para irse",
+        "next": "bryan_s10",
+        "effects": {
+          "set": {
+            "ayudo_fiesta": false
+          }
+        }
+      }
+    ]
+  },
+  {
+    "_id": "bryan_s10",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 10,
+    "title": "La fiesta",
+    "background": "img/escenas/BG05_salon_comunitario.png",
+    "objective": "Comparte un momento con Mamá.",
+    "dialogues": [
+      {
+        "character": "MAMÁ",
+        "text": "Gracias por quedarte. Sé que no tenías ganas",
+        "when": {
+          "ayudo_fiesta": true
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Las ganas se me acabaron a las diez treinta y siete",
+        "when": {
+          "ayudo_fiesta": true
+        }
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Pero ayudaste",
+        "when": {
+          "ayudo_fiesta": true
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "No lo repitas mucho. Van a empezar a pedirme cosas",
+        "when": {
+          "ayudo_fiesta": true
+        }
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Toma, come algo",
+        "when": {
+          "ayudo_fiesta": true
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Ahora sí estamos hablando",
+        "when": {
+          "ayudo_fiesta": true
+        }
+      },
+      {
+        "character": "MAMÁ",
+        "text": "¿Ya te vas?",
+        "when": {
+          "ayudo_fiesta": false
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Creo que he cumplido mi condena",
+        "when": {
+          "ayudo_fiesta": false
+        }
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Está bien. Gracias por traer la mesa",
+        "when": {
+          "ayudo_fiesta": false
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "La primera o la segunda?",
+        "when": {
+          "ayudo_fiesta": false
+        }
+      },
+      {
+        "character": "MAMÁ",
+        "text": "No empieces",
+        "when": {
+          "ayudo_fiesta": false
+        }
+      }
+    ],
+    "choices": [
+      {
+        "id": "historia",
+        "text": "Preguntar por la historia del salón",
+        "response": [
+          {
+            "character": "BRYAN",
+            "text": "Oye, ma, ¿siempre se han hecho fiestas aquí?"
+          },
+          {
+            "character": "MAMÁ",
+            "text": "Desde hace muchísimo. Tu abuela vino una vez. Tengo una foto guardada"
+          },
+          {
+            "character": "BRYAN",
+            "text": "¿Y salía la misma mesa?"
+          },
+          {
+            "character": "MAMÁ",
+            "text": "No me sorprendería"
+          },
+          {
+            "character": "BRYAN",
+            "text": "De hecho, vi una foto vieja en el almacén. Creo que decía 1987",
+            "when": {
+              "foto_encontrada": true
+            }
+          },
+          {
+            "character": "MAMÁ",
+            "text": "Puede ser de cuando vino tu abuela. Luego te enseño la nuestra",
+            "when": {
+              "foto_encontrada": true
+            }
+          }
+        ],
+        "once": true
+      },
+      {
+        "id": "gracias",
+        "text": "Gracias por la comida",
+        "next": "bryan_despedida",
+        "response": [
+          {
+            "character": "MAMÁ",
+            "text": "De nada, hijo"
+          }
+        ]
+      },
+      {
+        "id": "favores",
+        "text": "No vuelvas a pedirme esto",
+        "next": "bryan_despedida",
+        "response": [
+          {
+            "character": "MAMÁ",
+            "text": "Hasta la próxima semana, entonces"
+          }
+        ]
+      },
+      {
+        "id": "quiero",
+        "text": "Te quiero, ma",
+        "next": "bryan_despedida",
+        "response": [
+          {
+            "character": "MAMÁ",
+            "text": "Yo también, aunque rompas mesas"
+          }
+        ]
+      }
+    ],
+    "theme": "warm"
+  },
+  {
+    "_id": "bryan_despedida",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 10,
+    "title": "Antes de volver a casa",
+    "background": "img/escenas/BG05_salon_comunitario.png",
+    "objective": "Regresa a casa.",
+    "dialogues": [
+      {
+        "character": "MAMÁ",
+        "text": "Gracias, en serio. Hoy me salvaste",
+        "when": {
+          "final": "A"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿Aunque rompí la primera mesa?",
+        "when": {
+          "final": "A"
+        }
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Aunque rompiste la primera mesa",
+        "when": {
+          "final": "A"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Voy a ponerlo en mi currículum",
+        "when": {
+          "final": "A"
+        }
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Te enojaste todo el día, pero gracias por venir",
+        "when": {
+          "final": "B"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "La próxima vez contraten un camión",
+        "when": {
+          "final": "B"
+        }
+      },
+      {
+        "character": "MAMÁ",
+        "text": "La próxima vez te aviso con más tiempo",
+        "when": {
+          "final": "B"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Eso dijiste la última vez",
+        "when": {
+          "final": "B"
+        }
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Antes de irte, recoge esas sillas",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿Y si fingimos que no las vemos?",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Recógelas",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Lo intenté",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Oiga, ¿desde cuándo trabaja aquí?",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Desde hace mucho",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿Cuánto es mucho?",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Más de lo que parece",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Qué respuesta tan rara",
+        "when": {
+          "final": "C"
+        }
+      },
+      {
+        "character": "RAMIRO",
+        "text": "Tú preguntaste raro",
+        "when": {
+          "final": "C"
+        }
+      }
+    ],
+    "choices": [],
+    "next": "bryan_s11",
+    "calculate_final": true,
+    "theme": "warm"
+  },
+  {
+    "_id": "bryan_s11",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 11,
+    "title": "Pollo y el cierre cómico",
+    "background": "img/escenas/BG02_cocina_bryan.png",
+    "objective": "Revisa cómo está Pollo.",
+    "dialogues": [
+      {
+        "character": "NARRADOR",
+        "text": "18:11. Bryan vuelve a casa."
+      },
+      {
+        "character": "DUEÑO DE LA BICICLETA",
+        "text": "¡OYE, EL DE LA MESA!",
+        "when": {
+          "bicicleta_arreglada": false
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "¡YO TAMBIÉN ESTOY SUFRIENDO!",
+        "when": {
+          "bicicleta_arreglada": false
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "He vuelto de la guerra"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Veo que a ti te fue muy bien"
+      },
+      {
+        "character": "POLLO",
+        "text": "Co-co"
+      },
+      {
+        "character": "BRYAN",
+        "text": "No sabes lo que es el sufrimiento"
+      }
+    ],
+    "choices": [
+      {
+        "id": "cena",
+        "text": "Darle de cenar a Pollo",
+        "next": "bryan_s11_mensaje",
+        "response": [
+          {
+            "character": "NARRADOR",
+            "text": "Pollo patea el plato vacío."
+          },
+          {
+            "character": "BRYAN",
+            "text": "Está bien, está bien. Primero tu cena, luego mi crisis"
+          },
+          {
+            "character": "NARRADOR",
+            "text": "Bryan sirve alimento a Pollo."
+          }
+        ],
+        "effects": {
+          "set": {
+            "pollo_alimentado": true
+          }
+        },
+        "when": {
+          "pollo_alimentado": false
+        }
+      },
+      {
+        "id": "telefono",
+        "text": "Mirar la notificación del teléfono",
+        "next": "bryan_s11_mensaje",
+        "response": [
+          {
+            "character": "NARRADOR",
+            "text": "Pollo está echado junto a la cocina."
+          },
+          {
+            "character": "BRYAN",
+            "text": "Ni un mensaje para preguntar cómo estaba. Qué amistad"
+          }
+        ],
+        "when": {
+          "pollo_alimentado": true
+        }
+      }
+    ],
+    "theme": "night"
+  },
+  {
+    "_id": "bryan_s11_mensaje",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 11,
+    "title": "Una fotografía de 1987",
+    "background": "img/escenas/BG01_dormitorio_bryan.png",
+    "objective": "Abre la fotografía que envió Mamá.",
+    "dialogues": [
+      {
+        "character": "MAMÁ",
+        "text": "Mira, encontré la foto de tu abuela en ese salón. Creo que es de 1987. ¿Ya comiste?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Mi mamá es capaz de preguntarme si comí incluso después de verme comer"
+      }
+    ],
+    "choices": [
+      {
+        "id": "abrir_foto",
+        "text": "Abrir la fotografía",
+        "next": "bryan_s11_foto"
+      }
+    ],
+    "theme": "night"
+  },
+  {
+    "_id": "bryan_s11_foto",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 11,
+    "title": "El hombre del fondo",
+    "background": "img/escenas/BG01_dormitorio_bryan.png",
+    "objective": "Observa al hombre del gafete.",
+    "dialogues": [
+      {
+        "character": "NARRADOR",
+        "text": "La fotografía muestra a tu abuela y a varios invitados en el salón. Detrás hay un hombre que se parece a Ramiro."
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿Ese no es Ramiro?"
+      }
+    ],
+    "choices": [
+      {
+        "id": "preguntar",
+        "text": "Preguntar a Mamá",
+        "next": "bryan_s11_detalle",
+        "response": [
+          {
+            "character": "BRYAN · MENSAJE",
+            "text": "¿Quién es el señor del fondo? Se parece a Ramiro"
+          },
+          {
+            "character": "MAMÁ",
+            "text": "No sé, hijo. A lo mejor su papá. ¿Por qué?"
+          }
+        ]
+      },
+      {
+        "id": "ampliar",
+        "text": "Ampliar primero",
+        "next": "bryan_s11_detalle",
+        "response": [
+          {
+            "character": "NARRADOR",
+            "text": "El gafete aparece pixelado."
+          },
+          {
+            "character": "BRYAN",
+            "text": "Qué calidad de foto, por Dios"
+          }
+        ]
+      }
+    ],
+    "theme": "night",
+    "evidence": "foto_mama"
+  },
+  {
+    "_id": "bryan_s11_detalle",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 11,
+    "title": "RAMIRO",
+    "background": "img/escenas/BG01_dormitorio_bryan.png",
+    "objective": "Lee el nombre del gafete.",
+    "dialogues": [
+      {
+        "character": "NARRADOR",
+        "text": "El gafete tiene impreso «RAMIRO»."
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿Ramiro?"
+      },
+      {
+        "character": "NARRADOR",
+        "text": "Silencio."
+      },
+      {
+        "character": "BRYAN",
+        "text": "Bueno, puede ser su papá. Se llaman igual. Eso pasa"
+      },
+      {
+        "character": "NARRADOR",
+        "text": "El teléfono vibra."
+      },
+      {
+        "character": "MAMÁ",
+        "text": "Por cierto, Ramiro dice que qué casualidad que encontraras esa foto de cuando él era joven"
+      },
+      {
+        "character": "BRYAN",
+        "text": "¿De cuando ÉL era joven?"
+      },
+      {
+        "character": "BRYAN",
+        "text": "Pero si…"
+      },
+      {
+        "character": "BRYAN",
+        "text": "¡POLLO, NO!"
+      }
+    ],
+    "choices": [],
+    "next": "bryan_epilogo",
+    "theme": "night",
+    "evidence": "gafete"
+  },
+  {
+    "_id": "bryan_epilogo",
+    "case_id": "bryan",
+    "schema_version": 2,
+    "story_version": 1,
+    "case_name": "Un favor",
+    "case_code": "CASO 001",
+    "number": 11,
+    "title": "El expediente queda abierto",
+    "background": "img/escenas/BG01_dormitorio_bryan.png",
+    "objective": "Fin del caso.",
+    "dialogues": [
+      {
+        "character": "NARRADOR",
+        "text": "Bryan compara la fotografía del almacén y la de Mamá. Son dos imágenes distintas del mismo evento; el hombre con gafete RAMIRO está en ambas.",
+        "when": {
+          "foto_encontrada": true
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Bueno… ahora sí está raro",
+        "when": {
+          "foto_encontrada": true
+        }
+      },
+      {
+        "character": "BRYAN",
+        "text": "Tal vez le estoy dando demasiadas vueltas",
+        "when": {
+          "foto_encontrada": false
+        }
+      },
+      {
+        "character": "NARRADOR",
+        "text": "La celebración salió bien. Nadie volvió a mencionar la mesa.",
+        "when": {
+          "final": "A"
+        }
+      },
+      {
+        "character": "NARRADOR",
+        "text": "Bryan llegó a casa. Su paciencia no.",
+        "when": {
+          "final": "B"
+        }
+      },
+      {
+        "character": "NARRADOR",
+        "text": "La fiesta terminó. Las deudas morales de Bryan, no.",
+        "when": {
+          "final": "C"
+        }
+      }
+    ],
+    "choices": [],
+    "theme": "night",
+    "ending": true
+  }
+]

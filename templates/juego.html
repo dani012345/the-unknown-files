@@ -1,67 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>{{ scene.case_code }} | The Unknown Files</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='juego.css') }}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Un favor · Caso 001 | The Unknown Files</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='guion-1') }}">
 </head>
-
 <body class="game-page">
+{% macro action_button(action, text, value='', css='choice-button') -%}
+<form method="post" action="{{ url_for('juego_bryan') }}" class="game-action">
+    <input type="hidden" name="csrf" value="{{ part.csrf }}">
+    <input type="hidden" name="revision" value="{{ part.revision }}">
+    <input type="hidden" name="action" value="{{ action }}">
+    <input type="hidden" name="value" value="{{ value }}">
+    <button type="submit" class="{{ css }}">{{ text }}</button>
+</form>
+{%- endmacro %}
+<main class="game-screen">
+    <header class="game-header">
+        <a href="{{ url_for('inicio') }}">← Escritorio</a>
+        <span>CASO 001 / UN FAVOR</span>
+        <span class="save-status">Guardado automático</span>
+    </header>
+    <section class="game-scene theme-{{ entry.theme }}" aria-label="{{ entry.title }}">
+        <img class="scene-background" src="{{ url_for('static',filename=entry.background) }}" alt="{{ entry.title }}">
+        {% if entry.scene_id == 'bryan_s01' %}
+            <img
+                class="scene-character"
+                src="{{ url_for('static', filename='img/personajes/bryan/bryan_somnoliento.png') }}"
+                alt="Bryan recién despierto, restregándose un ojo">
+        {% endif %}
 
-    <main class="game-screen">
-
-        <header class="game-header">
-            <span>THE UNKNOWN FILES</span>
-            <span>{{ scene.case_code }}: {{ scene.case_name }}</span>
-        </header>
-
-        <section class="game-scene">
-
-            <div class="scene-placeholder">
-                <span>{{ scene.archive_label }}</span>
-                <h1>{{ scene.title }}</h1>
-                <p>{{ scene.description }}</p>
-            </div>
-
-        </section>
-
-        <section class="game-interface">
-
-            <div class="dialogue-box">
-                <p class="character-name">{{ scene.character }}</p>
-
-                <p class="dialogue-text">
-                    {{ scene.dialogue }}
-                </p>
-            </div>
-
-            <div class="choice-panel">
-
-                <p class="choice-title">{{ scene.choice_title }}</p>
-
-                {% for choice in scene.choices %}
-                    <form action="{{ url_for('juego_bryan') }}"
-                          method="POST">
-
-                        <input type="hidden"
-                               name="scene_id"
-                               value="{{ choice.next_scene }}">
-
-                        <button class="choice-button" type="submit">
-                            {{ choice.text }}
-                        </button>
-                    </form>
-                {% endfor %}
-
-            </div>
-
-        </section>
-
-    </main>
-
-</body>
-</html>
+        <div class="scene-shade" aria-hidden="true"></div>
+        <div class="scene-objective"><span>{{ 'RELEYENDO · ' if reading else '' }}{{ entry.title }}</span><p>{{ entry.objective }}</p></div>
+        <details class="inventory-panel"><summary>Inventario · {{ part.inventory|length }}</summary>
+            <ul>{% for item in part.inventory %}<li>{{ item }}</li>{% else %}<li>Sin objetos.</li>{% endfor %}</ul>
+            <p>Responsabilidad: {{ part.flags.puntos_responsabilidad }} / 3</p>
+        </details>
+        {% if puzzle and not reading %}<div class="puzzle-card"><span>ACERTIJO</span>
+            {% if puzzle.type == 'sequence' %}<p>Objetos apartados: {{ part.puzzle_progress|length }} / {{ puzzle.sequence|length }}</p>
+            {% else %}<p>PLANO: A → cocina · B → pasillo · C → salón</p>{% endif %}
+        </div>{% endif %}
+        {% if entry.evidence %}<div class="evidence-card">
+            <span>FOTOGRAFÍA / 1987</span>
+            <p>{{ 'Detalle del gafete: RAMIRO' if entry.evidence == 'gafete' else 'El salón, una celebración y un hombre al fondo.' }}</p>
+        </div>{% endif %}
+    </section>
+    <section class="game-interface" aria-label="Diálogo y acciones">
+        <div class="dialogue-box">
+            <div class="dialogue-heading"><span class="character-name">{{ entry.character }}</span><span class="reading-label">{{ 'Solo lectura · decisiones conservadas' if reading else 'Intervención ' ~ (part.line_index+1) ~ ' / ' ~ part.lines|length }}</span></div>
+            <p class="dialogue-text">{{ entry.text }}</p>
+        </div>
+        <div class="choice-panel" aria-label="Opciones disponibles">
+        {% if reading %}
+            <p class="choice-title">ESTÁS RELEYENDO. EL AVANCE NO CAMBIA.</p>
+            {% if cursor < last %}<a class="choice-button" href="{{ url_for('juego_bryan',h=cursor+1) }}">Leer siguiente →</a>{% endif %}
+            <a class="choice-button primary" href="{{ url_for('juego_bryan') }}">Volver al presente</a>
+        {% elif can_next %}
+            {{ action_button('next','Siguiente →',css='choice-button primary') }}
+        {% elif puzzle %}
+            {% if part.needs_cleanup %}
+                {{ action_button('cleanup','Recoger las sillas caídas') }}
+            {% else %}
+                {% for option in puzzle_options %}{{ action_button('puzzle',option.text,option.id) }}{% endfor %}
+            {% endif %}
+            {{ action_button('hint','Ver pista',css='choice-button subtle') }}
+        {% elif choices %}
+            <p class="choice-title">¿QUÉ HACES?</p>
+            {% for choice in choices %}{{ action_button('choice',choice.text,choice.id) }}{% endfor %}
+        {% elif part.complete %}
+            <p class="ending-label">FINAL {{ part.flags.final }} · {{ final_names[part.flags.final] }}</p>
+            <a class="choice-button primary" href="{{ url_for('bryan.history') }}">Leer el historial de esta partida</a>
+            <form method="post" action="{{ url_for('juego_bryan') }}" class="restart-form">
+                <input type="hidden" name="csrf" value="{{ part.csrf }}"><input type="hidden" name="revision" value="{{ part.revision }}"><input type="hidden" name="action" value="restart">
+                <button class="choice-button" type="submit">Empezar otra partida</button>
+            </form>
+        {% endif %}
+        </div>
+    </section>
+    <nav class="game-controls" aria-label="Lectura y navegación">
+        {% if cursor > 0 %}<a href="{{ url_for('juego_bryan',h=cursor-1) }}">← Diálogo anterior</a>{% else %}<span aria-disabled="true">← Diálogo anterior</span>{% endif %}
+        <a href="{{ url_for('bryan.history') }}">Historial</a>
+        <button type="button" data-open-pause>Pausa</button>
+        <span class="history-count">{{ cursor+1 }} / {{ last+1 }} registros</span>
+    </nav>
+</main>
+<dialog class="pause-dialog" id="pause-dialog" aria-labelledby="pause-title">
+    <h2 id="pause-title">Partida en pausa</h2><p>Tu avance ya está guardado en MongoDB. Puedes continuar aquí desde este navegador.</p>
+    <form method="dialog"><button class="choice-button primary">Continuar</button></form>
+    <a class="choice-button" href="{{ url_for('inicio') }}">Volver al escritorio</a>
+</dialog>
+<script defer src="{{ url_for('static',filename='juego.js',v='guion-1') }}"></script>
+</body></html>

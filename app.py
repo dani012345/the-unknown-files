@@ -4,6 +4,7 @@ from pymongo.errors import PyMongoError
 from bson import ObjectId
 from datetime import datetime
 import os
+from bryan_game import create_game_blueprint
 
 
 app = Flask(__name__)
@@ -19,6 +20,10 @@ cliente = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
 
 base_datos = cliente["the_unknown_files"]
 alumnos = base_datos["casos"]
+escenas = base_datos["escenas"]
+
+bryan_blueprint, jugar_bryan = create_game_blueprint(base_datos)
+app.register_blueprint(bryan_blueprint)
 
 def leer_formulario(datos=None):
     if datos is None:
@@ -48,107 +53,13 @@ def buscar_alumno(id):
         abort(404, description="Este alumno ya no existe.")
     return alumno
 
-ESCENAS_JUEGO = {
-    "bryan_inicio": {
-        "case_code": "CASO 001",
-        "case_name": "BRYAN",
-        "archive_label": "ARCHIVO 001",
-        "title": "BRYAN",
-        "description": "La historia está a punto de comenzar...",
-        "character": "BRYAN",
-        "dialogue": (
-            "Bueno... ¿vas a quedarte ahí mirando "
-            "o piensas ayudarme?"
-        ),
-        "choice_title": "¿QUÉ HACES?",
-        "choices": [
-            {
-                "text": "Preguntarle qué pasó.",
-                "next_scene": "bryan_pregunta"
-            },
-            {
-                "text": "Revisar lo que hay alrededor.",
-                "next_scene": "bryan_investigar"
-            },
-            {
-                "text": "Dejar que Bryan siga hablando solo.",
-                "next_scene": "bryan_ignorar"
-            }
-        ]
-    },
-
-    "bryan_pregunta": {
-        "case_code": "CASO 001",
-        "case_name": "BRYAN",
-        "archive_label": "ARCHIVO 001-A",
-        "title": "UNA EXPLICACIÓN",
-        "description": "Escena provisional",
-        "character": "BRYAN",
-        "dialogue": "Te dije que algo no estaba bien...",
-        "choice_title": "¿CÓMO RESPONDES?",
-        "choices": [
-            {
-                "text": "Pedirle más detalles.",
-                "next_scene": "bryan_inicio"
-            },
-            {
-                "text": "Volver a observar el lugar.",
-                "next_scene": "bryan_investigar"
-            }
-        ]
-    },
-
-    "bryan_investigar": {
-        "case_code": "CASO 001",
-        "case_name": "BRYAN",
-        "archive_label": "EVIDENCIA 001-B",
-        "title": "ALGO FUERA DE LUGAR",
-        "description": "Escena provisional",
-        "character": "SISTEMA",
-        "dialogue": "No parece haber nada extraño a simple vista.",
-        "choice_title": "¿QUÉ HACES?",
-        "choices": [
-            {
-                "text": "Regresar con Bryan.",
-                "next_scene": "bryan_inicio"
-            },
-            {
-                "text": "Preguntarle por la evidencia.",
-                "next_scene": "bryan_pregunta"
-            }
-        ]
-    },
-
-    "bryan_ignorar": {
-        "case_code": "CASO 001",
-        "case_name": "BRYAN",
-        "archive_label": "REGISTRO 001-C",
-        "title": "SILENCIO",
-        "description": "Escena provisional",
-        "character": "BRYAN",
-        "dialogue": "¿En serio? Está bien. Como quieras...",
-        "choice_title": "¿QUÉ HACES AHORA?",
-        "choices": [
-            {
-                "text": "Hablar con Bryan.",
-                "next_scene": "bryan_pregunta"
-            },
-            {
-                "text": "Investigar el lugar.",
-                "next_scene": "bryan_investigar"
-            }
-        ]
-    }
-}
-
 @app.route("/")
-@app.route("/portada")
 def portada():
     return render_template("portada.html")
 
 @app.route("/inicio")
 def inicio():
-    return render_template("index.html")
+    return render_template("inicio.html")
 
 @app.route("/taller")
 def taller():
@@ -157,14 +68,7 @@ def taller():
 
 @app.route("/caso/bryan", methods=["GET", "POST"])
 def juego_bryan():
-    if request.method == "POST":
-        escena_id = request.form.get("scene_id", "bryan_inicio")
-    else:
-        escena_id = "bryan_inicio"
-    escena = ESCENAS_JUEGO.get(escena_id)
-    if escena is None:
-        escena = ESCENAS_JUEGO["bryan_inicio"]
-    return render_template("juego.html", scene=escena)
+    return jugar_bryan()
 
 @app.route("/agregar", methods=["POST"])
 def agregar():

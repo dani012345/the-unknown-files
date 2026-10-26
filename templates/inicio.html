@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block titulo %}Escritorio | The Unknown Files{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='papel-pintado-4') }}">{% endblock %}
+{% block clase_body %}archivo-juegos{% endblock %}
+{% block encabezado %}{% endblock %}
+{% block contenido %}
+<section class="office-scene" aria-labelledby="office-title">
+    <header class="office-heading">
+        <div><p class="desk-kicker">DEPARTAMENTO DE INVESTIGACIÓN / ARCHIVO CENTRAL</p>
+        <h1 id="office-title">Cada archivo, una historia.</h1></div>
+        <p>Toca un expediente para levantarlo.</p>
+    </header>
+    <div class="office-viewport">
+        <div class="office-camera">
+            <div class="office-world">
+                {# Única ruta del fondo. Imagen y zonas pulsables se mueven juntas. #}
+                <img class="office-image" src="{{ url_for('static', filename='img/oficina-abandonada.png') }}"
+                     width="1672" height="941" fetchpriority="high"
+                     alt="Escritorio de investigación con el expediente de Bryan a la izquierda y el registro general a la derecha.">
+                <a class="office-hotspot office-hotspot--bryan" href="{{ url_for('juego_bryan') }}"
+                   data-document="bryan-document" aria-label="Levantar el expediente de Bryan">
+                    <span>Un favor · Levantar expediente</span>
+                </a>
+                <a class="office-hotspot office-hotspot--registry" href="{{ url_for('taller') }}"
+                   data-document="registry-document" aria-label="Levantar el registro general de casos">
+                    <span>Otros archivos · Levantar registro</span>
+                </a>
+            </div>
+        </div>
+        <button class="skip-approach" type="button" hidden>Omitir acercamiento · Esc</button>
+        <p class="office-hint" role="status">Elige una de las dos carpetas sobre la mesa.</p>
+    </div>
+    <nav class="office-shortcuts" aria-label="Expedientes del escritorio">
+        <a href="{{ url_for('juego_bryan') }}" data-document="bryan-document">Expediente 001 / Bryan <span aria-hidden="true">↗</span></a>
+        <a href="{{ url_for('taller') }}" data-document="registry-document">Registro general / Otros archivos <span aria-hidden="true">↗</span></a>
+    </nav>
+</section>
+<noscript><p class="office-noscript">Puedes usar los enlaces de los expedientes para entrar al juego o al registro.</p></noscript>
+
+<dialog id="bryan-document" class="document-view" aria-labelledby="bryan-title">
+    <div class="document-toolbar"><button type="button" data-close-document autofocus>← Dejar expediente en la mesa</button></div>
+    <div class="document-carrier"><article class="bryan-folder">
+        <div class="folder-tab">EXPEDIENTE 001</div>
+        <span class="folder-backing" aria-hidden="true"></span>
+        <div class="folder-paper">
+            <header class="document-header">
+                <div>
+                    <p class="document-brand">THE UNKNOWN FILES</p>
+                    <p class="document-internal">ARCHIVO INTERNO · NO DISTRIBUIR</p>
+                </div>
+                <div class="document-code"><span>CÓDIGO DE ARCHIVO</span><strong>UF / 001</strong></div>
+            </header>
+            <div class="document-title">
+                <p class="file-category"><span>TIPO DE ARCHIVO</span> HISTORIA INTERACTIVA · ORIGINAL</p>
+                <h2 id="bryan-title">Un favor</h2>
+                <p class="file-subtitle">Un mal día. Demasiadas coincidencias.</p>
+            </div>
+            <dl class="document-metadata">
+                <div><dt>SUJETO</dt><dd>BRYAN</dd></div>
+                <div><dt>PRIMER REGISTRO</dt><dd>07:13 AM</dd></div>
+            </dl>
+            <section class="file-excerpt" aria-label="Resumen del expediente Bryan">
+                <h3 class="document-label">RESUMEN DEL CASO</h3>
+                <p>Bryan despertó tarde. Tiene 15 llamadas perdidas de su mamá. Su celular tiene <span class="document-circled">4%</span>.</p>
+                <p>Y, por alguna razón, esta el pollo en su habitación.</p>
+            </section>
+            <div class="document-margin-note">Revisar las coincidencias.</div>
+            <div class="document-classification">
+                <div><span class="document-label">NIVEL DE ACCESO</span><strong>USO INTERNO</strong></div>
+                <span class="document-redaction" aria-hidden="true"></span>
+            </div>
+            <div class="file-bottomline">
+                <span class="file-stamp">SIN RESOLVER</span>
+                <a class="consultar-archivo" href="{{ url_for('juego_bryan') }}">Consultar archivo <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="document-footer"><span>DOCUMENTO / UF-001-A</span><span>FOLIO 01</span></div>
+        </div>
+    </article></div>
+    <div class="document-note"><aside class="desk-note" aria-label="Nota del investigador">
+        <span class="note-pin" aria-hidden="true"></span>
+        <p class="note-label">NOTA INTERNA / 001</p>
+        <p>La organización recomienda no atacar al pollo hasta identificar su nivel de peligro.</p>
+        <span class="note-annotation">Revisar antes de las 08:00.</span>
+        <span class="note-signature">— Departamento de investigación</span>
+    </aside></div>
+</dialog>
+<dialog id="registry-document" class="document-view" aria-labelledby="registry-title">
+    <div class="document-toolbar"><button type="button" data-close-document autofocus>← Dejar registro en la mesa</button></div>
+    <div class="document-carrier"><article class="bryan-folder registry-folder" aria-labelledby="registry-title">
+            <div class="folder-tab">REGISTRO GENERAL</div>
+            <span class="folder-backing" aria-hidden="true"></span>
+            <div class="folder-paper">
+                <header class="document-header">
+                    <div><p class="document-brand">U.F. / ARCHIVO</p><p class="document-internal">REGISTRO GENERAL</p></div>
+                    <div class="document-code"><span>VOLUMEN</span><strong>II</strong></div>
+                </header>
+                <div class="document-title">
+                    <p class="file-category"><span>CONTENIDO</span> ÍNDICE DE EXPEDIENTES</p>
+                    <h2 id="registry-title">Otros archivos</h2>
+                </div>
+                <section class="registry-description" aria-label="Descripción del registro">
+                    <h3 class="document-label">NOTAS DEL ARCHIVO</h3>
+                    <p>Cada historia comienza con un registro. Consulta y organiza los demás casos del archivo.</p>
+                </section>
+                <div class="document-classification"><span class="document-label">REGISTROS / CONSULTA Y EDICIÓN</span></div>
+                <div class="file-bottomline">
+                    <a class="consultar-archivo" href="{{ url_for('taller') }}">Abrir registro <span aria-hidden="true">↗</span></a>
+                </div>
+                <div class="document-footer"><span>ÍNDICE / UF-RG</span><span>FOLIO 02</span></div>
+            </div>
+        </article></div>
+</dialog>
+<script defer src="{{ url_for('static', filename='inicio.js', v='escritorio-3') }}"></script>
+{% endblock %}
