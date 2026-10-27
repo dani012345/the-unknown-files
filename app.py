@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, url_for, abort, jsonify
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from bson import ObjectId
@@ -52,6 +52,95 @@ def buscar_alumno(id):
     if alumno is None:
         abort(404, description="Este alumno ya no existe.")
     return alumno
+# ---------- API REST: CASOS ----------
+
+ESTADOS_VALIDOS = ["Disponible", "Bloqueado", "Completado"]
+
+
+def caso_a_json(caso):
+    return {
+        "id": str(caso["_id"]),
+        "nombre": caso["nombre"],
+        "categoria": caso["categoria"],
+        "estado": caso["estado"]
+    }
+
+
+def validar_json_api():
+    datos = request.get_json(silent=True)
+
+    if not isinstance(datos, dict):
+        return None, (jsonify(error="Envía un objeto JSON válido."), 400)
+
+    campos = ("nombre", "categoria", "estado")
+
+    if any(not isinstance(datos.get(campo), str) for campo in campos):
+        return None, (jsonify(error="Los campos deben contener texto."), 400)
+
+    nombre = datos["nombre"].strip()
+    categoria = datos["categoria"].strip()
+    estado = datos["estado"].strip()
+
+    if not nombre or not categoria or not estado:
+        return None, (jsonify(error="Todos los campos son obligatorios."), 400)
+
+    if len(nombre) > 80 or len(categoria) > 20:
+        return None, (jsonify(error="Máximo: nombre 80 y categoría 20 caracteres."), 400)
+
+    if estado not in ESTADOS_VALIDOS:
+        return None, (jsonify(error="Estado inválido. Usa Disponible, Bloqueado o Completado."), 400)
+
+    return {
+        "nombre": nombre,
+        "categoria": categoria,
+        "estado": estado
+    }, None
+
+
+@app.route("/api/casos", methods=["GET"])
+def api_listar_casos():
+    casos = alumnos.find().sort("nombre", 1)
+    return jsonify([caso_a_json(caso) for caso in casos]), 200
+
+
+@app.route("/api/casos", methods=["POST"])
+def api_crear_caso():
+    datos, error = validar_json_api()
+    if error:
+        return error
+
+    resultado = alumnos.insert_one(datos)
+    caso = alumnos.find_one({"_id": resultado.inserted_id})
+
+    return jsonify(caso_a_json(caso)), 201
+
+
+@app.route("/api/casos/<id>", methods=["GET", "PUT", "DELETE"])
+def api_detalle_caso(id):
+    if not ObjectId.is_valid(id):
+        return jsonify(error="El ID del caso no es válido."), 404
+
+    object_id = ObjectId(id)
+    caso = alumnos.find_one({"_id": object_id})
+
+    if caso is None:
+        return jsonify(error="No se encontró el caso solicitado."), 404
+
+    if request.method == "GET":
+        return jsonify(caso_a_json(caso)), 200
+
+    if request.method == "PUT":
+        datos, error = validar_json_api()
+        if error:
+            return error
+
+        alumnos.update_one({"_id": object_id}, {"$set": datos})
+        caso_actualizado = alumnos.find_one({"_id": object_id})
+
+        return jsonify(caso_a_json(caso_actualizado)), 200
+
+    alumnos.delete_one({"_id": object_id})
+    return jsonify(mensaje="Caso eliminado correctamente.", id=id), 200
 
 @app.route("/")
 def portada():
