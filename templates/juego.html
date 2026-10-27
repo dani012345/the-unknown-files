@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Un favor · Caso 001 | The Unknown Files</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='guion-1') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='controles-v2') }}">
 </head>
 <body class="game-page">
 {% macro action_button(action, text, value='', css='choice-button') -%}
@@ -16,24 +16,37 @@
     <button type="submit" class="{{ css }}">{{ text }}</button>
 </form>
 {%- endmacro %}
-<main class="game-screen">
-    <header class="game-header">
-        <a href="{{ url_for('inicio') }}">← Escritorio</a>
-        <span>CASO 001 / UN FAVOR</span>
-        <span class="save-status">Guardado automático</span>
-    </header>
-    <section class="game-scene theme-{{ entry.theme }}" aria-label="{{ entry.title }}">
-        <img class="scene-background" src="{{ url_for('static',filename=entry.background) }}" alt="{{ entry.title }}">
-        {% if entry.scene_id == 'bryan_s01' %}
-            <img
-                class="scene-character"
-                src="{{ url_for('static', filename='img/personajes/bryan/bryan_somnoliento.png') }}"
-                alt="Bryan recién despierto, restregándose un ojo">
+{% set narrator_line = entry.character|upper in ['NARRADOR', 'NARRACIÓN', 'NARRACION'] %}
+{% set is_prompt = entry.character|upper == 'PISTA' %}
+{% set indoor_bryan = entry.scene_id in ['bryan_s01','bryan_s01_mensaje'] %}
+{% set bedroom_shot = entry.scene_id in ['bryan_s01','bryan_s01_mensaje','bryan_s11_mensaje','bryan_s11_foto','bryan_s11_detalle','bryan_epilogo'] %}
+{% set shot = 'bed' if bedroom_shot and entry.character == 'BRYAN' else 'detail' if entry.evidence or is_prompt else 'wide' if narrator_line else 'medium' %}
+{# Navegación de solo lectura. Se buscan únicamente diálogos, no acciones ni elecciones.
+   Ninguno de estos enlaces envía un POST ni afecta las decisiones guardadas. #}
+{% set retro = namespace(anterior=none, siguiente=none, escena=none) %}
+{% for item in part.history %}
+    {% if item.kind == 'dialogue' %}
+        {% if loop.index0 < cursor %}
+            {% set retro.anterior = loop.index0 %}
+            {% if item.scene_id != entry.scene_id %}{% set retro.escena = loop.index0 %}{% endif %}
+        {% elif loop.index0 > cursor and retro.siguiente is none %}
+            {% set retro.siguiente = loop.index0 %}
         {% endif %}
-
+    {% endif %}
+{% endfor %}
+{# En decisiones y acertijos activos no aparece ninguna acción de retroceso. #}
+{% set hay_decision = not reading and not can_next and (puzzle or choices) %}
+{% set puede_retroceder = entry.kind == 'dialogue' and not hay_decision and retro.anterior is not none %}
+<main class="game-screen{{ ' has-dialogue-back' if puede_retroceder else '' }}">
+    <section class="game-scene theme-{{ entry.theme }} shot-{{ shot }}" aria-label="{{ entry.title }}">
+        <img class="scene-background" src="{{ url_for('static',filename=entry.background) }}" alt="{{ entry.title }}">
+        {% if indoor_bryan and entry.character == 'BRYAN' %}
+          {# Primer plano ilustrado, NO sprite de cuerpo completo: respeta la perspectiva del cuarto. #}
+          <img class="scene-character portrait-bryan" src="{{ url_for('static', filename='img/personajes/bryan/bryan_somnoliento.png') }}" alt="Retrato de Bryan" loading="eager">
+        {% endif %}
         <div class="scene-shade" aria-hidden="true"></div>
-        <div class="scene-objective"><span>{{ 'RELEYENDO · ' if reading else '' }}{{ entry.title }}</span><p>{{ entry.objective }}</p></div>
-        <details class="inventory-panel"><summary>Inventario · {{ part.inventory|length }}</summary>
+        <details class="scene-objective"><summary>Objetivo <span aria-hidden="true">⌄</span></summary><p>{{ entry.objective }}</p></details>
+        <details class="inventory-panel"><summary>Objetos · {{ part.inventory|length }}</summary>
             <ul>{% for item in part.inventory %}<li>{{ item }}</li>{% else %}<li>Sin objetos.</li>{% endfor %}</ul>
             <p>Responsabilidad: {{ part.flags.puntos_responsabilidad }} / 3</p>
         </details>
@@ -46,15 +59,34 @@
             <p>{{ 'Detalle del gafete: RAMIRO' if entry.evidence == 'gafete' else 'El salón, una celebración y un hombre al fondo.' }}</p>
         </div>{% endif %}
     </section>
+    <header class="game-header" aria-label="Controles de la partida">
+        <a class="game-home" href="{{ url_for('inicio') }}" title="Regresar al escritorio">← <span>Escritorio</span></a>
+        <span class="game-case-label">CASO 001 · UN FAVOR</span>
+        <div class="game-header-actions">
+            <span class="save-status" title="Tu progreso se guarda automáticamente">● Guardado automático</span>
+            <details class="game-menu">
+                <summary title="Abrir opciones del juego" aria-label="Abrir opciones del juego">
+                    <span class="menu-glyph" aria-hidden="true">☰</span><span>Menú</span>
+                </summary>
+                <nav class="game-menu-content" aria-label="Opciones del juego">
+                    <a href="{{ url_for('bryan.history') }}">Historial de diálogos</a>
+                    <button type="button" data-open-pause>Pausar partida</button>
+                </nav>
+            </details>
+        </div>
+    </header>
     <section class="game-interface" aria-label="Diálogo y acciones">
-        <div class="dialogue-box">
-            <div class="dialogue-heading"><span class="character-name">{{ entry.character }}</span><span class="reading-label">{{ 'Solo lectura · decisiones conservadas' if reading else 'Intervención ' ~ (part.line_index+1) ~ ' / ' ~ part.lines|length }}</span></div>
+        <div class="dialogue-box {{ 'dialogue-box--narration' if narrator_line else 'dialogue-box--hint' if is_prompt else 'dialogue-box--character' }}">
+            <div class="dialogue-heading">
+                {% if not narrator_line %}<span class="character-name">{{ 'PISTA' if is_prompt else entry.character }}</span>{% endif %}
+                {% if reading %}<span class="reading-label">RELEYENDO · SIN CAMBIAR LA PARTIDA</span>{% endif %}
+            </div>
             <p class="dialogue-text">{{ entry.text }}</p>
         </div>
         <div class="choice-panel" aria-label="Opciones disponibles">
         {% if reading %}
-            <p class="choice-title">ESTÁS RELEYENDO. EL AVANCE NO CAMBIA.</p>
-            {% if cursor < last %}<a class="choice-button" href="{{ url_for('juego_bryan',h=cursor+1) }}">Leer siguiente →</a>{% endif %}
+            <p class="choice-title">LECTURA ANTERIOR · NO MODIFICA TU PARTIDA</p>
+            {% if retro.siguiente is not none %}<a class="choice-button" href="{{ url_for('juego_bryan',h=retro.siguiente) }}">Leer siguiente →</a>{% endif %}
             <a class="choice-button primary" href="{{ url_for('juego_bryan') }}">Volver al presente</a>
         {% elif can_next %}
             {{ action_button('next','Siguiente →',css='choice-button primary') }}
@@ -78,17 +110,23 @@
         {% endif %}
         </div>
     </section>
-    <nav class="game-controls" aria-label="Lectura y navegación">
-        {% if cursor > 0 %}<a href="{{ url_for('juego_bryan',h=cursor-1) }}">← Diálogo anterior</a>{% else %}<span aria-disabled="true">← Diálogo anterior</span>{% endif %}
-        <a href="{{ url_for('bryan.history') }}">Historial</a>
-        <button type="button" data-open-pause>Pausa</button>
-        <span class="history-count">{{ cursor+1 }} / {{ last+1 }} registros</span>
+    {% if puede_retroceder %}
+    <nav class="game-quickbar" aria-label="Volver a diálogos anteriores">
+        <a class="game-dialogue-back" href="{{ url_for('juego_bryan',h=retro.anterior) }}" title="Releer el diálogo anterior sin cambiar puntos ni decisiones">
+            <span aria-hidden="true">↶</span> Diálogo anterior
+        </a>
+        {% if retro.escena is not none %}
+        <a class="game-dialogue-back game-scene-back" href="{{ url_for('juego_bryan',h=retro.escena) }}" title="Revisar la escena anterior sin modificar las elecciones">
+            <span aria-hidden="true">‹</span> Escena anterior
+        </a>
+        {% endif %}
     </nav>
+    {% endif %}
 </main>
 <dialog class="pause-dialog" id="pause-dialog" aria-labelledby="pause-title">
     <h2 id="pause-title">Partida en pausa</h2><p>Tu avance ya está guardado en MongoDB. Puedes continuar aquí desde este navegador.</p>
     <form method="dialog"><button class="choice-button primary">Continuar</button></form>
     <a class="choice-button" href="{{ url_for('inicio') }}">Volver al escritorio</a>
 </dialog>
-<script defer src="{{ url_for('static',filename='juego.js',v='guion-1') }}"></script>
+<script defer src="{{ url_for('static',filename='juego.js',v='controles-v2') }}"></script>
 </body></html>

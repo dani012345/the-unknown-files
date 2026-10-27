@@ -1,0 +1,24 @@
+THE UNKNOWN FILES — PARCHE DE CONTROLES (v2)
+
+BASE: The_Unknown_Files_Interfaz_Actualizada.zip (la versión con la interfaz nueva).
+
+INSTALACIÓN SOBRE TU CARPETA ACTUAL:
+1. Cierra Flask temporalmente y crea una copia de seguridad.
+2. Abre tu proyecto, dentro de la carpeta the-unknown-files, donde están app.py, templates y static.
+3. Copia de este ZIP las carpetas templates y static SOBRE las del proyecto.
+4. Acepta reemplazar SOLO los archivos templates/juego.html y static/juego.css.
+5. Arranca Flask y presiona Ctrl+F5 para limpiar la caché del navegador.
+
+CAMBIOS:
+- Menú visible arriba a la derecha con HISTORIAL y PAUSA.
+- Escritorio sigue arriba a la izquierda (sin duplicarlo dentro del menú).
+- Botón DIÁLOGO ANTERIOR, pequeño, abajo a la izquierda; ESCENA ANTERIOR cuando existe.
+- Retroceso mediante enlaces de lectura / GET (?h=), sin alterar decisiones, puntos o guardados.
+- Retroceso no aparece al elegir opciones, resolver acertijos o releer una elección.
+- No se muestra numeración de intervenciones.
+- Tamaños ajustados a escritorio y móvil horizontal.
+
+NO MODIFICADOS: app.py, bryan_game.py, data/caso_bryan.json, MongoDB, imágenes, texto del guion, escena de los expedientes.
+
+NOTA: Si trabajas con una versión más reciente del código que NO sea la enviada anteriormente,
+compara estos dos archivos antes de sobreescribir: este parche parte de la interfaz modificada anterior.

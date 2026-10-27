@@ -7,4 +7,4 @@ __pycache__/
 !.env.example
 .DS_Store
 *.log
-*.zip
+*.zip.local_flask_secret

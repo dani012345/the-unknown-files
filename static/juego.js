@@ -1,7 +1,14 @@
 /* La historia se valida en Python. Este archivo solo mejora los controles. */
 (() => {
     const pause = document.getElementById('pause-dialog');
-    document.querySelector('[data-open-pause]')?.addEventListener('click', () => pause?.showModal());
+    const menu = document.querySelector('.game-menu');
+    document.addEventListener('pointerdown', event => {
+        if (menu?.open && !menu.contains(event.target)) menu.open = false;
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && menu?.open) menu.open = false;
+    });
+    document.querySelector('[data-open-pause]')?.addEventListener('click', () => { if (menu) menu.open = false; pause?.showModal(); });
     document.querySelectorAll('.restart-form').forEach(form => form.addEventListener('submit', event => {
         if (!confirm('¿Empezar una nueva partida? La actual quedará archivada y la nueva comenzará desde el principio.')) event.preventDefault();
     }));

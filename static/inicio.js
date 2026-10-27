@@ -23,7 +23,7 @@
         skip.hidden = false;
         approach = camera.animate([
             { transform: 'scale(1) translateY(0)' },
-            { transform: 'scale(1.16) translateY(-2%)' }
+            { transform: window.matchMedia('(max-width: 700px)').matches ? 'scale(1.14) translateY(1%)' : 'scale(1.245) translateY(1%)' }
         ], { duration: 2600, easing: 'cubic-bezier(.22,.5,.25,1)' });
         approach.finished.then(stopApproach, () => {});
     }

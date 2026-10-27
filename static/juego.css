@@ -106,3 +106,168 @@ a:focus-visible,button:focus-visible,summary:focus-visible { outline: 2px solid 
         max-width: 76%;
     }
 }
+
+/* ========= Interfaz cinematográfica ligera: sin barras sólidas fuera de la escena ========= */
+.game-page { background: #161310; overflow: hidden; }
+.game-screen { position: relative; display: block; width: 100%; height: 100svh; min-height: 440px; overflow: hidden; isolation: isolate; }
+.game-scene { position: absolute; inset: 0; overflow: hidden; min-height: 0; }
+.scene-background { inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; transform: scale(1.02); transition: transform .6s ease, filter .6s ease; }
+.shot-wide .scene-background { transform: scale(1.02); transform-origin: center; }
+.shot-medium .scene-background { transform: scale(1.105); transform-origin: 56% 48%; }
+.shot-bed .scene-background { transform: scale(1.15); transform-origin: 29% 55%; }
+.shot-detail .scene-background { transform: scale(1.17); transform-origin: 58% 46%; }
+.scene-shade { background: linear-gradient(to bottom, #08060460, transparent 22%,transparent 46%,#08060435 73%,#080604a3); }
+.scene-character.portrait-bryan {
+    position: absolute; right: clamp(5%,9vw,16%); left: auto; bottom: -3%;
+    height: min(80%,740px); width: auto; max-width: min(39vw,450px);
+    object-fit: contain; object-position: bottom center;
+    z-index: 1; pointer-events: none;
+    filter: drop-shadow(1px 8px 14px #130d0d88);
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 12%, #000 100%);
+    mask-image: linear-gradient(to top, transparent 0%, #000 12%, #000 100%);
+}
+/* Al no existir imagen de cuerpo entero, Bryan aparece como primer plano cinematográfico. */
+.game-header {
+    position: absolute; z-index: 10; top: clamp(10px,1.6vw,22px); left: clamp(10px,1.8vw,28px); right: clamp(10px,1.8vw,28px);
+    min-height: 0; display: flex; align-items: center; justify-content: space-between;
+    gap: .7rem; padding: 0; background: transparent; border: 0;
+    font: .64rem/1.35 Consolas,monospace; letter-spacing: .09em; pointer-events: none;
+}
+.game-header > * { pointer-events: auto; }
+.game-home,.game-back,.game-menu summary { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; background: #211b16c7; color: #f1e4cc; border: 1px solid #e5c8994d; border-radius: 7px; padding: .48rem .75rem; box-shadow: 0 2px 9px #0005; backdrop-filter: blur(5px); }
+.game-home:hover,.game-back:hover,.game-menu summary:hover { background: #36291be8; color: #fff6e4; }
+.game-home { text-decoration: none; }
+.game-case-label { padding: .47rem .75rem; border-radius: 7px; background: #211b168a; color: #f3e6d0; text-shadow: 0 1px 8px #0009; backdrop-filter: blur(4px); }
+.game-header-actions { display: flex; align-items: center; gap: .45rem; }
+.save-status { font-size: .61rem; letter-spacing: 0; color: #dfdec3; background: #1d1a14a0; border-radius: 5px; padding: .42rem .6rem; text-shadow: 0 1px 5px #000; }
+.game-back { width: 38px; font-size: 1.35rem; text-decoration: none; padding: 0; }
+.game-back--disabled { opacity: .35; cursor: default; }
+.game-menu { position: relative; }
+.game-menu summary { width: 39px; padding: 0; cursor: pointer; font-size: 1.2rem; list-style: none; }
+.game-menu summary::-webkit-details-marker { display: none; }
+.game-menu-content { position: absolute; right: 0; top: calc(100% + .45rem); width: min(245px,82vw); display: flex; flex-direction: column; gap: 2px; padding: .42rem; background: #211b16ed; border: 1px solid #e5c8995c; border-radius: 8px; box-shadow: 0 8px 24px #0008; backdrop-filter: blur(8px); }
+.game-menu-content a,.game-menu-content button { font: .81rem/1.4 Georgia,serif; text-decoration: none; color: #f1e4cc; text-align: left; background: transparent; border: none; border-radius: 4px; padding: .7rem .65rem; cursor: pointer; }
+.game-menu-content a:hover,.game-menu-content button:hover { background: #e4c79424; }
+.scene-objective,.inventory-panel { position: absolute; top: clamp(63px,7vw,78px); max-width: 265px; z-index: 4; padding: .2rem .55rem; background: #211b1699; border: 1px solid #e5c89936; border-radius: 6px; color: #f4e6cd; font: .69rem/1.45 Georgia,serif; backdrop-filter: blur(6px); box-shadow: 0 2px 12px #0005; }
+.scene-objective { left: clamp(10px,1.8vw,28px); }
+.inventory-panel { right: clamp(10px,1.8vw,28px); }
+.scene-objective summary,.inventory-panel summary { display: list-item; list-style: none; cursor: pointer; padding: .34rem .45rem; font: .67rem/1.4 Consolas,monospace; color: #f2e2c5; }
+.scene-objective summary::-webkit-details-marker,.inventory-panel summary::-webkit-details-marker { display: none; }
+.scene-objective p { margin: .35rem .45rem .65rem; }
+.inventory-panel ul,.inventory-panel p { margin: .4rem; }
+.game-interface { position: absolute; z-index: 6; bottom: clamp(12px,2.6svh,30px); left: clamp(10px,2.4vw,40px); right: clamp(10px,2.4vw,40px);
+    width: auto; max-height: min(45svh,350px); overflow-y: auto; display: grid;
+    grid-template-columns: minmax(0,1.35fr) minmax(175px,.65fr); gap: clamp(.5rem,1.2vw,1.3rem);
+    padding: 0; background: transparent; border: 0; scrollbar-width: thin; }
+.dialogue-box { position: relative; min-width: 0; min-height: 94px; padding: clamp(.85rem,1.5vw,1.2rem) clamp(1rem,2vw,1.7rem); border: 1px solid #c8ab7859; border-left: 3px solid #c0a073; border-radius: 10px; background: linear-gradient(110deg,#1c1815ed,#221b17df); box-shadow: 0 6px 26px #0008; backdrop-filter: blur(9px); }
+.dialogue-box--narration { background: linear-gradient(115deg,#201c19e3,#25211ccf); border-left: 3px solid #96846d; }
+.dialogue-box--narration .dialogue-text { color: #e8e0d5; font-style: italic; }
+.dialogue-box--hint { border-left-color: #dcc193; }
+.dialogue-heading { display: flex; align-items: center; justify-content: space-between; gap: .55rem; }
+.dialogue-heading:empty { display: none; }
+.character-name { font: 700 .68rem/1.4 Consolas,monospace; color: #e9cb95; letter-spacing: .13em; }
+.reading-label { color: #d4c6ac; font-size: .58rem; }
+.dialogue-text { margin: .48rem 0 0; font-size: clamp(.97rem,1.4vw,1.13rem); line-height: 1.5; white-space: pre-line; text-wrap: pretty; }
+.dialogue-heading:empty + .dialogue-text { margin-top: 0; }
+.choice-panel { align-content: end; gap: .45rem; min-width: 0; }
+.choice-panel > .game-action:only-child { display: flex; justify-content: flex-end; }
+.choice-panel > .game-action:only-child .choice-button { width: min(180px,100%); text-align: center; }
+.choice-title { color: #ffebca; text-shadow: 0 2px 8px #000; margin: 0 0 .15rem; font-size: .64rem; }
+.choice-button { border-radius: 7px; background: #27201bdf; border-color: #e4c08c61; box-shadow: 0 4px 15px #0005; padding: .68rem .8rem; backdrop-filter: blur(6px); font-size: .87rem; }
+.choice-button.primary { color: #fff1d9; background: #58442ccc; border-color: #d5b17894; }
+.choice-button:hover { background: #685039ee; }
+.choice-button.subtle { background: #16120eb8; }
+.puzzle-card,.evidence-card { z-index: 4; top: 42%; width: min(430px,85%); border-radius: 8px; }
+.game-controls { display: none; } /* Reemplazado por los controles flotantes del encabezado. */
+@media (max-width: 850px) {
+  .game-interface { grid-template-columns: 1fr; max-height: min(57svh,450px); gap: .5rem; }
+  .choice-panel { grid-template-columns: 1fr; }
+  .choice-panel > .game-action:only-child { justify-content: flex-end; }
+  .save-status { display: none; }
+  .game-case-label { font-size: .57rem; }
+  .scene-character.portrait-bryan { height: 65%; max-width: 49vw; right: 4%; }
+}
+@media (max-width: 550px) {
+  .game-header { top: 8px; left: 8px; right: 8px; gap: .3rem; }
+  .game-home { min-width: 37px; width: 37px; padding: 0; }
+  .game-home span { display: none; }
+  .game-case-label { padding: .4rem .45rem; font-size: .5rem; letter-spacing: .04em; }
+  .game-header-actions { gap: .24rem; }
+  .scene-objective,.inventory-panel { top: 57px; }
+  .game-interface { bottom: 8px; left: 8px; right: 8px; max-height: 54svh; }
+  .dialogue-box { padding: .7rem .9rem; min-height: 0; }
+  .dialogue-text { font-size: .97rem; line-height: 1.4; }
+  .choice-button { padding: .58rem .7rem; font-size: .82rem; }
+  .scene-character.portrait-bryan { max-width: 62vw; height: 57%; }
+  .puzzle-card,.evidence-card { top: 35%; width: 86%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-background { transition: none; }
+}
+
+/* CONTROLES V2: accesibilidad y navegación sin tocar el motor ni las partidas. */
+/* Menú siempre identificable: no depender de símbolos ocultos o estados visuales ambiguos. */
+.game-header-actions { position: relative; }
+.game-menu { position: relative; z-index: 30; }
+.game-menu summary {
+    width: auto; min-width: 92px; height: 38px; display: inline-flex;
+    gap: .5rem; padding: 0 .78rem; font-size: .75rem; font-weight: 700;
+    line-height: 1; white-space: nowrap; background: #231b15e8;
+    border-color: #d8b78088; border-radius: 7px;
+}
+.game-menu summary .menu-glyph { font-size: 1.1rem; }
+.game-menu[open] summary { background: #59432c; border-color: #e1c698; }
+/* Es obligatorio: la regla display:flex original podía prevalecer sobre el ocultamiento nativo de details. */
+.game-menu:not([open]) > .game-menu-content { display: none !important; }
+.game-menu[open] > .game-menu-content {
+    display: flex; z-index: 35; min-width: 235px; width: min(260px, calc(100vw - 20px));
+    top: calc(100% + .45rem); right: 0;
+    background: #241b15f5; border-color: #e3c08c8a;
+}
+.game-menu-content a, .game-menu-content button { min-height: 40px; }
+.game-menu-content a:focus-visible, .game-menu-content button:focus-visible { outline-offset: -3px; }
+
+/* El único control permanente de retroceso vive abajo a la izquierda.
+   El render HTML lo omite por completo en una pantalla de decisiones o acertijos. */
+.game-quickbar {
+    position: absolute; z-index: 9;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: max(10px, env(safe-area-inset-left));
+    display: flex; align-items: center; gap: .4rem;
+}
+.game-dialogue-back {
+    min-height: 36px; display: inline-flex; align-items: center; gap: .5rem;
+    padding: .45rem .75rem; color: #f5e9d5; text-decoration: none;
+    background: #241c16dc; border: 1px solid #d5b6877d;
+    border-radius: 6px; box-shadow: 0 3px 13px #0006;
+    backdrop-filter: blur(7px); font: .7rem/1.2 Consolas,monospace;
+    letter-spacing: .015em;
+}
+.game-dialogue-back > span { font-size: 1.1rem; }
+.game-dialogue-back:hover { color: #fff9ed; background: #56402b; border-color: #f1d4a7; }
+/* Espacio reservado para que los controles NO tapen el diálogo ni los botones de elección. */
+.has-dialogue-back .game-interface { bottom: max(60px, calc(env(safe-area-inset-bottom) + 50px)); }
+/* En pantallas horizontales de teléfono el menú y el historial siguen disponibles. */
+@media (max-width: 700px) {
+    .game-menu summary { min-width: 80px; padding: 0 .6rem; gap: .4rem; }
+    .game-menu-content { font-size: .83rem; }
+    .game-interface { max-height: min(48svh, 350px); }
+    .has-dialogue-back .game-interface { bottom: max(54px, calc(env(safe-area-inset-bottom) + 49px)); }
+    .game-dialogue-back { min-height: 34px; font-size: .67rem; padding: .4rem .6rem; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+    .game-screen { min-height: 0; }
+    .game-header { top: 7px; }
+    .game-interface { max-height: 52svh; }
+    .has-dialogue-back .game-interface { bottom: max(48px, calc(env(safe-area-inset-bottom) + 43px)); }
+    .game-quickbar { bottom: max(6px, env(safe-area-inset-bottom)); }
+    .game-dialogue-back { min-height: 32px; padding: .35rem .55rem; }
+    .game-menu summary { height: 34px; min-height: 34px; }
+    .game-menu-content { max-height: 65svh; overflow-y: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .game-menu summary, .game-dialogue-back { transition: none; }
+}
+
+.game-quickbar { max-width: calc(100vw - 20px); flex-wrap: wrap; }
+.game-scene-back { background: #211b16b9; border-color: #d5b68752; font-size: .65rem; }

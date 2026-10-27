@@ -1,16 +1,21 @@
 {% extends 'base.html' %}
 {% block titulo %}Escritorio | The Unknown Files{% endblock %}
-{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='papel-pintado-4') }}">{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='ui-refinado-1') }}">{% endblock %}
 {% block clase_body %}archivo-juegos{% endblock %}
 {% block encabezado %}{% endblock %}
 {% block contenido %}
 <section class="office-scene" aria-labelledby="office-title">
-    <header class="office-heading">
-        <div><p class="desk-kicker">DEPARTAMENTO DE INVESTIGACIÓN / ARCHIVO CENTRAL</p>
-        <h1 id="office-title">Cada archivo, una historia.</h1></div>
-        <p>Toca un expediente para levantarlo.</p>
-    </header>
     <div class="office-viewport">
+        <header class="office-heading office-overlay">
+            <p class="desk-kicker">DEPARTAMENTO DE INVESTIGACIÓN / ARCHIVO CENTRAL</p>
+            <h1 id="office-title">Cada archivo, una historia.</h1>
+        </header>
+        <a class="desk-return office-overlay" href="{{ url_for('portada') }}" aria-label="Volver al menú principal">← Menú</a>
+        <div class="office-ribbon office-overlay" aria-label="Toca un expediente para levantarlo">
+            <span>Toca un expediente para levantarlo</span>
+        </div>
+        <span class="desk-warning office-overlay">NO DISTRIBUIR</span>
+        <span class="desk-brand office-overlay">THE UNKNOWN FILES</span>
         <div class="office-camera">
             <div class="office-world">
                 {# Única ruta del fondo. Imagen y zonas pulsables se mueven juntas. #}
@@ -28,14 +33,9 @@
             </div>
         </div>
         <button class="skip-approach" type="button" hidden>Omitir acercamiento · Esc</button>
-        <p class="office-hint" role="status">Elige una de las dos carpetas sobre la mesa.</p>
     </div>
-    <nav class="office-shortcuts" aria-label="Expedientes del escritorio">
-        <a href="{{ url_for('juego_bryan') }}" data-document="bryan-document">Expediente 001 / Bryan <span aria-hidden="true">↗</span></a>
-        <a href="{{ url_for('taller') }}" data-document="registry-document">Registro general / Otros archivos <span aria-hidden="true">↗</span></a>
-    </nav>
 </section>
-<noscript><p class="office-noscript">Puedes usar los enlaces de los expedientes para entrar al juego o al registro.</p></noscript>
+<noscript><p class="office-noscript">Sin JavaScript: <a href="{{ url_for('juego_bryan') }}">abrir el caso de Bryan</a> · <a href="{{ url_for('taller') }}">abrir el registro general</a>.</p></noscript>
 
 <dialog id="bryan-document" class="document-view" aria-labelledby="bryan-title">
     <div class="document-toolbar"><button type="button" data-close-document autofocus>← Dejar expediente en la mesa</button></div>
@@ -110,5 +110,5 @@
             </div>
         </article></div>
 </dialog>
-<script defer src="{{ url_for('static', filename='inicio.js', v='escritorio-3') }}"></script>
+<script defer src="{{ url_for('static', filename='inicio.js', v='ui-refinado-1') }}"></script>
 {% endblock %}
