@@ -10,7 +10,7 @@
                 <h2 class="h4 mb-3">Editar caso</h2>
 
                 <form method="post"
-                      action="{{ url_for('editar', id=alumno._id) }}">
+                      action="{{ url_for('editar', id=caso._id) }}">
 
                     <div class="mb-3">
                         <label for="nombre" class="form-label">
@@ -21,7 +21,7 @@
                             id="nombre"
                             name="nombre"
                             class="form-control"
-                            value="{{ alumno.nombre }}"
+                            value="{{ caso.nombre }}"
                             required
                             maxlength="80"
                         >
@@ -36,7 +36,7 @@
                             id="categoria"
                             name="categoria"
                             class="form-control"
-                            value="{{ alumno.categoria }}"
+                            value="{{ caso.categoria }}"
                             required
                             maxlength="20"
                         >
@@ -55,10 +55,10 @@
                         >
                             <option value="">Selecciona un estado</option>
 
-                            {% for opcion in ['Disponible', 'Bloqueado', 'Completado'] %}
+                            {% for opcion in ['Disponible', 'Bloqueado'] %}
                             <option
                                 value="{{ opcion }}"
-                                {% if alumno.get('estado') == opcion %}selected{% endif %}
+                                {% if caso.get('estado') == opcion %}selected{% endif %}
                             >
                                 {{ opcion }}
                             </option>
