@@ -52,6 +52,7 @@ def buscar_alumno(id):
     if alumno is None:
         abort(404, description="Este alumno ya no existe.")
     return alumno
+
 # ---------- API REST: CASOS ----------
 
 ESTADOS_VALIDOS = ["Disponible", "Bloqueado", "Completado"]
@@ -88,7 +89,7 @@ def validar_json_api():
         return None, (jsonify(error="Máximo: nombre 80 y categoría 20 caracteres."), 400)
 
     if estado not in ESTADOS_VALIDOS:
-        return None, (jsonify(error="Estado inválido. Usa Disponible, Bloqueado o Completado."), 400)
+        return None, (jsonify(error="Estado inválido."), 400)
 
     return {
         "nombre": nombre,
@@ -99,8 +100,8 @@ def validar_json_api():
 
 @app.route("/api/casos", methods=["GET"])
 def api_listar_casos():
-    casos = alumnos.find().sort("nombre", 1)
-    return jsonify([caso_a_json(caso) for caso in casos]), 200
+    lista = casos.find().sort("nombre", 1)
+    return jsonify([caso_a_json(caso) for caso in lista]), 200
 
 
 @app.route("/api/casos", methods=["POST"])
@@ -109,10 +110,10 @@ def api_crear_caso():
     if error:
         return error
 
-    resultado = alumnos.insert_one(datos)
-    caso = alumnos.find_one({"_id": resultado.inserted_id})
+    resultado = casos.insert_one(datos)
+    nuevo_caso = casos.find_one({"_id": resultado.inserted_id})
 
-    return jsonify(caso_a_json(caso)), 201
+    return jsonify(caso_a_json(nuevo_caso)), 201
 
 
 @app.route("/api/casos/<id>", methods=["GET", "PUT", "DELETE"])
@@ -121,7 +122,7 @@ def api_detalle_caso(id):
         return jsonify(error="El ID del caso no es válido."), 404
 
     object_id = ObjectId(id)
-    caso = alumnos.find_one({"_id": object_id})
+    caso = casos.find_one({"_id": object_id})
 
     if caso is None:
         return jsonify(error="No se encontró el caso solicitado."), 404
@@ -134,12 +135,12 @@ def api_detalle_caso(id):
         if error:
             return error
 
-        alumnos.update_one({"_id": object_id}, {"$set": datos})
-        caso_actualizado = alumnos.find_one({"_id": object_id})
+        casos.update_one({"_id": object_id}, {"$set": datos})
+        actualizado = casos.find_one({"_id": object_id})
 
-        return jsonify(caso_a_json(caso_actualizado)), 200
+        return jsonify(caso_a_json(actualizado)), 200
 
-    alumnos.delete_one({"_id": object_id})
+    casos.delete_one({"_id": object_id})
     return jsonify(mensaje="Caso eliminado correctamente.", id=id), 200
 
 @app.route("/")

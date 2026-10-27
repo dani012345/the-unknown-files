@@ -19,15 +19,15 @@
             </p>
         </div>
 
-        <span class="case-count">{{ alumnos|length }} REGISTROS</span>
+        <span class="case-count">{{ casos|length }} REGISTROS</span>
     </div>
 
     <div class="case-grid">
-        {% for alumno in alumnos %}
+        {% for caso in casos %}
         <article class="case-card">
             <div class="case-card__top">
                 <span>CASE #{{ "%03d"|format(loop.index) }}</span>
-                <span>{{ alumno.get('estado', 'Sin asignar') }}</span>
+                <span>{{ caso.get('estado', 'Sin asignar') }}</span>
             </div>
 
             <div class="case-card__image">
@@ -36,10 +36,10 @@
 
             <div class="case-card__body">
                 <p class="case-card__category">
-                    {{ alumno.categoria }}
+                    {{ caso.categoria }}
                 </p>
 
-                <h3>{{ alumno.nombre }}</h3>
+                <h3>{{ caso.nombre }}</h3>
 
                 <p>
                     Expediente clasificado dentro del taller de casos.
@@ -50,14 +50,14 @@
             <div class="case-card__actions">
                 <a
                     class="btn btn-outline-dark btn-sm"
-                    href="{{ url_for('editar', id=alumno._id) }}"
+                    href="{{ url_for('editar', id=caso._id) }}"
                 >
                     Editar
                 </a>
 
                 <form
                     method="post"
-                    action="{{ url_for('eliminar', id=alumno._id) }}"
+                    action="{{ url_for('eliminar', id=caso._id) }}"
                     onsubmit="return confirm('¿Eliminar este caso?');"
                 >
                     <button
@@ -118,7 +118,6 @@
                     <option value="">Selecciona</option>
                     <option value="Disponible">Disponible</option>
                     <option value="Bloqueado">Bloqueado</option>
-                    <option value="Completado">Completado</option>
                 </select>
             </div>
 
