@@ -22,3 +22,24 @@ NO MODIFICADOS: app.py, bryan_game.py, data/caso_bryan.json, MongoDB, imágenes,
 
 NOTA: Si trabajas con una versión más reciente del código que NO sea la enviada anteriormente,
 compara estos dos archivos antes de sobreescribir: este parche parte de la interfaz modificada anterior.
+
+
+PUNTOS Y CARRITO
+- Inicio muestra el saldo y el acceso a /carrito. Reinicia Flask para cargar las nuevas rutas.
+- La coleccion saldos se crea automaticamente al consultar Inicio o el carrito.
+- Cada navegador utiliza la misma cookie uf_player que el juego; sin cuentas, borrar cookies pierde el acceso a ese saldo.
+- Paquetes de 50, 150 y 300 puntos. La compra es simulada y gratuita: no hay proveedor de pagos conectado.
+- Tres decisiones responsables de Bryan otorgan 10 puntos cada una, una sola vez por decision y navegador, incluso si reinicia. Las decisiones anteriores tambien se reconocen.
+- El historial de movimientos esta en el carrito. Responsabilidad (0 a 3) sigue separada del saldo.
+- Los desbloqueos de futuros casos quedan pendientes; actualmente no se gastan puntos.
+- puntos.py contiene las reglas y MongoDB valida cada movimiento. static/puntos.css contiene sus estilos.
+
+
+ESCENAS INTERACTIVAS
+- escena_visual.py organiza fondos, retratos y zonas clicables en porcentajes.
+- Fondos activos del salón y el almacén: BG05_salon_pinceladas.png y BG06_almacen_pinceladas.png.
+- El dormitorio inicia con tres ilustraciones. Los retratos de Bryan sorprendido y de cocina se usan en sus diálogos correspondientes.
+- Las zonas solo se activan cuando la historia ofrece la decision o el acertijo; el historial no modifica decisiones. Los botones de texto siguen disponibles.
+- Mostrar objetos permite resaltar las zonas. Fondo y zonas comparten coordenadas y escala.
+- Foto de 1987: sobre la caja del almacen y en el descubrimiento final. El visor permite ampliar el gafete.
+- Los cambios visuales se aplican al renderizar; no requieren sustituir escenas ni reiniciar partidas de MongoDB. Reinicia Flask y recarga el navegador.

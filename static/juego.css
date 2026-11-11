@@ -10,7 +10,7 @@ a { color: #e3c99c; text-underline-offset: 4px; }
 .scene-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .scene-shade { position: absolute; inset: 0; background: linear-gradient(#0003,transparent 40%,#0002); pointer-events: none; }
 .theme-night .scene-background { filter: brightness(.4) saturate(.62) sepia(.08); }
-.theme-warm .scene-background { filter: sepia(.12) brightness(.9); }
+.theme-warm .scene-background { filter: brightness(.9); }
 .scene-objective { position: absolute; top: 1rem; left: 1rem; max-width: min(340px,70%); padding: .7rem 1rem; background: #171512d9; border-left: 2px solid #a38a65; box-shadow: 0 2px 12px #0003; }
 .scene-objective span { font: .6rem/1.5 Consolas,monospace; letter-spacing: .08em; color: #d8b783; }
 .scene-objective p { margin: .4rem 0 0; font-size: .88rem; line-height: 1.5; }
@@ -155,6 +155,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible { outline: 2px solid 
 .scene-objective summary::-webkit-details-marker,.inventory-panel summary::-webkit-details-marker { display: none; }
 .scene-objective p { margin: .35rem .45rem .65rem; }
 .inventory-panel ul,.inventory-panel p { margin: .4rem; }
+.inventory-panel .inventory-evidence { padding: .35rem .45rem; border: 0; background: transparent; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
 .game-interface { position: absolute; z-index: 6; bottom: clamp(12px,2.6svh,30px); left: clamp(10px,2.4vw,40px); right: clamp(10px,2.4vw,40px);
     width: auto; max-height: min(45svh,350px); overflow-y: auto; display: grid;
     grid-template-columns: minmax(0,1.35fr) minmax(175px,.65fr); gap: clamp(.5rem,1.2vw,1.3rem);
@@ -271,3 +272,54 @@ a:focus-visible,button:focus-visible,summary:focus-visible { outline: 2px solid 
 
 .game-quickbar { max-width: calc(100vw - 20px); flex-wrap: wrap; }
 .game-scene-back { background: #211b16b9; border-color: #d5b68752; font-size: .65rem; }
+
+.game-points { color: #f0d59c; font: 700 .8rem/1.4 Consolas, monospace; text-decoration: none; white-space: nowrap; }
+
+/* Plano único: ilustración, fotografías y áreas clicables se mueven juntos. */
+.scene-world { position:absolute; left:50%; top:50%; width:max(100%,177.778svh); aspect-ratio:16/9; transform:translate(-50%,-50%); z-index:0; }
+.scene-world .scene-background { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; transform:none; transition:none; }
+.scene-hotspot { position:absolute; left:var(--x); top:var(--y); width:var(--w); height:var(--h); z-index:3; }
+.scene-hotspot button { width:100%; height:100%; display:block; border:1px solid transparent; border-radius:6px; background:transparent; cursor:pointer; color:#fff0d6; }
+.scene-hotspot button:hover,.scene-hotspot button:focus-visible,.show-hotspots .scene-hotspot button { background:#f0d89c18; border-color:#f4dfaf99; box-shadow:0 0 18px #f8db941c; }
+.scene-hotspot button span,.photo-inspect span { position:absolute; bottom:100%; left:50%; transform:translateX(-50%); width:max-content; max-width:220px; padding:.35rem .55rem; background:#201a13ed; border:1px solid #be9d68; color:#f1e2c7; font:.7rem/1.4 Consolas,monospace; opacity:0; pointer-events:none; }
+.scene-hotspot button:hover span,.scene-hotspot button:focus-visible span,.show-hotspots .scene-hotspot button span,.photo-inspect:hover span,.photo-inspect:focus-visible span { opacity:1; }
+.scene-photo { position:absolute; z-index:1; object-fit:contain; filter:drop-shadow(1px 3px 3px #130c0980); pointer-events:none; }
+.scene-photo--shelf { left:12%; top:33%; width:9%; transform:rotate(-9deg); }
+.scene-photo--phone { left:44%; top:25%; width:23%; transform:rotate(-4deg); }
+.photo-inspect { position:absolute; z-index:4; padding:0; border:0; background:transparent; cursor:zoom-in; }
+.photo-inspect--shelf { left:12%; top:33%; width:9%; height:10%; }
+.photo-inspect--phone { left:44%; top:25%; width:23%; height:26%; }
+.photo-inspect:focus-visible { outline:2px solid #e1c18a; }
+.portrait-action { position:absolute; right:clamp(5%,9vw,16%); bottom:-3%; height:min(80%,740px); width:min(39vw,450px); z-index:1; }
+.portrait-button { position:relative; display:block; width:100%; height:100%; padding:0; border:0; background:transparent; cursor:pointer; }
+.portrait-action .scene-character.portrait-bryan { position:static; width:100%; height:100%; max-width:100%; }
+.portrait-button:hover img { filter:drop-shadow(0 0 10px #d6bb8733); }
+.scene-interaction-tools { position:absolute; z-index:5; left:50%; top:105px; transform:translateX(-50%); display:flex; gap:.7rem; align-items:center; max-width:90%; color:#e9ddc8; text-shadow:0 2px 6px #000; font:.65rem/1.4 Consolas,monospace; }
+.scene-interaction-tools button { color:inherit; font:inherit; background:#201a138c; border:1px solid #c8ab7840; border-radius:3px; padding:.3rem .5rem; cursor:pointer; }
+.puzzle-card--compact { top:145px; padding:.45rem .65rem; width:max-content; max-width:90%; background:#211b16bb; color:#eadfc8; font-size:.65rem; pointer-events:none; }
+.puzzle-card--compact p { margin:.2rem 0 0; }
+.photo-dialog { width:min(1100px,96vw); max-height:92svh; padding:1rem; color:#eadfc8; background:#211c16; border:1px solid #b4976a; }
+.photo-dialog::backdrop { background:#080603df; }
+.photo-dialog header { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.photo-dialog h2 { font:1rem/1.5 Georgia,serif; }
+.photo-dialog button { color:#ecdfc6; background:transparent; border:1px solid #917a57; padding:.5rem .7rem; cursor:pointer; }
+.photo-dialog figure { margin:.5rem 0; overflow:hidden; aspect-ratio:16/9; }
+.photo-dialog img { display:block; width:100%; height:100%; object-fit:contain; }
+.photo-dialog.is-detail img { transform:scale(3); transform-origin:91% 48%; }
+.photo-dialog p { font:.8rem/1.5 Consolas,monospace; }
+@media(max-width:850px) { .portrait-action { right:4%; height:65%; width:49vw; } }
+@media(max-aspect-ratio:1/1) {
+    .scene-objective,.inventory-panel { top:57px; }
+    .scene-interaction-tools { top:100px; font-size:.58rem; }
+    .game-interface { max-height:38svh; }
+    .puzzle-card--compact { top:130px; }
+    .portrait-action { height:80%; width:45vw; }
+    .scene-hotspot button span { font-size:.55rem; max-width:135px; }
+}
+
+@media(max-width:850px) {
+    .is-exploring .choice-panel { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .is-exploring .choice-title { grid-column:1/-1; }
+    .is-exploring .choice-button { font-size:.76rem; padding:.5rem .6rem; }
+    .is-exploring .dialogue-box { min-height:0; padding:.65rem .85rem; }
+}

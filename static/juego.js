@@ -15,7 +15,36 @@
     // Evita dobles clics; la revisión de MongoDB también evita aplicar acciones dos veces.
     document.querySelectorAll('.game-action').forEach(form => form.addEventListener('submit', () => {
         const button = form.querySelector('button');
-        if (button) { button.disabled = true; button.textContent = 'Guardando…'; }
+        if (button) { button.disabled = true; if (!button.querySelector('img')) button.textContent = 'Guardando…'; }
     }));
-    addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
+    // Fondo y zonas clicables conservan la misma escala, incluso en vertical.
+    const world = document.querySelector('[data-scene-world]');
+    const background = document.querySelector('[data-scene-background]');
+    const fitScene = () => {
+        if (!world || !background?.naturalWidth) return;
+        const scene = world.parentElement;
+        const scale = Math.max(
+            scene.clientWidth / background.naturalWidth,
+            scene.clientHeight / background.naturalHeight
+        );
+        world.style.width = `${background.naturalWidth * scale}px`;
+        world.style.height = `${background.naturalHeight * scale}px`;
+    };
+    background?.addEventListener('load', fitScene);
+    if (world) new ResizeObserver(fitScene).observe(world.parentElement);
+    fitScene();
+    document.querySelector('[data-show-hotspots]')?.addEventListener('click', event => {
+        const visible = world.classList.toggle('show-hotspots');
+        event.currentTarget.setAttribute('aria-pressed', String(visible));
+        event.currentTarget.textContent = visible ? 'Ocultar objetos' : 'Mostrar objetos';
+    });
+    const photo = document.getElementById('photo-dialog');
+    document.querySelectorAll('[data-open-evidence]').forEach(button => button.addEventListener('click', () => photo?.showModal()));
+    document.querySelector('[data-toggle-photo]')?.addEventListener('click', event => {
+        const detail = photo.classList.toggle('is-detail');
+        event.currentTarget.setAttribute('aria-pressed', String(detail));
+        event.currentTarget.textContent = detail ? 'Ver foto completa' : 'Ampliar gafete';
+        photo.querySelector('[data-photo-caption]').textContent = detail ? 'Detalle del gafete: RAMIRO.' : 'Una celebración en el mismo salón. Al reverso se lee: 1987.';
+    });
+    addEventListener('pageshow' , event => { if (event.persisted) location.reload(); });
 })();

@@ -6,8 +6,8 @@ The Unknown Files es una aplicación de historias de misterio. El primer caso si
 ## 0:45–1:30 Datos y personalización
 Los campos son nombre, categoria y estado. Nombre identifica el expediente, categoría organiza el tema y estado permite marcarlo como Disponible o Bloqueado. Los títulos, menú y formularios corresponden al archivo de casos. Estos estados son etiquetas administrativas, distintas del avance del jugador.
 
-| Tema | Nombre | Categoría | Estado | Dos opciones |
-| --- | --- | --- | --- | --- |
+| Tema                         | Nombre          | Categoría| Estado                  | Dos opciones           |
+| ---                          | ---             | ---      | ---                     | ---                    |
 | Archivo de casos de misterio | Expediente DEMO | Misterio | Disponibilidad del caso | Disponible / Bloqueado |
 
 ## 1:30–3:30 CRUD en vivo

@@ -5,6 +5,7 @@ from bson import ObjectId
 from datetime import datetime
 import os
 from bryan_game import create_game_blueprint
+from puntos import create_points_blueprint
 
 
 app = Flask(__name__)
@@ -22,7 +23,10 @@ base_datos = cliente["the_unknown_files"]
 alumnos = base_datos["casos"]
 escenas = base_datos["escenas"]
 
-bryan_blueprint, jugar_bryan = create_game_blueprint(base_datos)
+puntos_blueprint, mostrar_inicio, points_store = create_points_blueprint(base_datos)
+app.register_blueprint(puntos_blueprint)
+
+bryan_blueprint, jugar_bryan = create_game_blueprint(base_datos, points_store)
 app.register_blueprint(bryan_blueprint)
 
 def leer_formulario(datos=None):
@@ -149,7 +153,7 @@ def portada():
 
 @app.route("/inicio")
 def inicio():
-    return render_template("inicio.html")
+    return mostrar_inicio()
 
 @app.route("/taller")
 def taller():

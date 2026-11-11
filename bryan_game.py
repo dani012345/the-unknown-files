@@ -9,6 +9,7 @@ from pathlib import Path
 import json
 import os
 import secrets
+from escena_visual import presentation
 
 from flask import Blueprint, abort, make_response, redirect, render_template, request, url_for
 
@@ -142,7 +143,7 @@ def advance(part, scene, action, value, get_scene):
         respond(part,[{'character':'NARRADOR','text':f'{text}: apartado. Continúa con el siguiente objeto.'}])
     return True
 
-def create_game_blueprint(database):
+def create_game_blueprint(database, points_store=None):
     bp = Blueprint('bryan', __name__)
     scenes = database['escenas']; saves = database['partidas']
     seeded = False
@@ -199,6 +200,7 @@ def create_game_blueprint(database):
                 part['revision'] += 1; part['updated_at'] = datetime.now(timezone.utc)
                 saves.replace_one({'_id':part['_id'],'revision':revision},part)
             return response_with_cookie(redirect(url_for('juego_bryan'),code=303),token)
+        wallet = points_store.sync(part['owner_hash']) if points_store else None
         scene = get_scene(part['scene_id'])
         last = len(part['history'])-1
         cursor = request.args.get('h',type=int)
@@ -208,9 +210,11 @@ def create_game_blueprint(database):
         puzzle = scene.get('puzzle') if ready(part) and not part.get('pending_next') and not part['complete'] else None
         options = [x for x in (puzzle or {}).get('options',[]) if x['id'] not in part['puzzle_progress']]
         can_next = not ready(part) or bool(part.get('pending_next') or scene.get('next'))
+        visual = presentation(entry, available_choices(part,scene), options,
+                              not reading and not can_next and bool(puzzle or available_choices(part,scene)), part)
         response = make_response(render_template('juego.html',part=part,scene=scene,entry=entry,
             reading=reading,cursor=cursor,last=last,choices=available_choices(part,scene),puzzle=puzzle,
-            puzzle_options=options,can_next=can_next,final_names=FINAL_NAMES))
+            puzzle_options=options,can_next=can_next,final_names=FINAL_NAMES,wallet=wallet,visual=visual))
         return response_with_cookie(response,token)
 
     @bp.route('/caso/bryan/historial')

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Un favor · Caso 001 | The Unknown Files</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='controles-v2') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='escena-completa-3') }}">
 </head>
 <body class="game-page">
 {% macro action_button(action, text, value='', css='choice-button') -%}
@@ -37,32 +37,51 @@
 {# En decisiones y acertijos activos no aparece ninguna acción de retroceso. #}
 {% set hay_decision = not reading and not can_next and (puzzle or choices) %}
 {% set puede_retroceder = entry.kind == 'dialogue' and not hay_decision and retro.anterior is not none %}
-<main class="game-screen{{ ' has-dialogue-back' if puede_retroceder else '' }}">
+<main class="game-screen{{ ' is-exploring' if visual.hotspots or visual.photo_on_shelf else '' }}{{ ' has-dialogue-back' if puede_retroceder else '' }}">
     <section class="game-scene theme-{{ entry.theme }} shot-{{ shot }}" aria-label="{{ entry.title }}">
-        <img class="scene-background" src="{{ url_for('static',filename=entry.background) }}" alt="{{ entry.title }}">
-        {% if indoor_bryan and entry.character == 'BRYAN' %}
-          {# Primer plano ilustrado, NO sprite de cuerpo completo: respeta la perspectiva del cuarto. #}
-          <img class="scene-character portrait-bryan" src="{{ url_for('static', filename='img/personajes/bryan/bryan_somnoliento.png') }}" alt="Retrato de Bryan" loading="eager">
+        <div class="scene-world" data-scene-world>
+            <img class="scene-background" data-scene-background src="{{ url_for('static',filename=visual.background) }}" alt="{{ entry.title }}">
+            {% if visual.photo_on_shelf %}<img class="scene-photo scene-photo--shelf" src="{{ url_for('static', filename=visual.photo) }}" alt="Fotografía antigua sobre la caja del almacén">{% endif %}
+            {% if visual.photo_large %}<img class="scene-photo scene-photo--phone" src="{{ url_for('static', filename=visual.photo) }}" alt="Fotografía de la celebración de 1987">{% endif %}
+            {% for hotspot in visual.hotspots %}
+            <form method="post" action="{{ url_for('juego_bryan') }}" class="game-action scene-hotspot" style="--x:{{ hotspot.x }}%;--y:{{ hotspot.y }}%;--w:{{ hotspot.w }}%;--h:{{ hotspot.h }}%">
+                <input type="hidden" name="csrf" value="{{ part.csrf }}">
+                <input type="hidden" name="revision" value="{{ part.revision }}">
+                <input type="hidden" name="action" value="{{ hotspot.action }}">
+                <input type="hidden" name="value" value="{{ hotspot.value }}">
+                <button type="submit" aria-label="{{ hotspot.label }}" title="{{ hotspot.label }}"><span>{{ hotspot.label }}</span></button>
+            </form>
+            {% endfor %}
+            {% if visual.can_inspect %}
+            <button type="button" class="photo-inspect {{ 'photo-inspect--shelf' if visual.photo_on_shelf else 'photo-inspect--phone' }}" data-open-evidence aria-label="Examinar la fotografía"><span>Examinar fotografía ↗</span></button>
+            {% endif %}
+        </div>
+        {% if visual.portrait and not hay_decision %}
+            {% if can_next and not reading %}<form method="post" action="{{ url_for('juego_bryan') }}" class="game-action portrait-action">
+                <input type="hidden" name="csrf" value="{{ part.csrf }}"><input type="hidden" name="revision" value="{{ part.revision }}"><input type="hidden" name="action" value="next">
+                <button type="submit" class="portrait-button" aria-label="Continuar el diálogo con Bryan" title="Continuar diálogo">
+                    <img class="scene-character portrait-bryan" src="{{ url_for('static', filename='img/personajes/bryan/' ~ visual.portrait) }}" alt="Bryan">
+                </button>
+            </form>{% else %}<img class="scene-character portrait-bryan" src="{{ url_for('static', filename='img/personajes/bryan/' ~ visual.portrait) }}" alt="Bryan">{% endif %}
         {% endif %}
         <div class="scene-shade" aria-hidden="true"></div>
         <details class="scene-objective"><summary>Objetivo <span aria-hidden="true">⌄</span></summary><p>{{ entry.objective }}</p></details>
         <details class="inventory-panel"><summary>Objetos · {{ part.inventory|length }}</summary>
             <ul>{% for item in part.inventory %}<li>{{ item }}</li>{% else %}<li>Sin objetos.</li>{% endfor %}</ul>
             <p>Responsabilidad: {{ part.flags.puntos_responsabilidad }} / 3</p>
+            {% if visual.can_inspect %}<button type="button" class="inventory-evidence" data-open-evidence>Examinar fotografía</button>{% endif %}
         </details>
-        {% if puzzle and not reading %}<div class="puzzle-card"><span>ACERTIJO</span>
+        {% if puzzle and not reading %}<div class="puzzle-card puzzle-card--compact"><span>ACERTIJO</span>
             {% if puzzle.type == 'sequence' %}<p>Objetos apartados: {{ part.puzzle_progress|length }} / {{ puzzle.sequence|length }}</p>
             {% else %}<p>PLANO: A → cocina · B → pasillo · C → salón</p>{% endif %}
         </div>{% endif %}
-        {% if entry.evidence %}<div class="evidence-card">
-            <span>FOTOGRAFÍA / 1987</span>
-            <p>{{ 'Detalle del gafete: RAMIRO' if entry.evidence == 'gafete' else 'El salón, una celebración y un hombre al fondo.' }}</p>
-        </div>{% endif %}
+
     </section>
     <header class="game-header" aria-label="Controles de la partida">
         <a class="game-home" href="{{ url_for('inicio') }}" title="Regresar al escritorio">← <span>Escritorio</span></a>
         <span class="game-case-label">CASO 001 · UN FAVOR</span>
         <div class="game-header-actions">
+            {% if wallet %}<a class="game-points" href="{{ url_for('puntos.cart') }}">{{ wallet.balance }} puntos</a>{% endif %}
             <span class="save-status" title="Tu progreso se guarda automáticamente">● Guardado automático</span>
             <details class="game-menu">
                 <summary title="Abrir opciones del juego" aria-label="Abrir opciones del juego">
@@ -75,6 +94,7 @@
             </details>
         </div>
     </header>
+    {% if visual.hotspots %}<div class="scene-interaction-tools"><span>Toca los objetos del escenario</span><button type="button" data-show-hotspots aria-pressed="false">Mostrar objetos</button></div>{% endif %}
     <section class="game-interface" aria-label="Diálogo y acciones">
         <div class="dialogue-box {{ 'dialogue-box--narration' if narrator_line else 'dialogue-box--hint' if is_prompt else 'dialogue-box--character' }}">
             <div class="dialogue-heading">
@@ -123,10 +143,18 @@
     </nav>
     {% endif %}
 </main>
+{% if visual.can_inspect %}
+<dialog class="photo-dialog{{ ' is-detail' if visual.detail else '' }}" id="photo-dialog" aria-labelledby="photo-title">
+    <header><h2 id="photo-title">Fotografía · 1987</h2><form method="dialog"><button type="submit" aria-label="Cerrar fotografía">Cerrar ×</button></form></header>
+    <figure><img src="{{ url_for('static', filename=visual.photo) }}" alt="Celebración en el salón comunitario en 1987. Ramiro aparece a la derecha con su gafete."></figure>
+    <p data-photo-caption>{{ 'Detalle del gafete: RAMIRO.' if visual.detail else 'Una celebración en el mismo salón. Al reverso se lee: 1987.' }}</p>
+    <button type="button" data-toggle-photo aria-pressed="{{ 'true' if visual.detail else 'false' }}">{{ 'Ver foto completa' if visual.detail else 'Ampliar gafete' }}</button>
+</dialog>
+{% endif %}
 <dialog class="pause-dialog" id="pause-dialog" aria-labelledby="pause-title">
     <h2 id="pause-title">Partida en pausa</h2><p>Tu avance ya está guardado en MongoDB. Puedes continuar aquí desde este navegador.</p>
     <form method="dialog"><button class="choice-button primary">Continuar</button></form>
     <a class="choice-button" href="{{ url_for('inicio') }}">Volver al escritorio</a>
 </dialog>
-<script defer src="{{ url_for('static',filename='juego.js',v='controles-v2') }}"></script>
+<script defer src="{{ url_for('static',filename='juego.js',v='escena-completa-3') }}"></script>
 </body></html>

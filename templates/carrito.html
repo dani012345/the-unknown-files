@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block titulo %}Mis puntos y carrito | The Unknown Files{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='puntos.css') }}">{% endblock %}
+{% block encabezado %}{% endblock %}
+{% macro form(action, label, package='') %}
+<form method="post" action="{{ url_for('puntos.cart') }}">
+    <input type="hidden" name="csrf" value="{{ wallet.csrf }}">
+    <input type="hidden" name="revision" value="{{ wallet.revision }}">
+    <input type="hidden" name="action" value="{{ action }}">
+    <input type="hidden" name="package" value="{{ package }}">
+    <button class="points-button {{ 'points-secondary' if action in ['remove', 'clear'] else '' }}" type="submit">{{ label }}</button>
+</form>
+{% endmacro %}
+{% block contenido %}
+<div class="points-page">
+    <a class="points-back" href="{{ url_for('inicio') }}">← Volver al escritorio</a>
+    <header class="points-heading"><div><p class="points-eyebrow">DEPARTAMENTO DE RECURSOS / U.F.</p>
+    <h1>Tu próxima historia empieza aquí.</h1><p>Reúne puntos y conserva tu reserva para los próximos archivos.</p></div>
+    <div class="points-balance"><span>SALDO DISPONIBLE</span><strong>{{ wallet.balance }}</strong><span>PUNTOS</span></div></header>
+    <p class="points-demo">MODO DEMOSTRACIÓN · Las compras son simuladas y gratuitas. No se realiza ningún cobro.</p>
+    {% if notice == 'purchased' %}<p class="points-notice" role="status">Compra simulada completada. Tus puntos ya están en el saldo.</p>{% endif %}
+    {% if notice == 'stale' %}<p class="points-notice" role="status">El carrito cambió en otra pestaña. Revisa su contenido actualizado.</p>{% endif %}
+    <section aria-labelledby="packages-title"><h2 id="packages-title">Añadir puntos</h2>
+    <div class="points-packages">{% for id, package in packages.items() %}
+        <article class="points-card"><span class="points-eyebrow">SUMINISTROS DEL ARCHIVO</span><h3>{{ package.name }}</h3>
+        <p class="package-amount">{{ package.points }} <small>puntos</small></p><p>Sin costo · demostración</p>
+        {{ form('add', 'Agregar al carrito', id) }}</article>
+    {% endfor %}</div></section>
+    <div class="points-columns"><section class="points-card" aria-labelledby="cart-title"><h2 id="cart-title">Tu carrito</h2>
+        {% for row in rows %}<div class="cart-row"><div><strong>{{ row.name }}</strong><p>{{ row.quantity }} × {{ row.points }} puntos · {{ row.total }} puntos</p></div>{{ form('remove', 'Quitar', row.id) }}</div>
+        {% else %}<p>Tu carrito está vacío. Elige un paquete para empezar.</p>{% endfor %}
+        {% if rows %}<p class="cart-total">Total a recibir <strong>{{ total }} puntos</strong></p>
+        <div class="cart-actions">{{ form('checkout', 'Confirmar compra simulada') }}{{ form('clear', 'Vaciar carrito') }}</div>{% endif %}
+    </section>
+    <section class="points-card"><p class="points-eyebrow">PRÓXIMAMENTE</p><h2>Más archivos por descubrir</h2>
+        <p>Tu saldo se acumula desde ahora. Los siguientes capítulos y casos todavía están en preparación; el canje se habilitará cuando estén disponibles.</p>
+        <p>En Bryan, revisar el seguro de la mesa, recoger la bicicleta y ayudar a acomodar otorgan <strong>10 puntos cada uno</strong>, una sola vez por decisión en este navegador.</p>
+        <p>Reiniciar conserva tu saldo. Los puntos de responsabilidad siguen determinando el final de la historia.</p>
+        <p class="points-footnote">El saldo está vinculado a este navegador. Conserva sus cookies para volver a encontrarlo.</p>
+    </section></div>
+    <section class="points-card points-history"><h2>Últimos movimientos</h2>
+    {% for movement in movements %}<div class="movement"><div><strong>{{ movement.label }}</strong><small>{{ movement.at.strftime('%d/%m/%Y %H:%M') }} UTC</small></div><span>{{ '+' if movement.amount >= 0 else '' }}{{ movement.amount }} puntos</span></div>
+    {% else %}<p>Aún no hay movimientos. Juega el caso de Bryan o prueba un paquete de demostración.</p>{% endfor %}</section>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+/* Saldo, paquetes y carrito. Separado para facilitar su estudio. */
+.points-eyebrow { display:block; font: .7rem/1.6 Consolas,monospace; letter-spacing:.12em; margin-bottom:.5rem; }
+.points-button { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:.7rem 1rem; color:#f8edd7; background:#493b29; border:1px solid #9f895f; border-radius:3px; text-decoration:none; font:700 .85rem/1.4 system-ui,sans-serif; cursor:pointer; text-align:center; }
+.points-button:hover { background:#655033; color:#fff; }
+.points-button:focus-visible,.points-back:focus-visible { outline:3px solid #c18832; outline-offset:3px; }
+.points-secondary { background:transparent; color:#483c2e; border-color:#948169; }
+.points-page { max-width:1160px; margin:auto; padding:1.2rem 0 2rem; color:#332c23; }
+.points-back { color:#57442e; }
+.points-heading { display:flex; align-items:center; justify-content:space-between; gap:2rem; margin:1.6rem 0; }
+.points-heading h1 { max-width:650px; font:700 clamp(1.8rem,3vw,2.8rem)/1.1 Georgia,serif; }
+.points-balance { min-width:180px; padding:1.3rem; text-align:center; color:#f1e3c6; background:#292218; border:1px solid #88724d; }
+.points-balance span { display:block; font:.7rem/1.6 Consolas,monospace; letter-spacing:.08em; }
+.points-balance strong { display:block; font:700 3.2rem/1.25 Georgia,serif; }
+.points-demo,.points-notice { padding:1rem; border:1px solid #aa8f60; background:#e9daba; font-size:.9rem; }
+.points-notice { background:#dce5d0; border-color:#72815f; }
+.points-page h2 { font:700 1.5rem Georgia,serif; margin:0 0 1rem; }
+.points-page h3 { font:700 1.25rem Georgia,serif; }
+.points-packages { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin:1.2rem 0 1.5rem; }
+.points-card { padding:1.4rem; background:#f6eedc; border:1px solid #b4a386; box-shadow:0 5px 12px #33230b0c; }
+.package-amount { font:700 2.5rem Georgia,serif; margin:1rem 0; }
+.package-amount small { font-size:1rem; }
+.points-columns { display:grid; grid-template-columns:1.1fr 1fr; gap:1rem; }
+.cart-row,.movement { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:1px solid #cfc0a5; padding:.8rem 0; }
+.cart-row p { margin:.3rem 0 0; }
+.cart-total { display:flex; justify-content:space-between; gap:1rem; padding-top:1rem; }
+.cart-actions { display:flex; gap:.6rem; flex-wrap:wrap; }
+.points-footnote { font-size:.85rem; color:#685c48; }
+.points-history { margin-top:1rem; }
+.movement small { display:block; color:#6b604f; margin-top:.25rem; }
+.movement>span { white-space:nowrap; font-weight:700; color:#3d572e; }
+@media(max-width:720px) { .points-heading { align-items:stretch; flex-direction:column; gap:1rem; } .points-packages,.points-columns { grid-template-columns:1fr; } .points-card { padding:1rem; } .points-balance { text-align:left; } .cart-row,.movement { flex-wrap:wrap; } }
+
+/* Accesos de texto en la esquina superior derecha del escritorio. */
+.desk-links {
+    top: clamp(16px, 2.4vw, 34px);
+    right: clamp(16px, 3vw, 50px);
+    display: flex;
+    align-items: center;
+    gap: .65em;
+    color: #e3d7c3;
+    font: clamp(.57rem, .9vw, .75rem)/1.4 Consolas, monospace;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px #000c;
+}
+.desk-links a { pointer-events: auto; color: inherit; font: inherit; text-decoration: none; }
+.desk-links a:hover { text-decoration: underline; text-underline-offset: .2em; }
+.desk-links a:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }

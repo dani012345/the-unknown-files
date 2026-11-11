@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block titulo %}Escritorio | The Unknown Files{% endblock %}
-{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='ui-refinado-1') }}">{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='puntos.css', v='menu-carrito-enlaces-3') }}"><link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='ui-refinado-1') }}">{% endblock %}
 {% block clase_body %}archivo-juegos{% endblock %}
 {% block encabezado %}{% endblock %}
+
 {% block contenido %}
 <section class="office-scene" aria-labelledby="office-title">
     <div class="office-viewport">
@@ -10,7 +11,11 @@
             <p class="desk-kicker">DEPARTAMENTO DE INVESTIGACIÓN / ARCHIVO CENTRAL</p>
             <h1 id="office-title">Cada archivo, una historia.</h1>
         </header>
-        <a class="desk-return office-overlay" href="{{ url_for('portada') }}" aria-label="Volver al menú principal">← Menú</a>
+        <nav class="desk-links office-overlay" aria-label="Accesos del escritorio">
+            <a href="{{ url_for('portada') }}">Menú</a>
+            <span aria-hidden="true">/</span>
+            <a href="{{ url_for('puntos.cart') }}">Carrito</a>
+        </nav>
         <div class="office-ribbon office-overlay" aria-label="Toca un expediente para levantarlo">
             <span>Toca un expediente para levantarlo</span>
         </div>
