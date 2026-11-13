@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from bson import ObjectId
 from datetime import datetime
+from urllib.parse import quote
 import os
 from bryan_game import create_game_blueprint
 from puntos import create_points_blueprint
@@ -20,7 +21,7 @@ if not mongo_uri:
 cliente = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
 
 base_datos = cliente["the_unknown_files"]
-alumnos = base_datos["casos"]
+casos = base_datos["casos"]
 escenas = base_datos["escenas"]
 
 puntos_blueprint, mostrar_inicio, points_store = create_points_blueprint(base_datos)
@@ -49,13 +50,13 @@ def leer_formulario(datos=None):
         "categoria": categoria,
         "estado": estado}
 
-def buscar_alumno(id):
+def buscar_caso(id):
     if not ObjectId.is_valid(id):
         abort(404, description="La clave del caso no es válida.")
-    alumno = alumnos.find_one({"_id": ObjectId(id)})
-    if alumno is None:
-        abort(404, description="Este alumno ya no existe.")
-    return alumno
+    caso = casos.find_one({"_id": ObjectId(id)})
+    if caso is None:
+        abort(404, description="Este expediente ya no existe.")
+    return caso
 
 # ---------- API REST: CASOS ----------
 
@@ -157,8 +158,27 @@ def inicio():
 
 @app.route("/taller")
 def taller():
-    lista = list(alumnos.find().sort("nombre", 1))
-    return render_template("taller.html", alumnos=lista)
+    base_publica = (
+        os.environ.get("APP_BASE_URL", "").strip()
+        or os.environ.get("RENDER_EXTERNAL_URL", "").strip()
+        or request.host_url
+    ).rstrip("/")
+    expedientes = []
+    for documento in casos.find().sort("nombre", 1):
+        caso = caso_a_json(documento)
+        caso["enlace_ficha"] = base_publica + url_for("ficha_caso", id=caso["id"])
+        caso["enlace_qr"] = (
+            "https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=12&data="
+            + quote(caso["enlace_ficha"], safe="")
+        )
+        expedientes.append(caso)
+    return render_template("taller.html", casos=expedientes)
+
+
+@app.get("/expediente/<id>")
+def ficha_caso(id):
+    caso = caso_a_json(buscar_caso(id))
+    return render_template("ficha_caso.html", caso=caso), {"Cache-Control": "no-store"}
 
 @app.route("/caso/bryan", methods=["GET", "POST"])
 def juego_bryan():
@@ -167,22 +187,22 @@ def juego_bryan():
 @app.route("/agregar", methods=["POST"])
 def agregar():
     datos = leer_formulario()
-    alumnos.insert_one(datos)
+    casos.insert_one(datos)
     return redirect(url_for("taller", _anchor="lista"))
 
 @app.route("/editar/<id>", methods=["GET", "POST"])
 def editar(id):
-    alumno = buscar_alumno(id)
+    alumno = buscar_caso(id)
     if request.method == "POST":
         datos = leer_formulario()
-        alumnos.update_one({"_id": alumno["_id"]}, {"$set": datos})
+        casos.update_one({"_id": alumno["_id"]}, {"$set": datos})
         return redirect(url_for("taller", _anchor="lista"))
     return render_template("editar.html", alumno=alumno)
 
 @app.route("/eliminar/<id>", methods=["POST"])
 def eliminar(id):
-    alumno = buscar_alumno(id)
-    alumnos.delete_one({"_id": alumno["_id"]})
+    caso = buscar_caso(id)
+    casos.delete_one({"_id": caso["_id"]})
     return redirect(url_for("taller", _anchor="lista"))
     
 @app.errorhandler(PyMongoError)

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ caso.nombre }} | The Unknown Files{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}">{% endblock %}
+{% block contenido %}
+<article class="case-card">
+    <div class="case-card__body">
+        <h2>{{ caso.nombre }}</h2>
+        <dl class="mb-0">
+            <dt>Categoría</dt>
+            <dd>{{ caso.categoria }}</dd>
+            <dt>Estado</dt>
+            <dd class="mb-0">{{ caso.estado }}</dd>
+        </dl>
+    </div>
+</article>
+{% endblock %}

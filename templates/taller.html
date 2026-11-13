@@ -45,19 +45,26 @@
                     Expediente clasificado dentro del taller de casos.
                     Su contenido puede cambiar despues de la investigacion.
                 </p>
+                <details class="mt-3">
+                    <summary>Mostrar código QR</summary>
+                    <img class="img-fluid d-block mt-2" src="{{ caso.enlace_qr }}"
+                         alt="Código QR para abrir el expediente {{ caso.nombre }}"
+                         width="220" height="220" loading="lazy">
+                </details>
             </div>
 
             <div class="case-card__actions">
+                <a class="btn btn-dark btn-sm" href="{{ caso.enlace_ficha }}">Abrir ficha</a>
                 <a
                     class="btn btn-outline-dark btn-sm"
-                    href="{{ url_for('editar', id=caso._id) }}"
+                    href="{{ url_for('editar', id=caso.id) }}"
                 >
                     Editar
                 </a>
 
                 <form
                     method="post"
-                    action="{{ url_for('eliminar', id=caso._id) }}"
+                    action="{{ url_for('eliminar', id=caso.id) }}"
                     onsubmit="return confirm('¿Eliminar este caso?');"
                 >
                     <button
@@ -118,6 +125,7 @@
                     <option value="">Selecciona</option>
                     <option value="Disponible">Disponible</option>
                     <option value="Bloqueado">Bloqueado</option>
+                    <option value="Completado">Completado</option>
                 </select>
             </div>
 
