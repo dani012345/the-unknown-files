@@ -11,8 +11,8 @@ PHOTO = 'img/escenas/foto_salon_1987.png'
 AREAS = {
     'bryan_s01': {'telefono': (64, 62, 8, 6)},
     'bryan_s01_mensaje': {
-        'zapato': (44, 60, 7, 7), 'ventilador': (68, 24, 9, 39),
-        'mochila': (62, 44, 10, 18), 'cocina': (1, 20, 9, 43),
+        'zapato': (43, 76, 7, 7), 'ventilador': (75, 31, 8, 24),
+        'mochila': (70, 55, 9, 23),
     },
     'bryan_s02': {'alimentar': (29, 48, 10, 10)},
     'bryan_s03_orden': {
@@ -50,18 +50,27 @@ def presentation(entry, choices, puzzle_options, active, part):
     bryan_inicio = scene_id == 'bryan_s01' and entry['character'] == 'BRYAN'
     if bryan_inicio:
         if entry.get('text') == 'Cinco minutos más':
-            background = 'img/escenas/BG01_bryan_en_cama.png'
+            background = 'img/escenas/BG01_bryan_con_celular.png'
+        elif entry.get('text') == '¿No tienen otra persona a quien molestar?':
+            background = 'img/escenas/BG01_bryan_sentado.png'
         else:
             background = 'img/escenas/BG01_bryan_al_borde.png'
     elif scene_id == 'bryan_s01' and entry['character'] == 'NARRADOR':
         background = 'img/escenas/BG01_celular_1037.png'
+    elif scene_id == 'bryan_s01_mensaje':
+        if entry.get('text') == 'La mesa…':
+            background = 'img/escenas/BG01_bryan_la_mesa.png'
+        elif entry.get('text') == '¡LA MESA!':
+            background = 'img/escenas/BG01_bryan_se_calza.png'
+        else:
+            background = 'img/escenas/BG01_bryan_lee_mensaje.png'
     elif 'BG05_' in background:
         background = SALON
     elif 'BG06_' in background:
         background = ALMACEN
     portrait = None
     if entry['character'] == 'BRYAN':
-        if scene_id == 'bryan_s01_mensaje' or scene_id.startswith('bryan_s11_'):
+        if scene_id.startswith('bryan_s11_'):
             portrait = 'bryan_sorprendido.png'
         elif scene_id in ('bryan_s02', 'bryan_s11'):
             portrait = 'bryan_cocina.png'
@@ -70,6 +79,8 @@ def presentation(entry, choices, puzzle_options, active, part):
         for action, options in [('choice', choices), ('puzzle', puzzle_options)]:
             for option in options:
                 area = AREAS.get(scene_id, {}).get(option['id'])
+                if background == 'img/escenas/BG01_bryan_se_calza.png' and option['id'] == 'zapato':
+                    area = (41, 86, 9, 8)
                 if area:
                     hotspots.append(dict(action=action, value=option['id'], label=option['text'],
                                          x=area[0], y=area[1], w=area[2], h=area[3]))
