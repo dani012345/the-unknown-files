@@ -1,53 +1,36 @@
 {% extends 'base.html' %}
 {% block titulo %}Archivo de casos | The Unknown Files{% endblock %}
 {% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}">{% endblock %}
+{% block clase_body %}library-page{% endblock %}
+{% block encabezado %}{% endblock %}
 {% block contenido %}
 <div class="taller-intro">
-    <h2>Archivo de casos</h2>
+    <a class="library-back" href="{{ url_for('portada') }}">← Volver al menú</a>
+    <h1>Archivo de casos</h1>
     <p>Explora las historias del archivo. Los próximos casos están en proceso.</p>
-    <a href="{{ url_for('inicio') }}">← Volver al archivo de juegos</a>
 </div>
 <section id="lista" class="mb-4">
-    <div class="section-heading">
-        <div>
-            <p class="eyebrow">TALLER DE CASOS</p>
-            <h2 class="h4 mb-1">Expedientes registrados</h2>
-            <p class="text-secondary mb-0">
-                Estos son los casos guardados en la base de datos.
-            </p>
-        </div>
-
-        <span class="case-count">{{ casos|length }} REGISTROS</span>
-    </div>
-
     <div class="case-grid">
         <article class="case-card">
-            <div class="case-card__top"><span>CASO 001</span><span>Disponible para jugar</span></div>
+            <img class="case-card__cover" src="{{ url_for('static', filename='img/escenas/BG01_bryan_con_celular.png') }}" alt="Bryan con su teléfono al comenzar Un favor" fetchpriority="high">
+            <div class="case-card__top"><span>CASO 001</span><span class="case-status case-status--available">Disponible</span></div>
             <div class="case-card__body"><h3>Un favor</h3><p>Sigue a Bryan en un encargo que termina complicándose.</p></div>
             <div class="case-card__actions"><a class="btn btn-dark btn-sm" href="{{ url_for('juego_bryan') }}">Abrir caso de Bryan</a></div>
         </article>
         {% for caso in casos %}
         <article class="case-card">
             <div class="case-card__top">
-                <span>CASE #{{ "%03d"|format(loop.index) }}</span>
-                <span>{{ caso.get('estado', 'Sin asignar') if is_admin else 'En proceso' }}</span>
+                <span>{{ caso.categoria }}</span>
+                <span class="case-status">En proceso</span>
             </div>
 
-            <div class="case-card__image">
-                <span>U.F.</span>
-            </div>
+            <img class="case-card__cover case-card__cover--future" src="{{ url_for('static', filename='img/biblioteca-archivo-v1.png') }}" alt="" loading="lazy">
 
             <div class="case-card__body">
-                <p class="case-card__category">
-                    {{ caso.categoria }}
-                </p>
-
                 <h3>{{ caso.nombre }}</h3>
 
-                <p>
-                    Expediente clasificado dentro del taller de casos.
-                    Su contenido puede cambiar despues de la investigacion.
-                </p>
+                <p>Una historia que todavía espera ser abierta.</p>
+                {% if is_admin %}<p class="case-admin-state">Estado del registro · {{ caso.estado }}</p>{% endif %}
                 <details class="mt-3">
                     <summary>Mostrar código QR</summary>
                     <img class="img-fluid d-block mt-2" src="{{ caso.enlace_qr }}"
@@ -83,15 +66,18 @@
             </div>
         </article>
 
-        {% else %}
-        <div class="empty-archive">
-            <p class="eyebrow">SIN REGISTROS</p>
-            <h3>Todavia no hay expedientes guardados.</h3>
-            <p>
-                Agrega el primer registro para organizar tus futuros casos.
-            </p>
-        </div>
         {% endfor %}
+        {% set previews = ['El último turno', 'La señal', 'La habitación cerrada'] %}
+        {% if casos|length < 3 %}
+        {% for title in previews[:3 - casos|length] %}
+        <article class="case-card case-card--preview">
+            <img class="case-card__cover case-card__cover--future" src="{{ url_for('static', filename='img/biblioteca-archivo-v1.png') }}" alt="" loading="lazy" style="object-position: {{ [15, 85, 50][loop.index0] }}% center">
+            <div class="case-card__top"><span class="case-status">En proceso</span></div>
+            <div class="case-card__body"><h3>{{ title }}</h3><p>Un próximo expediente del archivo.</p>{% if is_admin %}<small>Vista de muestra · título provisional</small>{% endif %}</div>
+            <div class="case-card__actions"><span class="case-coming">Próximamente</span></div>
+        </article>
+        {% endfor %}
+        {% endif %}
     </div>
 </section>
 

@@ -1,5 +1,7 @@
-.boton-menu { display: block; text-decoration: none; cursor: pointer; }
-.boton-menu:hover, .boton-menu:focus-visible { background: #762f29; color: #fff; }
+.boton-menu { display: block; text-decoration: none; cursor: pointer; border-radius: 13px; background: #24262b; border-color: #454850; color: #f0f0f2; }
+.boton-menu:hover, .boton-menu:focus-visible { background: #3b3e47; color: #fff; }
+.pantalla-inicio .boton-iniciar { border-radius: 13px; background: #e1e3e9; color: #191b20; border-color: #646976; }
+.pantalla-inicio .boton-iniciar:hover { background: #fff; }
 .access-overlay {
     position: fixed;
     inset: 0;
