@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from hashlib import sha256
 import secrets
 import os
-from flask import Blueprint, abort, make_response, redirect, render_template, request, url_for
+from flask import Blueprint, abort, g, make_response, redirect, render_template, request, url_for
 from bryan_game import COOKIE, re_token
 
 PACKAGES = {
@@ -19,10 +19,15 @@ class PointsStore:
         self.saves = database['partidas']
 
     def get(self, owner):
+        temporary = {}
+        access = g.get('access_session')
+        if access and access['guest']:
+            temporary['expires_at'] = access['expires_at']
         self.wallets.update_one({'_id': owner}, {'$setOnInsert': {
             'balance': 0, 'cart': {}, 'revision': 0,
             'csrf': secrets.token_urlsafe(32), 'events': [], 'transactions': [],
             'created_at': datetime.now(timezone.utc),
+            **temporary,
         }}, upsert=True)
         return self.wallets.find_one({'_id': owner})
 
@@ -67,15 +72,18 @@ def create_points_blueprint(database):
     store = PointsStore(database)
 
     def identity():
+        if g.get('access_session'):
+            return g.access_session['owner'], None
         token = request.cookies.get(COOKIE, '')
         if not re_token(token):
             token = secrets.token_urlsafe(32)
         return sha256(token.encode()).hexdigest(), token
 
     def respond(response, token):
-        response.set_cookie(COOKIE, token, max_age=60*60*24*30, httponly=True,
-                            secure=request.is_secure or bool(os.environ.get('RENDER')),
-                            samesite='Lax')
+        if token:
+            response.set_cookie(COOKIE, token, max_age=60*60*24*30, httponly=True,
+                                secure=request.is_secure or bool(os.environ.get('RENDER')),
+                                samesite='Lax')
         response.headers['Cache-Control'] = 'no-store'
         return response
 

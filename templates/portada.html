@@ -10,6 +10,7 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='portada.css') }}"
     >
+    <link rel="stylesheet" href="{{ url_for('static', filename='cuentas.css') }}">
 </head>
 
 <body class="pantalla-inicio">
@@ -35,28 +36,24 @@
             CLASIFICACIÓN: CONFIDENCIAL
         </p>
 
-        <a href="{{ url_for('inicio') }}" class="boton-iniciar">
-            CONTINUAR
+        <a href="{{ url_for('inicio') if account or guest else url_for('cuentas.entry') }}" class="boton-iniciar">
+            {{ 'CONTINUAR' if has_progress else 'ABRIR' }}
             <span aria-hidden="true">→</span>
         </a>
      
         <nav class="menu-principal" aria-label="Menú principal">
 
-            <button type="button" class="boton-menu" disabled>
-                NUEVA PARTIDA
-            </button>
-
-            <button type="button" class="boton-menu" disabled>
+            <a href="{{ url_for('taller') }}" class="boton-menu">
                 ARCHIVO DE CASOS
-            </button>
+            </a>
 
-            <button type="button" class="boton-menu" disabled>
+            <a href="{{ url_for('configuracion') }}" class="boton-menu">
                 CONFIGURACIÓN
-            </button>
+            </a>
 
-            <button type="button" class="boton-menu" disabled>
+            <a href="{{ url_for('cuentas.logout') }}" class="boton-menu" data-exit-trigger>
                 SALIR
-            </button>
+            </a>
 
         </nav>
 
@@ -65,6 +62,58 @@
         </p>
 
     </main>
+    {% if show_access %}
+    <section class="access-overlay" aria-label="Acceso a The Unknown Files">
+        <div class="access-panel">
+            <a class="access-back" href="{{ url_for('portada') }}" aria-label="Volver a la portada" title="Volver a la portada"><span aria-hidden="true">←</span></a>
+            <p class="access-kicker">THE UNKNOWN FILES</p>
+            <h2>{{ 'Crea tu cuenta' if access_tab == 'register' else 'Entra al archivo' }}</h2>
+            <nav class="access-tabs" aria-label="Opciones de acceso">
+                <a href="{{ url_for('cuentas.entry') }}" {% if access_tab != 'register' %}aria-current="page"{% endif %}>Iniciar sesión</a>
+                <a href="{{ url_for('cuentas.entry', modo='registro') }}" {% if access_tab == 'register' %}aria-current="page"{% endif %}>Registrarse</a>
+            </nav>
+            {% if access_error %}<p class="access-error" role="alert">{{ access_error }}</p>{% endif %}
+            {% if access_tab == 'register' %}
+            <form method="post" action="{{ url_for('cuentas.register') }}" class="access-form">
+                <input type="hidden" name="csrf" value="{{ form_csrf }}">
+                <label for="username">Nombre de usuario</label>
+                <input id="username" name="username" autocomplete="username" minlength="3" maxlength="30" pattern="[A-Za-z0-9_.-]{3,30}" required value="{{ request.form.get('username', '') }}">
+                <small>De 3 a 30 letras sin acentos, números, puntos o guiones.</small>
+                <label for="email">Correo electrónico</label>
+                <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required value="{{ request.form.get('email', '') }}">
+                <label for="password">Contraseña</label>
+                <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
+                <small>Usa al menos 8 caracteres.</small>
+                <label for="password-confirm">Confirma la contraseña</label>
+                <input id="password-confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
+                <label for="description">Descripción <span>(opcional)</span></label>
+                <textarea id="description" name="description" rows="2" maxlength="300">{{ request.form.get('description', '') }}</textarea>
+                <p class="access-note">Tu cuenta conserva la partida y los puntos entre dispositivos. La recuperación de contraseña por correo estará disponible cuando habilitemos el envío de mensajes.</p>
+                <button type="submit" class="access-submit">Crear cuenta y entrar</button>
+            </form>
+            {% else %}
+            <form method="post" action="{{ url_for('cuentas.login') }}" class="access-form">
+                <input type="hidden" name="csrf" value="{{ form_csrf }}">
+                <label for="identifier">Usuario o correo</label>
+                <input id="identifier" name="identifier" autocomplete="username" maxlength="254" required value="{{ request.form.get('identifier', '') }}">
+                <label for="password">Contraseña</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" maxlength="128" required>
+                <button type="submit" class="access-submit">Iniciar sesión</button>
+            </form>
+            {% endif %}
+            <details class="guest-choice">
+                <summary>Continuar como invitado</summary>
+                <p>Tu partida y tus puntos son temporales. Se perderá el acceso al salir, al caducar la sesión o al perder su cookie. Las compras requieren una cuenta.</p>
+                <form method="post" action="{{ url_for('cuentas.guest_entry') }}">
+                    <input type="hidden" name="csrf" value="{{ form_csrf }}">
+                    <button type="submit" class="access-secondary">Entendido, entrar como invitado</button>
+                </form>
+            </details>
+        </div>
+    </section>
+    {% endif %}
 
+    {% include '_salida_panel.html' %}
+    <script src="{{ url_for('static', filename='salida.js') }}" defer></script>
 </body>
 </html>

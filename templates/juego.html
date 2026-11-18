@@ -82,7 +82,7 @@
         <span class="game-case-label">CASO 001 · UN FAVOR</span>
         <div class="game-header-actions">
             {% if wallet %}<a class="game-points" href="{{ url_for('puntos.cart') }}">{{ wallet.balance }} puntos</a>{% endif %}
-            <span class="save-status" title="Tu progreso se guarda automáticamente">● Guardado automático</span>
+            <span class="save-status" title="{{ 'El progreso de invitado es temporal' if guest else 'Tu progreso se guarda en tu cuenta' }}">● {{ 'Sesión temporal' if guest else 'Guardado automático' }}</span>
             <details class="game-menu">
                 <summary title="Abrir opciones del juego" aria-label="Abrir opciones del juego">
                     <span class="menu-glyph" aria-hidden="true">☰</span><span>Menú</span>

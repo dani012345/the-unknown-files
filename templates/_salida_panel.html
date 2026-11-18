@@ -1,0 +1,26 @@
+<dialog id="exit-panel" class="access-panel exit-panel" aria-labelledby="{{ 'exit-done-title' if exit_closed else 'exit-title' }}"
+        data-open-initial="{{ 'true' if show_exit else 'false' }}" data-closed="{{ 'true' if exit_closed else 'false' }}"
+        {% if show_exit %}open{% endif %}>
+    <div data-exit-confirm {% if exit_closed %}hidden{% endif %}>
+        <button type="button" class="access-back" data-exit-close aria-label="Volver" title="Volver"><span aria-hidden="true">←</span></button>
+        <p class="access-kicker">THE UNKNOWN FILES</p>
+        <h2 id="exit-title">¿Estás seguro de salir?</h2>
+        {% if guest %}<p class="exit-message">Al salir perderás el acceso a la partida y los puntos de invitado.</p>{% endif %}
+        {% if account %}<p class="exit-message">Tu cuenta conserva su partida y sus puntos para la próxima sesión.</p>{% endif %}
+        <p class="access-error" data-exit-error role="alert" hidden></p>
+        <form method="post" action="{{ url_for('cuentas.logout') }}" data-exit-form>
+            <input type="hidden" name="csrf" value="{{ access_csrf }}">
+            <div class="exit-actions">
+                <button type="button" class="access-secondary" data-exit-close>Quedarme</button>
+                <button type="submit" class="access-submit">Sí, salir</button>
+            </div>
+        </form>
+        <noscript><a href="{{ url_for('portada') }}">Volver a la portada</a></noscript>
+    </div>
+    <div data-exit-complete {% if not exit_closed %}hidden{% endif %}>
+        <p class="access-kicker">THE UNKNOWN FILES</p>
+        <h2 id="exit-done-title" tabindex="-1" data-exit-done-title>Has salido del archivo</h2>
+        <p class="exit-message">Puedes cerrar esta pestaña o volver a la portada.</p>
+        <a class="access-submit" href="{{ url_for('portada') }}">Volver a la portada</a>
+    </div>
+</dialog>

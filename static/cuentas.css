@@ -1,0 +1,98 @@
+.boton-menu { display: block; text-decoration: none; cursor: pointer; }
+.boton-menu:hover, .boton-menu:focus-visible { background: #762f29; color: #fff; }
+.access-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    overflow: auto;
+    background: #0c0d10d9;
+    backdrop-filter: blur(6px);
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+}
+.access-panel {
+    box-sizing: border-box;
+    width: min(100%, 480px);
+    margin: 0 auto;
+    padding: clamp(1.4rem, 4vw, 2rem);
+    background: #24262b;
+    color: #f0f0f2;
+    border: 1px solid #454850;
+    border-radius: 26px;
+    box-shadow: 0 24px 80px #0009;
+    color-scheme: dark;
+}
+.access-panel h2 { margin: .8rem 0 1.4rem; font-size: 1.8rem; }
+.access-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid #51545d;
+    border-radius: 50%;
+    background: #303239;
+    color: #f0f0f2;
+    font: 24px/1 Arial, sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+}
+.access-back:hover { background: #40434b; }
+.access-kicker { margin: 1.6rem 0 0; font: .75rem Consolas, monospace; letter-spacing: .12em; color: #c4c7d0; }
+.access-tabs { display: flex; gap: .5rem; padding: 5px; border: 1px solid #454850; border-radius: 14px; margin-bottom: 1.2rem; background: #1c1e22; }
+.access-tabs a { flex: 1; padding: .7rem .5rem; border-radius: 10px; color: #bdc0c8; text-decoration: none; text-align: center; font-size: .9rem; }
+.access-tabs a[aria-current] { background: #41444d; color: #fff; font-weight: bold; }
+.access-form { display: flex; flex-direction: column; gap: .5rem; }
+.access-form label { margin-top: .5rem; font-weight: bold; font-size: .9rem; }
+.access-form label span { font-weight: normal; }
+.access-form input, .access-form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: .8rem 1rem;
+    border: 1px solid #535762;
+    background: #191b20;
+    color: #f0f0f2;
+    border-radius: 13px;
+    font: inherit;
+}
+.access-form textarea { resize: vertical; }
+.access-form small, .access-note { font-size: .8rem; line-height: 1.5; color: #bfc2cb; }
+.access-submit, .access-secondary { padding: .85rem 1.2rem; border: 1px solid #646976; border-radius: 13px; background: #e1e3e9; color: #191b20; font: inherit; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; display: inline-block; }
+.access-submit { margin-top: .7rem; }
+.access-secondary { background: #30333b; color: #f0f0f2; }
+.access-submit:hover { background: #fff; }
+.access-secondary:hover { background: #41454f; }
+.access-error { padding: .8rem; background: #402b30; border: 1px solid #8b5964; border-radius: 12px; color: #ffd8df; line-height: 1.5; }
+.guest-choice { margin-top: 1.5rem; border-top: 1px solid #454850; padding-top: 1rem; font-size: .9rem; line-height: 1.6; color: #d2d4dc; }
+.guest-choice summary { cursor: pointer; }
+.account-link { display: inline-grid; place-items: center; width: 36px; height: 36px; border: 1px solid currentColor; border-radius: 50%; color: inherit; font: bold 1rem Georgia, serif; text-decoration: none; margin-left: .7rem; flex-shrink: 0; }
+.office-welcome { margin: 0; padding: 1rem 4%; background: #171410; color: #eee1c9; }
+.profile-page { max-width: 600px; margin: auto; overflow-wrap: anywhere; }
+.profile-page dt { margin-top: 1rem; }
+.profile-page dd { margin: .25rem 0 1rem; white-space: pre-wrap; }
+:where(.access-panel, .boton-menu, .account-link) :focus-visible, .account-link:focus-visible, .boton-menu:focus-visible { outline: 3px solid #a9bce7; outline-offset: 3px; }
+.exit-panel {
+    position: fixed;
+    inset: 0;
+    width: min(480px, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    overflow: auto;
+}
+.exit-panel::backdrop { background: #0c0d10d9; backdrop-filter: blur(6px); }
+.exit-message { color: #c9cbd3; line-height: 1.7; }
+.exit-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.6rem; }
+.exit-actions button { flex: 1; margin: 0; }
+.exit-panel button:disabled { opacity: .6; cursor: wait; }
+.guest-warning {
+    max-width: min(52%, 32rem);
+    font-size: .72rem;
+    line-height: 1.6;
+    letter-spacing: .02em;
+    text-wrap: pretty;
+}
+@media (max-width: 600px) {
+    .guest-warning { max-width: calc(100% - 36px); bottom: 60px; font-size: .7rem; }
+}
+@media (max-width: 480px) { .access-overlay { padding: .6rem; } .access-panel { padding: 1.2rem; } }

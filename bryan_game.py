@@ -11,7 +11,7 @@ import os
 import secrets
 from escena_visual import presentation
 
-from flask import Blueprint, abort, make_response, redirect, render_template, request, url_for
+from flask import Blueprint, abort, g, make_response, redirect, render_template, request, url_for
 
 STORY_VERSION = 1
 FIRST_SCENE = 'bryan_s01'
@@ -167,16 +167,20 @@ def create_game_blueprint(database, points_store=None):
         seed()
         token = request.cookies.get(COOKIE,'')
         if not re_token(token): token = secrets.token_urlsafe(32)
-        owner = sha256(token.encode()).hexdigest()
+        access = g.get('access_session')
+        owner = access['owner'] if access else sha256(token.encode()).hexdigest()
         part = saves.find_one({'owner_hash':owner,'case_id':'bryan','story_version':STORY_VERSION},sort=[('created_at',-1),('_id',-1)])
         if part is None:
             part = new_part(owner,get_scene(FIRST_SCENE))
+            if access and access['guest']:
+                part['expires_at'] = access['expires_at']
             part['_id'] = saves.insert_one(part).inserted_id
         return part, token
 
     def response_with_cookie(response, token):
-        response.set_cookie(COOKIE,token,max_age=60*60*24*30,httponly=True,
-                            secure=bool(os.environ.get('RENDER')) or request.is_secure,samesite='Lax')
+        if not g.get('access_session'):
+            response.set_cookie(COOKIE,token,max_age=60*60*24*30,httponly=True,
+                                secure=bool(os.environ.get('RENDER')) or request.is_secure,samesite='Lax')
         response.headers['Cache-Control'] = 'no-store'
         return response
 
@@ -192,6 +196,8 @@ def create_game_blueprint(database, points_store=None):
             action = request.form.get('action','')
             if action == 'restart':
                 fresh = new_part(part['owner_hash'],get_scene(FIRST_SCENE))
+                if 'expires_at' in part:
+                    fresh['expires_at'] = part['expires_at']
                 fresh['_id'] = saves.insert_one(fresh).inserted_id
             else:
                 scene = get_scene(part['scene_id'])

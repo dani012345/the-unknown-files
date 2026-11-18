@@ -1,15 +1,19 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, jsonify
-from pymongo import MongoClient
+from flask import Flask, render_template, request, redirect, url_for, abort, jsonify, g
+from pymongo import MongoClient, ReturnDocument
 from pymongo.errors import PyMongoError
 from bson import ObjectId
 from datetime import datetime
 from urllib.parse import quote
 import os
-from bryan_game import create_game_blueprint
+import secrets
+from bryan_game import create_game_blueprint, STORY_VERSION
 from puntos import create_points_blueprint
+from cuentas import create_accounts_blueprint
 
 
 app = Flask(__name__)
+
+ESTADOS_VALIDOS = ("Disponible", "Bloqueado", "Completado")
 
 mongo_uri = os.environ.get("MONGO_URI")
 
@@ -23,6 +27,31 @@ cliente = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
 base_datos = cliente["the_unknown_files"]
 casos = base_datos["casos"]
 escenas = base_datos["escenas"]
+
+app.register_blueprint(create_accounts_blueprint(base_datos))
+
+
+@app.before_request
+def require_player():
+    admin_action = (
+        request.endpoint in ("agregar", "editar", "eliminar")
+        or request.endpoint in ("api_crear_caso", "api_detalle_caso")
+        and request.method in ("POST", "PUT", "DELETE")
+    )
+    if admin_action:
+        if not g.account or g.account.get("role") != "admin":
+            if request.path.startswith("/api/"):
+                return jsonify(error="Esta acción requiere una cuenta de administrador."), 403
+            abort(403, description="Esta acción requiere una cuenta de administrador.")
+        if request.method == "POST" and not request.path.startswith("/api/"):
+            if not secrets.compare_digest(request.form.get("access_csrf", ""), g.access_session["csrf"]):
+                abort(400, description="El formulario venció. Recarga la página.")
+    if request.endpoint in ("inicio", "juego_bryan", "bryan.history", "puntos.cart"):
+        access = g.get("access_session")
+        if not access or not (g.account or access["guest"]):
+            return redirect(url_for("cuentas.entry"))
+        if request.endpoint == "puntos.cart" and request.method == "POST" and not g.account:
+            abort(403, description="Regístrate para utilizar las compras.")
 
 puntos_blueprint, mostrar_inicio, points_store = create_points_blueprint(base_datos)
 app.register_blueprint(puntos_blueprint)
@@ -43,7 +72,7 @@ def leer_formulario(datos=None):
         abort(400, description="Completa nombre, categoría y estado.")
     if len(nombre) > 80 or len(categoria) > 20:
         abort(400, description="Máximo: nombre 80 y categoría 20.")
-    if estado not in ["Disponible", "Bloqueado", "Completado"]:
+    if estado not in ESTADOS_VALIDOS:
         abort(400, description="Selecciona un estado válido.")
     return {
         "nombre": nombre,
@@ -59,9 +88,6 @@ def buscar_caso(id):
     return caso
 
 # ---------- API REST: CASOS ----------
-
-ESTADOS_VALIDOS = ["Disponible", "Bloqueado", "Completado"]
-
 
 def caso_a_json(caso):
     return {
@@ -116,7 +142,7 @@ def api_crear_caso():
         return error
 
     resultado = casos.insert_one(datos)
-    nuevo_caso = casos.find_one({"_id": resultado.inserted_id})
+    nuevo_caso = {"_id": resultado.inserted_id, **datos}
 
     return jsonify(caso_a_json(nuevo_caso)), 201
 
@@ -140,8 +166,11 @@ def api_detalle_caso(id):
         if error:
             return error
 
-        casos.update_one({"_id": object_id}, {"$set": datos})
-        actualizado = casos.find_one({"_id": object_id})
+        actualizado = casos.find_one_and_update(
+            {"_id": object_id}, {"$set": datos}, return_document=ReturnDocument.AFTER
+        )
+        if actualizado is None:
+            return jsonify(error="Este expediente ya no existe."), 404
 
         return jsonify(caso_a_json(actualizado)), 200
 
@@ -150,11 +179,22 @@ def api_detalle_caso(id):
 
 @app.route("/")
 def portada():
-    return render_template("portada.html")
+    access = g.get("access_session")
+    has_progress = False
+    if access and (g.account or access["guest"]):
+        has_progress = base_datos["partidas"].find_one({
+            "owner_hash": access["owner"], "case_id": "bryan", "story_version": STORY_VERSION,
+        }) is not None
+    return render_template("portada.html", has_progress=has_progress)
 
 @app.route("/inicio")
 def inicio():
     return mostrar_inicio()
+
+
+@app.get("/configuracion")
+def configuracion():
+    return render_template("configuracion.html")
 
 @app.route("/taller")
 def taller():
@@ -172,7 +212,7 @@ def taller():
             + quote(caso["enlace_ficha"], safe="")
         )
         expedientes.append(caso)
-    return render_template("taller.html", casos=expedientes)
+    return render_template("taller.html", casos=expedientes, estados=ESTADOS_VALIDOS)
 
 
 @app.get("/expediente/<id>")
@@ -192,12 +232,14 @@ def agregar():
 
 @app.route("/editar/<id>", methods=["GET", "POST"])
 def editar(id):
-    alumno = buscar_caso(id)
+    caso = buscar_caso(id)
     if request.method == "POST":
         datos = leer_formulario()
-        casos.update_one({"_id": alumno["_id"]}, {"$set": datos})
+        resultado = casos.update_one({"_id": caso["_id"]}, {"$set": datos})
+        if not resultado.matched_count:
+            abort(404, description="Este expediente ya no existe.")
         return redirect(url_for("taller", _anchor="lista"))
-    return render_template("editar.html", alumno=alumno)
+    return render_template("editar.html", caso=caso, estados=ESTADOS_VALIDOS)
 
 @app.route("/eliminar/<id>", methods=["POST"])
 def eliminar(id):
@@ -208,9 +250,13 @@ def eliminar(id):
 @app.errorhandler(PyMongoError)
 def error_mongo(error):
     app.logger.exception("Error al consultar MongoDB")
-    return render_template("error.html", mensaje="No fue posible conectar con la base de datos. Revisa la configuración y vuelve a intentar."), 503
+    mensaje = "No fue posible conectar con la base de datos. Revisa la configuración y vuelve a intentar."
+    if request.path.startswith("/api/"):
+        return jsonify(error=mensaje), 503
+    return render_template("error.html", mensaje=mensaje), 503
 
 @app.errorhandler(400)
+@app.errorhandler(403)
 @app.errorhandler(404)
 def error_peticion(error):
     return render_template("error.html", mensaje=error.description), error.code

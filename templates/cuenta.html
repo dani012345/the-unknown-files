@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block titulo %}Mi cuenta | The Unknown Files{% endblock %}
+{% block contenido %}
+<section class="profile-page">
+    <a href="{{ url_for('inicio') }}">← Volver al escritorio</a>
+    <h2>Mi cuenta</h2>
+    <span class="account-link" aria-label="Icono predeterminado">{{ account.username[0]|upper }}</span>
+    <dl>
+        <dt>Nombre de usuario</dt><dd>{{ account.username }}</dd>
+        <dt>Correo electrónico</dt><dd>{{ account.email }}</dd>
+        <dt>Descripción</dt><dd>{{ account.description or 'Puedes añadir una descripción al crear tu cuenta.' }}</dd>
+    </dl>
+    <p>La selección de iconos y la recuperación por correo están en preparación.</p>
+    <a href="{{ url_for('cuentas.logout') }}" data-exit-trigger>Salir de mi cuenta</a>
+</section>
+{% endblock %}

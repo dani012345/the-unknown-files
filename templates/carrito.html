@@ -20,6 +20,7 @@
     <p class="points-demo">MODO DEMOSTRACIÓN · Las compras son simuladas y gratuitas. No se realiza ningún cobro.</p>
     {% if notice == 'purchased' %}<p class="points-notice" role="status">Compra simulada completada. Tus puntos ya están en el saldo.</p>{% endif %}
     {% if notice == 'stale' %}<p class="points-notice" role="status">El carrito cambió en otra pestaña. Revisa su contenido actualizado.</p>{% endif %}
+    {% if account %}
     <section aria-labelledby="packages-title"><h2 id="packages-title">Añadir puntos</h2>
     <div class="points-packages">{% for id, package in packages.items() %}
         <article class="points-card"><span class="points-eyebrow">SUMINISTROS DEL ARCHIVO</span><h3>{{ package.name }}</h3>
@@ -34,10 +35,13 @@
     </section>
     <section class="points-card"><p class="points-eyebrow">PRÓXIMAMENTE</p><h2>Más archivos por descubrir</h2>
         <p>Tu saldo se acumula desde ahora. Los siguientes capítulos y casos todavía están en preparación; el canje se habilitará cuando estén disponibles.</p>
-        <p>En Bryan, revisar el seguro de la mesa, recoger la bicicleta y ayudar a acomodar otorgan <strong>10 puntos cada uno</strong>, una sola vez por decisión en este navegador.</p>
+        <p>En Bryan, revisar el seguro de la mesa, recoger la bicicleta y ayudar a acomodar otorgan <strong>10 puntos cada uno</strong>, una sola vez por decisión en tu cuenta.</p>
         <p>Reiniciar conserva tu saldo. Los puntos de responsabilidad siguen determinando el final de la historia.</p>
-        <p class="points-footnote">El saldo está vinculado a este navegador. Conserva sus cookies para volver a encontrarlo.</p>
+        <p class="points-footnote">El saldo está vinculado a tu cuenta y puedes consultarlo al iniciar sesión desde otro dispositivo.</p>
     </section></div>
+    {% else %}
+    <section class="points-card"><h2>Puntos de invitado</h2><p>Puedes acumular puntos durante esta sesión. Las compras requieren una cuenta.</p><a href="{{ url_for('cuentas.profile') }}">Registrarme</a></section>
+    {% endif %}
     <section class="points-card points-history"><h2>Últimos movimientos</h2>
     {% for movement in movements %}<div class="movement"><div><strong>{{ movement.label }}</strong><small>{{ movement.at.strftime('%d/%m/%Y %H:%M') }} UTC</small></div><span>{{ '+' if movement.amount >= 0 else '' }}{{ movement.amount }} puntos</span></div>
     {% else %}<p>Aún no hay movimientos. Juega el caso de Bryan o prueba un paquete de demostración.</p>{% endfor %}</section>

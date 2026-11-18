@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
-{% block titulo %}Taller de casos | The Unknown Files{% endblock %}
+{% block titulo %}Archivo de casos | The Unknown Files{% endblock %}
 {% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}">{% endblock %}
 {% block contenido %}
 <div class="taller-intro">
-    <p class="eyebrow">ESPACIO DE CREACIÓN</p>
-    <h2>Taller de casos</h2>
-    <p>Organiza tus expedientes: crea, edita y elimina sus registros. Este será el espacio para desarrollar nuevas historias.</p>
-    <p class="text-secondary">Por ahora se guardan los datos de cada caso. El editor de historias y la publicación de juegos llegarán más adelante.</p>
+    <h2>Archivo de casos</h2>
+    <p>Explora las historias del archivo. Los próximos casos están en proceso.</p>
     <a href="{{ url_for('inicio') }}">← Volver al archivo de juegos</a>
 </div>
 <section id="lista" class="mb-4">
@@ -23,11 +21,16 @@
     </div>
 
     <div class="case-grid">
+        <article class="case-card">
+            <div class="case-card__top"><span>CASO 001</span><span>Disponible para jugar</span></div>
+            <div class="case-card__body"><h3>Un favor</h3><p>Sigue a Bryan en un encargo que termina complicándose.</p></div>
+            <div class="case-card__actions"><a class="btn btn-dark btn-sm" href="{{ url_for('juego_bryan') }}">Abrir caso de Bryan</a></div>
+        </article>
         {% for caso in casos %}
         <article class="case-card">
             <div class="case-card__top">
                 <span>CASE #{{ "%03d"|format(loop.index) }}</span>
-                <span>{{ caso.get('estado', 'Sin asignar') }}</span>
+                <span>{{ caso.get('estado', 'Sin asignar') if is_admin else 'En proceso' }}</span>
             </div>
 
             <div class="case-card__image">
@@ -55,6 +58,7 @@
 
             <div class="case-card__actions">
                 <a class="btn btn-dark btn-sm" href="{{ caso.enlace_ficha }}">Abrir ficha</a>
+                {% if is_admin %}
                 <a
                     class="btn btn-outline-dark btn-sm"
                     href="{{ url_for('editar', id=caso.id) }}"
@@ -67,6 +71,7 @@
                     action="{{ url_for('eliminar', id=caso.id) }}"
                     onsubmit="return confirm('¿Eliminar este caso?');"
                 >
+                    <input type="hidden" name="access_csrf" value="{{ access_csrf }}">
                     <button
                         type="submit"
                         class="btn btn-outline-danger btn-sm"
@@ -74,6 +79,7 @@
                         Eliminar
                     </button>
                 </form>
+                {% endif %}
             </div>
         </article>
 
@@ -89,12 +95,14 @@
     </div>
 </section>
 
+{% if is_admin %}
 <section id="registro" class="card shadow-sm">
     <div class="card-body p-4">
         <p class="eyebrow">ADMINISTRACION CRUD</p>
         <h2 class="h4 mb-3">Registrar nuevo expediente</h2>
 
         <form method="post" action="{{ url_for('agregar') }}" class="row g-3">
+            <input type="hidden" name="access_csrf" value="{{ access_csrf }}">
             <div class="col-md-6">
                 <label for="nombre" class="form-label">Nombre del caso</label>
                 <input
@@ -123,9 +131,9 @@
                 <label for="estado" class="form-label">Estado</label>
                 <select id="estado" name="estado" class="form-select" required>
                     <option value="">Selecciona</option>
-                    <option value="Disponible">Disponible</option>
-                    <option value="Bloqueado">Bloqueado</option>
-                    <option value="Completado">Completado</option>
+                    {% for estado in estados %}
+                    <option value="{{ estado }}">{{ estado }}</option>
+                    {% endfor %}
                 </select>
             </div>
 
@@ -141,5 +149,6 @@
         </form>
     </div>
 </section>
+{% endif %}
 
 {% endblock %}

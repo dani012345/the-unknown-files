@@ -19,7 +19,7 @@
         <div class="office-ribbon office-overlay" aria-label="Toca un expediente para levantarlo">
             <span>Toca un expediente para levantarlo</span>
         </div>
-        <span class="desk-warning office-overlay">NO DISTRIBUIR</span>
+        {% if guest %}<span class="desk-warning office-overlay guest-warning">Estás jugando como invitado. Tu progreso y tus puntos son temporales.</span>{% endif %}
         <span class="desk-brand office-overlay">THE UNKNOWN FILES</span>
         <div class="office-camera">
             <div class="office-world">
@@ -40,6 +40,7 @@
         <button class="skip-approach" type="button" hidden>Omitir acercamiento · Esc</button>
     </div>
 </section>
+{% if account %}<p class="office-welcome">Bienvenid@, {{ account.username }}</p>{% endif %}
 <noscript><p class="office-noscript">Sin JavaScript: <a href="{{ url_for('juego_bryan') }}">abrir el caso de Bryan</a> · <a href="{{ url_for('taller') }}">abrir el registro general</a>.</p></noscript>
 
 <dialog id="bryan-document" class="document-view" aria-labelledby="bryan-title">

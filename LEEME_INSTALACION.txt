@@ -1,45 +1,42 @@
-THE UNKNOWN FILES — PARCHE DE CONTROLES (v2)
+THE UNKNOWN FILES
 
-BASE: The_Unknown_Files_Interfaz_Actualizada.zip (la versión con la interfaz nueva).
+INICIO EN WINDOWS
+Abre PowerShell en la carpeta que contiene app.py.
 
-INSTALACIÓN SOBRE TU CARPETA ACTUAL:
-1. Cierra Flask temporalmente y crea una copia de seguridad.
-2. Abre tu proyecto, dentro de la carpeta the-unknown-files, donde están app.py, templates y static.
-3. Copia de este ZIP las carpetas templates y static SOBRE las del proyecto.
-4. Acepta reemplazar SOLO los archivos templates/juego.html y static/juego.css.
-5. Arranca Flask y presiona Ctrl+F5 para limpiar la caché del navegador.
+1. python -m venv .venv
+2. .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+3. $env:MONGO_URI = 'PEGA_AQUI_TU_CADENA_DE_ATLAS'
+4. .\.venv\Scripts\python.exe app.py
+5. Abre http://127.0.0.1:5000
 
-CAMBIOS:
-- Menú visible arriba a la derecha con HISTORIAL y PAUSA.
-- Escritorio sigue arriba a la izquierda (sin duplicarlo dentro del menú).
-- Botón DIÁLOGO ANTERIOR, pequeño, abajo a la izquierda; ESCENA ANTERIOR cuando existe.
-- Retroceso mediante enlaces de lectura / GET (?h=), sin alterar decisiones, puntos o guardados.
-- Retroceso no aparece al elegir opciones, resolver acertijos o releer una elección.
-- No se muestra numeración de intervenciones.
-- Tamaños ajustados a escritorio y móvil horizontal.
+Sustituye el texto del paso 3 por tu conexión real de Atlas.
+Si omites MONGO_URI en local, la aplicación usa MongoDB en 127.0.0.1:27017.
+Las variables del proceso configuran la aplicación.
 
-NO MODIFICADOS: app.py, bryan_game.py, data/caso_bryan.json, MongoDB, imágenes, texto del guion, escena de los expedientes.
+PUBLICACIÓN EN RENDER
+Instalación: pip install -r requirements.txt
+Inicio: gunicorn app:app --bind 0.0.0.0:$PORT
+Configura MONGO_URI en Environment y autoriza en Atlas las IP de salida.
+La base es the_unknown_files. Usa casos, escenas, partidas y saldos.
 
-NOTA: Si trabajas con una versión más reciente del código que NO sea la enviada anteriormente,
-compara estos dos archivos antes de sobreescribir: este parche parte de la interfaz modificada anterior.
+COMPROBAR EL QR
+Abre el Taller desde Render, registra un caso y usa Mostrar código QR.
+Escanea con el celular, edita el caso y vuelve a escanear el mismo QR.
+APP_BASE_URL permite configurar manualmente el dominio público.
 
+PRUEBA DE API
+Con Flask iniciado:
+.\.venv\Scripts\python.exe probar_api.py
 
-PUNTOS Y CARRITO
-- Inicio muestra el saldo y el acceso a /carrito. Reinicia Flask para cargar las nuevas rutas.
-- La coleccion saldos se crea automaticamente al consultar Inicio o el carrito.
-- Cada navegador utiliza la misma cookie uf_player que el juego; sin cuentas, borrar cookies pierde el acceso a ese saldo.
-- Paquetes de 50, 150 y 300 puntos. La compra es simulada y gratuita: no hay proveedor de pagos conectado.
-- Tres decisiones responsables de Bryan otorgan 10 puntos cada una, una sola vez por decision y navegador, incluso si reinicia. Las decisiones anteriores tambien se reconocen.
-- El historial de movimientos esta en el carrito. Responsabilidad (0 a 3) sigue separada del saldo.
-- Los desbloqueos de futuros casos quedan pendientes; actualmente no se gastan puntos.
-- puntos.py contiene las reglas y MongoDB valida cada movimiento. static/puntos.css contiene sus estilos.
+Para la versión publicada:
+.\.venv\Scripts\python.exe probar_api.py https://the-unknown-files.onrender.com
 
+La prueba crea y elimina su propio registro de demostración.
 
-ESCENAS INTERACTIVAS
-- escena_visual.py organiza fondos, retratos y zonas clicables en porcentajes.
-- Fondos activos del salón y el almacén: BG05_salon_pinceladas.png y BG06_almacen_pinceladas.png.
-- El dormitorio inicia con tres ilustraciones. Los retratos de Bryan sorprendido y de cocina se usan en sus diálogos correspondientes.
-- Las zonas solo se activan cuando la historia ofrece la decision o el acertijo; el historial no modifica decisiones. Los botones de texto siguen disponibles.
-- Mostrar objetos permite resaltar las zonas. Fondo y zonas comparten coordenadas y escala.
-- Foto de 1987: sobre la caja del almacen y en el descubrimiento final. El visor permite ampliar el gafete.
-- Los cambios visuales se aplican al renderizar; no requieren sustituir escenas ni reiniciar partidas de MongoDB. Reinicia Flask y recarga el navegador.
+PARTIDAS Y PUNTOS
+El progreso y saldo se asocian al navegador mediante uf_player.
+El carrito permite comprar puntos de forma simulada y gratuita.
+La reserva temporal y el uso de puntos para adquirir contenido están
+pendientes de definir con el equipo.
+
+Consulta README.md para las funciones actuales y pendientes de entrega.

@@ -14,6 +14,7 @@
           href="{{ url_for('static',
           filename='estilos.css') }}">
     {% block estilos %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='cuentas.css') }}">
 </head>
 
 <body class="{% block clase_body %}{% endblock %}">
@@ -32,6 +33,11 @@
                 <span class="brand-symbol">U.F.</span>
                 THE UNKNOWN FILES
             </a>
+            {% if account %}
+            <a class="account-link" href="{{ url_for('cuentas.profile') }}" aria-label="Mi cuenta, {{ account.username }}">{{ account.username[0]|upper }}</a>
+            {% elif guest %}
+            <a class="account-link" href="{{ url_for('cuentas.profile') }}" aria-label="Crear mi cuenta">?</a>
+            {% endif %}
 
             <button class="navbar-toggler"
                     type="button"
@@ -55,17 +61,17 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    {% if is_admin %}<li class="nav-item">
                         <a class="nav-link"
                            href="{{ url_for('taller') }}#registro">
                             CREAR CASO
                         </a>
-                    </li>
+                    </li>{% endif %}
 
                     <li class="nav-item">
                         <a class="nav-link"
                            href="{{ url_for('taller') }}#lista">
-                            TALLER DE CASOS
+                            ARCHIVO DE CASOS
                         </a>
                     </li>
 
@@ -126,5 +132,7 @@
     <script src="{{ url_for('static',
         filename='bootstrap/js/bootstrap.bundle.min.js') }}">
     </script>
+    {% include '_salida_panel.html' %}
+    <script src="{{ url_for('static', filename='salida.js') }}" defer></script>
 </body>
 </html>
