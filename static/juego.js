@@ -20,18 +20,33 @@
     // Fondo y zonas clicables conservan la misma escala, incluso en vertical.
     const world = document.querySelector('[data-scene-world]');
     const background = document.querySelector('[data-scene-background]');
+    const dialogueBox = document.querySelector('.dialogue-box');
     const fitScene = () => {
         if (!world || !background?.naturalWidth) return;
         const scene = world.parentElement;
-        const scale = Math.max(
-            scene.clientWidth / background.naturalWidth,
-            scene.clientHeight / background.naturalHeight
-        );
+        const fit = world.dataset.sceneFit ? Math.min : Math.max;
+        const widthScale = scene.clientWidth / background.naturalWidth;
+        let scale = fit(widthScale, scene.clientHeight / background.naturalHeight);
+        world.style.top = '';
+        if (world.dataset.sceneFit === 'shoes' && dialogueBox) {
+            const clearHeight = dialogueBox.getBoundingClientRect().top - scene.getBoundingClientRect().top - 8;
+            const imageHeight = background.naturalHeight * scale;
+            // El gesto de calzarse queda en el tercio inferior del fondo.
+            const shoeBottom = (scene.clientHeight - imageHeight) / 2 + imageHeight * .94;
+            if (clearHeight > 0 && shoeBottom > clearHeight) {
+                scale = Math.min(widthScale, clearHeight / background.naturalHeight);
+                world.style.top = `${clearHeight / 2}px`;
+            }
+        }
         world.style.width = `${background.naturalWidth * scale}px`;
         world.style.height = `${background.naturalHeight * scale}px`;
     };
     background?.addEventListener('load', fitScene);
-    if (world) new ResizeObserver(fitScene).observe(world.parentElement);
+    if (world) {
+        const observer = new ResizeObserver(fitScene);
+        observer.observe(world.parentElement);
+        if (dialogueBox && world.dataset.sceneFit === 'shoes') observer.observe(dialogueBox);
+    }
     fitScene();
     document.querySelector('[data-show-hotspots]')?.addEventListener('click', event => {
         const visible = world.classList.toggle('show-hotspots');

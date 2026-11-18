@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Un favor · Caso 001 | The Unknown Files</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='escena-completa-3') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='dormitorio-6') }}">
 </head>
 <body class="game-page">
 {% macro action_button(action, text, value='', css='choice-button') -%}
@@ -39,8 +39,8 @@
 {% set puede_retroceder = entry.kind == 'dialogue' and not hay_decision and retro.anterior is not none %}
 <main class="game-screen{{ ' is-exploring' if visual.hotspots or visual.photo_on_shelf else '' }}{{ ' has-dialogue-back' if puede_retroceder else '' }}">
     <section class="game-scene theme-{{ entry.theme }} shot-{{ shot }}" aria-label="{{ entry.title }}">
-        <div class="scene-world" data-scene-world>
-            <img class="scene-background" data-scene-background src="{{ url_for('static',filename=visual.background) }}" alt="{{ entry.title }}">
+        <div class="scene-world" data-scene-world{% if visual.background == "img/escenas/BG01_bryan_se_calza.png" %} data-scene-fit="shoes"{% elif indoor_bryan %} data-scene-fit="contain"{% endif %}>
+            <img class="scene-background{{ ' scene-background--bedroom-tone' if indoor_bryan and visual.background != 'img/escenas/BG01_celular_1037.png' else '' }}" data-scene-background src="{{ url_for('static',filename=visual.background) }}" alt="{{ entry.title }}">
             {% if visual.photo_on_shelf %}<img class="scene-photo scene-photo--shelf" src="{{ url_for('static', filename=visual.photo) }}" alt="Fotografía antigua sobre la caja del almacén">{% endif %}
             {% if visual.photo_large %}<img class="scene-photo scene-photo--phone" src="{{ url_for('static', filename=visual.photo) }}" alt="Fotografía de la celebración de 1987">{% endif %}
             {% for hotspot in visual.hotspots %}
@@ -156,5 +156,5 @@
     <form method="dialog"><button class="choice-button primary">Continuar</button></form>
     <a class="choice-button" href="{{ url_for('inicio') }}">Volver al escritorio</a>
 </dialog>
-<script defer src="{{ url_for('static',filename='juego.js',v='escena-completa-3') }}"></script>
+<script defer src="{{ url_for('static',filename='juego.js',v='dormitorio-6') }}"></script>
 </body></html>

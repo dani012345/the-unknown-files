@@ -7,5 +7,5 @@
 <p>Esta lectura conserva tus decisiones. No puedes cambiar elecciones ni volver a obtener puntos desde aquí.</p>
 <p>Acertijos resueltos: {{ part.puzzles_solved|length }} / 3 · Responsabilidad: {{ part.flags.puntos_responsabilidad }} / 3</p>
 {% if part.flags.final %}<p>Final {{ part.flags.final }} · {{ final_names[part.flags.final] }}</p>{% endif %}
-<ol class="history-list">{% for item in part.history %}<li class="history-entry history-entry--{{ item.kind }}"><span>{{ item.title }} · {{ item.character }}</span><p>{{ item.text }}</p><a href="{{ url_for('juego_bryan',h=loop.index0) }}">Releer aquí</a></li>{% endfor %}</ol>
+<ol class="history-list">{% for item in part.history %}{% if item.kind != 'exploration' %}<li class="history-entry history-entry--{{ item.kind }}"><span>{{ item.title }} · {{ item.character }}</span><p>{{ item.text }}</p><a href="{{ url_for('juego_bryan',h=loop.index0) }}">Releer aquí</a></li>{% endif %}{% endfor %}</ol>
 <a class="choice-button primary" href="{{ url_for('juego_bryan') }}">Volver al presente</a></main></body></html>

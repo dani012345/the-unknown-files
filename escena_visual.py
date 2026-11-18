@@ -60,8 +60,15 @@ def presentation(entry, choices, puzzle_options, active, part):
     elif scene_id == 'bryan_s01_mensaje':
         if entry.get('text') == 'La mesa…':
             background = 'img/escenas/BG01_bryan_la_mesa.png'
-        elif entry.get('text') == '¡LA MESA!':
+        elif entry.get('interaction') == 'zapato':
             background = 'img/escenas/BG01_bryan_se_calza.png'
+        elif entry.get('interaction') in ('mochila', 'ventilador'):
+            suffix = '_calzado' if entry.get('shoes_on') else ''
+            background = f"img/escenas/BG01_bryan_{entry['interaction']}{suffix}.png"
+        elif entry.get('text') == '¡LA MESA!' or entry.get('interaction') == 'cocina':
+            shoes_on = entry.get('shoes_on', active and 'zapato' in part.get('used_choices', ()))
+            background = ('img/escenas/BG01_bryan_explora_calzado.png' if shoes_on
+                          else 'img/escenas/BG01_bryan_la_mesa.png')
         else:
             background = 'img/escenas/BG01_bryan_lee_mensaje.png'
     elif 'BG05_' in background:
@@ -79,8 +86,6 @@ def presentation(entry, choices, puzzle_options, active, part):
         for action, options in [('choice', choices), ('puzzle', puzzle_options)]:
             for option in options:
                 area = AREAS.get(scene_id, {}).get(option['id'])
-                if background == 'img/escenas/BG01_bryan_se_calza.png' and option['id'] == 'zapato':
-                    area = (41, 86, 9, 8)
                 if area:
                     hotspots.append(dict(action=action, value=option['id'], label=option['text'],
                                          x=area[0], y=area[1], w=area[2], h=area[3]))

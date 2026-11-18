@@ -15,6 +15,7 @@ from flask import Blueprint, abort, g, make_response, redirect, render_template,
 
 STORY_VERSION = 1
 FIRST_SCENE = 'bryan_s01'
+BEDROOM_SCENE = 'bryan_s01_mensaje'
 COOKIE = 'uf_player'
 INITIAL_FLAGS = {
     'mesa_intacta': True, 'bicicleta_arreglada': False, 'pollo_alimentado': False,
@@ -46,6 +47,11 @@ def record(part, character, text, kind='dialogue'):
         'background':part['background'], 'objective':part['objective'],
         'theme':part.get('theme','day'), 'evidence':part.get('evidence','')
     })
+    if part['scene_id'] == BEDROOM_SCENE:
+        part['history'][-1].update(
+            interaction=part.get('bedroom_interaction'),
+            shoes_on='zapato' in part['used_choices'],
+        )
 
 def record_current(part):
     current = part['lines'][part['line_index']]
@@ -78,9 +84,15 @@ def ready(part):
     return part['line_index'] == len(part['lines']) - 1
 
 def available_choices(part, scene):
-    if not ready(part) or part.get('pending_next'): return []
-    return [x for x in scene.get('choices', []) if matches(x.get('when'),part['flags'])
-            and not (x.get('once') and x['id'] in part['used_choices'])]
+    if not ready(part) or part.get('pending_next') or part.get('bedroom_interaction'):
+        return []
+    choices = [x for x in scene.get('choices', []) if matches(x.get('when'),part['flags'])
+               and not (x.get('once') and x['id'] in part['used_choices'])]
+    if scene['_id'] != BEDROOM_SCENE:
+        return choices
+    return [dict(choice, text='Ponerse los tenis') if choice['id'] == 'zapato'
+            else dict(choice, text='Puerta · Ir a la cocina') if choice['id'] == 'cocina'
+            else choice for choice in choices]
 
 def respond(part, lines, next_scene=None):
     resolved = resolve_lines(lines, part['flags'])
@@ -97,6 +109,10 @@ def advance(part, scene, action, value, get_scene):
     if action == 'next':
         if not ready(part):
             part['line_index'] += 1; record_current(part); return True
+        if scene['_id'] == BEDROOM_SCENE and part.pop('bedroom_interaction', None):
+            line = resolve_lines(scene['dialogues'], part['flags'])[-1]
+            record(part, line['character'], line['text'], 'exploration')
+            return True
         destination = part.get('pending_next') or scene.get('next')
         if destination:
             enter_scene(part,get_scene(destination)); return True
@@ -105,13 +121,20 @@ def advance(part, scene, action, value, get_scene):
     if action == 'choice':
         selected = next((x for x in available_choices(part,scene) if x['id'] == value),None)
         if not selected: return False
+        if scene['_id'] == BEDROOM_SCENE and value == 'cocina' and 'zapato' not in part['used_choices']:
+            part['bedroom_interaction'] = value
+            return respond(part, [{'character':'BRYAN', 'text':'Un momento. Los tenis'}])
         if selected.get('once'): part['used_choices'].append(selected['id'])
         part['decisions'].append({'scene_id':scene['_id'],'id':selected['id'],'text':selected['text']})
         record(part,'ELECCIÓN',selected['text'],'choice')
         effects(part,selected.get('effects'))
         destination = selected.get('next')
-        if not respond(part,selected.get('response',[]),destination) and destination:
-            enter_scene(part,get_scene(destination))
+        if scene['_id'] == BEDROOM_SCENE and value in ('zapato', 'mochila', 'ventilador'):
+            part['bedroom_interaction'] = value
+        if not respond(part,selected.get('response',[]),destination):
+            part.pop('bedroom_interaction', None)
+            if destination:
+                enter_scene(part,get_scene(destination))
         return True
     puzzle = scene.get('puzzle')
     if not puzzle: return False
@@ -215,7 +238,7 @@ def create_game_blueprint(database, points_store=None):
         entry = part['history'][cursor]
         puzzle = scene.get('puzzle') if ready(part) and not part.get('pending_next') and not part['complete'] else None
         options = [x for x in (puzzle or {}).get('options',[]) if x['id'] not in part['puzzle_progress']]
-        can_next = not ready(part) or bool(part.get('pending_next') or scene.get('next'))
+        can_next = not ready(part) or bool(part.get('pending_next') or part.get('bedroom_interaction') or scene.get('next'))
         visual = presentation(entry, available_choices(part,scene), options,
                               not reading and not can_next and bool(puzzle or available_choices(part,scene)), part)
         response = make_response(render_template('juego.html',part=part,scene=scene,entry=entry,

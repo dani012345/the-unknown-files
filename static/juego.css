@@ -278,6 +278,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible { outline: 2px solid 
 /* Plano único: ilustración, fotografías y áreas clicables se mueven juntos. */
 .scene-world { position:absolute; left:50%; top:50%; width:max(100%,177.778svh); aspect-ratio:16/9; transform:translate(-50%,-50%); z-index:0; }
 .scene-world .scene-background { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; transform:none; transition:none; }
+.scene-background--bedroom-tone { filter: saturate(.62) brightness(.97); }
 .scene-hotspot { position:absolute; left:var(--x); top:var(--y); width:var(--w); height:var(--h); z-index:3; }
 .scene-hotspot button { width:100%; height:100%; display:block; border:1px solid transparent; border-radius:6px; background:transparent; cursor:pointer; color:#fff0d6; }
 .scene-hotspot button:hover,.scene-hotspot button:focus-visible,.show-hotspots .scene-hotspot button { background:#f0d89c18; border-color:#f4dfaf99; box-shadow:0 0 18px #f8db941c; }
