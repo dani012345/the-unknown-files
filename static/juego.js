@@ -21,21 +21,26 @@
     const world = document.querySelector('[data-scene-world]');
     const background = document.querySelector('[data-scene-background]');
     const dialogueBox = document.querySelector('.dialogue-box');
+    const fitMode = world?.dataset.sceneFit;
+    const actionBottom = fitMode === 'explore'
+        ? Math.max(0, ...Array.from(world.querySelectorAll('.scene-hotspot'), spot => (
+            parseFloat(spot.style.getPropertyValue('--y')) + parseFloat(spot.style.getPropertyValue('--h'))
+        ) / 100))
+        : fitMode === 'shoes' ? .98 : 0;
     const fitScene = () => {
         if (!world || !background?.naturalWidth) return;
         const scene = world.parentElement;
-        const fit = world.dataset.sceneFit ? Math.min : Math.max;
+        const fit = fitMode ? Math.min : Math.max;
         const widthScale = scene.clientWidth / background.naturalWidth;
         let scale = fit(widthScale, scene.clientHeight / background.naturalHeight);
         world.style.top = '';
-        if (world.dataset.sceneFit === 'shoes' && dialogueBox) {
+        if (actionBottom && dialogueBox) {
             const clearHeight = dialogueBox.getBoundingClientRect().top - scene.getBoundingClientRect().top - 8;
             const imageHeight = background.naturalHeight * scale;
-            // El gesto de calzarse queda en el tercio inferior del fondo.
-            const shoeBottom = (scene.clientHeight - imageHeight) / 2 + imageHeight * .94;
-            if (clearHeight > 0 && shoeBottom > clearHeight) {
-                scale = Math.min(widthScale, clearHeight / background.naturalHeight);
-                world.style.top = `${clearHeight / 2}px`;
+            const actionEdge = (scene.clientHeight - imageHeight) / 2 + imageHeight * actionBottom;
+            if (clearHeight > 0 && actionEdge > clearHeight) {
+                scale = Math.min(scale, clearHeight / (background.naturalHeight * actionBottom));
+                world.style.top = `${background.naturalHeight * scale / 2}px`;
             }
         }
         world.style.width = `${background.naturalWidth * scale}px`;
@@ -45,7 +50,7 @@
     if (world) {
         const observer = new ResizeObserver(fitScene);
         observer.observe(world.parentElement);
-        if (dialogueBox && world.dataset.sceneFit === 'shoes') observer.observe(dialogueBox);
+        if (dialogueBox && actionBottom) observer.observe(dialogueBox);
     }
     fitScene();
     document.querySelector('[data-show-hotspots]')?.addEventListener('click', event => {

@@ -16,6 +16,12 @@ from flask import Blueprint, abort, g, make_response, redirect, render_template,
 STORY_VERSION = 1
 FIRST_SCENE = 'bryan_s01'
 BEDROOM_SCENE = 'bryan_s01_mensaje'
+BEDROOM_EXPLORATION_LINES = {
+    'mochila': 'Solo tengo que llevar la mesa.',
+    'ventilador': 'Luego veo qué le pasa.',
+    'zapato': 'Listo. Ya puedo bajar.',
+    'cocina': 'Los dejé junto al buró.',
+}
 COOKIE = 'uf_player'
 INITIAL_FLAGS = {
     'mesa_intacta': True, 'bicicleta_arreglada': False, 'pollo_alimentado': False,
@@ -58,6 +64,7 @@ def record_current(part):
     record(part, current['character'], current['text'])
 
 def enter_scene(part, scene):
+    part.pop('bedroom_interaction', None)
     if scene.get('calculate_final'):
         flags = part['flags']; points = flags['puntos_responsabilidad']
         flags['final'] = 'A' if points >= 3 and flags['ayudo_fiesta'] else 'C' if points <= 1 else 'B'
@@ -90,9 +97,10 @@ def available_choices(part, scene):
                and not (x.get('once') and x['id'] in part['used_choices'])]
     if scene['_id'] != BEDROOM_SCENE:
         return choices
-    return [dict(choice, text='Ponerse los tenis') if choice['id'] == 'zapato'
-            else dict(choice, text='Puerta · Ir a la cocina') if choice['id'] == 'cocina'
-            else choice for choice in choices]
+    door_label = 'Salir a la cocina' if 'zapato' in part['used_choices'] else 'Acercarse a la puerta'
+    labels = {'zapato': 'Ponerse los tenis', 'cocina': door_label}
+    return [dict(choice, text=labels[choice['id']]) if choice['id'] in labels else choice
+            for choice in choices]
 
 def respond(part, lines, next_scene=None):
     resolved = resolve_lines(lines, part['flags'])
@@ -109,10 +117,11 @@ def advance(part, scene, action, value, get_scene):
     if action == 'next':
         if not ready(part):
             part['line_index'] += 1; record_current(part); return True
-        if scene['_id'] == BEDROOM_SCENE and part.pop('bedroom_interaction', None):
-            line = resolve_lines(scene['dialogues'], part['flags'])[-1]
-            record(part, line['character'], line['text'], 'exploration')
-            return True
+        if scene['_id'] == BEDROOM_SCENE and not part.get('pending_next'):
+            interaction = part.pop('bedroom_interaction', None)
+            if interaction:
+                record(part, 'BRYAN', BEDROOM_EXPLORATION_LINES[interaction], 'exploration')
+                return True
         destination = part.get('pending_next') or scene.get('next')
         if destination:
             enter_scene(part,get_scene(destination)); return True
@@ -129,9 +138,14 @@ def advance(part, scene, action, value, get_scene):
         record(part,'ELECCIÓN',selected['text'],'choice')
         effects(part,selected.get('effects'))
         destination = selected.get('next')
-        if scene['_id'] == BEDROOM_SCENE and value in ('zapato', 'mochila', 'ventilador'):
-            part['bedroom_interaction'] = value
-        if not respond(part,selected.get('response',[]),destination):
+        response = selected.get('response', [])
+        if scene['_id'] == BEDROOM_SCENE:
+            if value in ('zapato', 'mochila', 'ventilador'):
+                part['bedroom_interaction'] = value
+            elif value == 'cocina' and destination:
+                part['bedroom_interaction'] = 'salir'
+                response = [{'character':'BRYAN', 'text':'Si me apuro, todavía llego.'}]
+        if not respond(part, response, destination):
             part.pop('bedroom_interaction', None)
             if destination:
                 enter_scene(part,get_scene(destination))
@@ -236,6 +250,12 @@ def create_game_blueprint(database, points_store=None):
         if cursor is None: cursor = last
         cursor = max(0,min(cursor,last)); reading = cursor != last
         entry = part['history'][cursor]
+        if (not reading and scene['_id'] == BEDROOM_SCENE and ready(part)
+                and 'shoes_on' not in entry and part.get('used_choices')):
+            # Las partidas antiguas guardaban la última frase en lugar del regreso a explorar.
+            shoes_on = 'zapato' in part['used_choices']
+            text = 'Listo. Ya puedo bajar.' if shoes_on else 'Me faltan los tenis.'
+            entry = dict(entry, kind='exploration', character='BRYAN', text=text, shoes_on=shoes_on)
         puzzle = scene.get('puzzle') if ready(part) and not part.get('pending_next') and not part['complete'] else None
         options = [x for x in (puzzle or {}).get('options',[]) if x['id'] not in part['puzzle_progress']]
         can_next = not ready(part) or bool(part.get('pending_next') or part.get('bedroom_interaction') or scene.get('next'))

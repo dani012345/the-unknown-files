@@ -60,12 +60,16 @@ def presentation(entry, choices, puzzle_options, active, part):
     elif scene_id == 'bryan_s01_mensaje':
         if entry.get('text') == 'La mesa…':
             background = 'img/escenas/BG01_bryan_la_mesa.png'
+        elif entry.get('interaction') == 'salir':
+            background = 'img/escenas/BG01_bryan_sale_dormitorio.png'
         elif entry.get('interaction') == 'zapato':
             background = 'img/escenas/BG01_bryan_se_calza.png'
         elif entry.get('interaction') in ('mochila', 'ventilador'):
             suffix = '_calzado' if entry.get('shoes_on') else ''
             background = f"img/escenas/BG01_bryan_{entry['interaction']}{suffix}.png"
-        elif entry.get('text') == '¡LA MESA!' or entry.get('interaction') == 'cocina':
+        elif entry.get('text') == '¡LA MESA!':
+            background = 'img/escenas/BG01_bryan_recuerda_mesa.png'
+        elif entry.get('kind') == 'exploration' or entry.get('interaction') == 'cocina':
             shoes_on = entry.get('shoes_on', active and 'zapato' in part.get('used_choices', ()))
             background = ('img/escenas/BG01_bryan_explora_calzado.png' if shoes_on
                           else 'img/escenas/BG01_bryan_la_mesa.png')
