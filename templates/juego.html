@@ -39,7 +39,7 @@
 {% set puede_retroceder = entry.kind == 'dialogue' and not hay_decision and retro.anterior is not none %}
 <main class="game-screen{{ ' is-exploring' if visual.hotspots or visual.photo_on_shelf else '' }}{{ ' has-dialogue-back' if puede_retroceder else '' }}">
     <section class="game-scene theme-{{ entry.theme }} shot-{{ shot }}" aria-label="{{ entry.title }}">
-        <div class="scene-world" data-scene-world{% if entry.interaction in ("zapato", "salir") %} data-scene-fit="shoes"{% elif indoor_bryan and visual.hotspots %} data-scene-fit="explore"{% elif indoor_bryan %} data-scene-fit="contain"{% endif %}>
+        <div class="scene-world" data-scene-world{% if visual.bedroom_focus is not none %} data-focus-x="{{ visual.bedroom_focus }}"{% endif %}{% if visual.background.endswith('BG01_bryan_al_borde.png') %} data-focus-top{% endif %}{% if entry.interaction in ("zapato", "salir") %} data-action-bottom=".98"{% endif %}>
             <img class="scene-background{{ ' scene-background--bedroom-tone' if indoor_bryan and visual.background != 'img/escenas/BG01_celular_1037.png' else '' }}" data-scene-background src="{{ url_for('static',filename=visual.background) }}" alt="{{ entry.title }}">
             {% if visual.photo_on_shelf %}<img class="scene-photo scene-photo--shelf" src="{{ url_for('static', filename=visual.photo) }}" alt="Fotografía antigua sobre la caja del almacén">{% endif %}
             {% if visual.photo_large %}<img class="scene-photo scene-photo--phone" src="{{ url_for('static', filename=visual.photo) }}" alt="Fotografía de la celebración de 1987">{% endif %}
@@ -156,5 +156,5 @@
     <form method="dialog"><button class="choice-button primary">Continuar</button></form>
     <a class="choice-button" href="{{ url_for('inicio') }}">Volver al escritorio</a>
 </dialog>
-<script defer src="{{ url_for('static',filename='juego.js',v='dormitorio-6') }}"></script>
+<script defer src="{{ url_for('static',filename='juego.js',v='dormitorio-8') }}"></script>
 </body></html>

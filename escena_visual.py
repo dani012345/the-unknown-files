@@ -7,6 +7,24 @@ SALON = 'img/escenas/BG05_salon_pinceladas.png'
 ALMACEN = 'img/escenas/BG06_almacen_pinceladas.png'
 PHOTO = 'img/escenas/foto_salon_1987.png'
 
+# Centro horizontal del encuadre cuando la pantalla recorta los laterales.
+BEDROOM_FOCUS_X = {
+    'celular_1037': .50,
+    'bryan_con_celular': .66,
+    'bryan_sentado': .62,
+    'bryan_al_borde': .67,
+    'bryan_lee_mensaje': .42,
+    'bryan_la_mesa': .43,
+    'bryan_recuerda_mesa': .39,
+    'bryan_explora_calzado': .43,
+    'bryan_se_calza': .44,
+    'bryan_sale_dormitorio': .42,
+    'bryan_mochila': .71,
+    'bryan_mochila_calzado': .71,
+    'bryan_ventilador': .72,
+    'bryan_ventilador_calzado': .72,
+}
+
 # x, y, ancho, alto en porcentajes del fondo completo.
 AREAS = {
     'bryan_s01': {'telefono': (64, 62, 8, 6)},
@@ -95,7 +113,9 @@ def presentation(entry, choices, puzzle_options, active, part):
                                          x=area[0], y=area[1], w=area[2], h=area[3]))
     photo_on_shelf = scene_id in ('bryan_s08', 'bryan_s08_explorar')
     photo_large = scene_id in ('bryan_s11_mensaje', 'bryan_s11_foto', 'bryan_s11_detalle')
+    bedroom_focus = BEDROOM_FOCUS_X.get(background.removeprefix('img/escenas/BG01_').removesuffix('.png'))
     return dict(background=background, portrait=portrait, hotspots=hotspots, photo=PHOTO,
+                bedroom_focus=bedroom_focus,
                 photo_on_shelf=photo_on_shelf, photo_large=photo_large,
                 can_inspect=bool((entry.get('evidence') or
                                  (photo_on_shelf and part['flags'].get('foto_encontrada')))

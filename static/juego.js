@@ -17,40 +17,52 @@
         const button = form.querySelector('button');
         if (button) { button.disabled = true; if (!button.querySelector('img')) button.textContent = 'Guardando…'; }
     }));
-    // Fondo y zonas clicables conservan la misma escala, incluso en vertical.
+    // El plano cubre la pantalla y mantiene las zonas sobre sus objetos.
     const world = document.querySelector('[data-scene-world]');
     const background = document.querySelector('[data-scene-background]');
-    const dialogueBox = document.querySelector('.dialogue-box');
-    const fitMode = world?.dataset.sceneFit;
-    const actionBottom = fitMode === 'explore'
-        ? Math.max(0, ...Array.from(world.querySelectorAll('.scene-hotspot'), spot => (
-            parseFloat(spot.style.getPropertyValue('--y')) + parseFloat(spot.style.getPropertyValue('--h'))
-        ) / 100))
-        : fitMode === 'shoes' ? .98 : 0;
+    const gameInterface = document.querySelector('.game-interface');
+    const bedroomFocus = Number(world?.dataset.focusX);
+    const hotspots = Array.from(world?.querySelectorAll('.scene-hotspot') ?? [], spot => {
+        const coordinate = name => parseFloat(spot.style.getPropertyValue(name)) / 100;
+        return { x: coordinate('--x'), right: coordinate('--x') + coordinate('--w'),
+                 bottom: coordinate('--y') + coordinate('--h') };
+    });
+    const actionBottom = Math.max(Number(world?.dataset.actionBottom ?? 0),
+        ...(Number.isFinite(bedroomFocus) ? hotspots.map(spot => spot.bottom) : []));
+    const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
     const fitScene = () => {
         if (!world || !background?.naturalWidth) return;
         const scene = world.parentElement;
-        const fit = fitMode ? Math.min : Math.max;
-        const widthScale = scene.clientWidth / background.naturalWidth;
-        let scale = fit(widthScale, scene.clientHeight / background.naturalHeight);
-        world.style.top = '';
-        if (actionBottom && dialogueBox) {
-            const clearHeight = dialogueBox.getBoundingClientRect().top - scene.getBoundingClientRect().top - 8;
-            const imageHeight = background.naturalHeight * scale;
-            const actionEdge = (scene.clientHeight - imageHeight) / 2 + imageHeight * actionBottom;
-            if (clearHeight > 0 && actionEdge > clearHeight) {
-                scale = Math.min(scale, clearHeight / (background.naturalHeight * actionBottom));
-                world.style.top = `${background.naturalHeight * scale / 2}px`;
-            }
+        const { clientWidth, clientHeight } = scene;
+        const scale = Math.max(clientWidth / background.naturalWidth, clientHeight / background.naturalHeight);
+        const width = Math.max(clientWidth, background.naturalWidth * scale);
+        const height = Math.max(clientHeight, background.naturalHeight * scale);
+        let focusX = Number.isFinite(bedroomFocus) ? bedroomFocus : .5;
+        if (Number.isFinite(bedroomFocus) && hotspots.length) {
+            const leftEdge = Math.min(...hotspots.map(spot => spot.x));
+            const rightEdge = Math.max(...hotspots.map(spot => spot.right));
+            const halfView = clientWidth / (2 * width);
+            focusX = rightEdge - leftEdge <= 2 * halfView
+                ? clamp(focusX, rightEdge - halfView, leftEdge + halfView)
+                : (leftEdge + rightEdge) / 2;
         }
-        world.style.width = `${background.naturalWidth * scale}px`;
-        world.style.height = `${background.naturalHeight * scale}px`;
+        const left = clamp(clientWidth / 2 - width * focusX, clientWidth - width, 0);
+        let top = 'focusTop' in world.dataset ? 0 : (clientHeight - height) / 2;
+        if (actionBottom && gameInterface) {
+            const clearHeight = gameInterface.getBoundingClientRect().top - scene.getBoundingClientRect().top - 8;
+            top = Math.min(top, clearHeight - height * actionBottom);
+        }
+        top = clamp(top, clientHeight - height, 0);
+        world.style.left = `${left + width / 2}px`;
+        world.style.top = `${top + height / 2}px`;
+        world.style.width = `${width}px`;
+        world.style.height = `${height}px`;
     };
     background?.addEventListener('load', fitScene);
     if (world) {
         const observer = new ResizeObserver(fitScene);
         observer.observe(world.parentElement);
-        if (dialogueBox && actionBottom) observer.observe(dialogueBox);
+        if (gameInterface && actionBottom) observer.observe(gameInterface);
     }
     fitScene();
     document.querySelector('[data-show-hotspots]')?.addEventListener('click', event => {
