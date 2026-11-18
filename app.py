@@ -3,6 +3,8 @@ from pymongo import MongoClient, ReturnDocument
 from pymongo.errors import PyMongoError
 from bson import ObjectId
 from datetime import datetime
+from pathlib import Path
+from werkzeug.security import safe_join
 from urllib.parse import quote
 import os
 import secrets
@@ -12,6 +14,20 @@ from cuentas import create_accounts_blueprint
 
 
 app = Flask(__name__)
+
+@app.url_defaults
+def version_static_asset(endpoint, values):
+    if endpoint != "static" or not values.get("filename"):
+        return
+    path = safe_join(app.static_folder, values["filename"])
+    if path is None:
+        return
+    try:
+        info = Path(path).stat()
+    except OSError:
+        return
+    values["v"] = f"{info.st_mtime_ns:x}-{info.st_size:x}"
+
 
 ESTADOS_VALIDOS = ("Disponible", "Bloqueado", "Completado")
 
@@ -267,5 +283,6 @@ def ayuda():
     return render_template("ayuda.html", fecha=fecha)
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    app.config["TEMPLATES_AUTO_RELOAD"] = True
+    app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=True)
     
