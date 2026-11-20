@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block titulo %}Modo de prueba | The Unknown Files{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='secciones.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='pruebas.css') }}">
+{% endblock %}
+{% block clase_body %}library-page settings-page test-page{% endblock %}
+{% block encabezado %}{% endblock %}
+{% block contenido %}
+<a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
+<header class="section-intro">
+    <p>ACCESO DE ADMINISTRADOR · CASO 001</p>
+    <h1>Modo de prueba</h1>
+    <p>Explora el caso de Bryan desde un punto preparado. Puedes repetirlo cuantas veces necesites: tu partida, puntos y compras de la cuenta se conservan.</p>
+    <p>Elegir un punto reemplaza únicamente la prueba actual de esta sesión. Las pruebas no generan puntos ni compras.</p>
+    {% if has_test %}<a class="test-button" href="{{ url_for('bryan.test_play') }}">Continuar mi prueba</a>{% endif %}
+</header>
+<div class="test-checkpoints">
+{% for key, checkpoint in checkpoints.items() %}
+    <section class="manual-card">
+        <p class="test-number">0{{ loop.index }}</p>
+        <h2>{{ checkpoint.title }}</h2>
+        <p>{{ checkpoint.description }}</p>
+        <form method="post" action="{{ url_for('bryan.test_menu') }}">
+            <input type="hidden" name="csrf" value="{{ access_csrf }}">
+            <input type="hidden" name="checkpoint" value="{{ key }}">
+            <button type="submit" class="test-button">Probar {{ checkpoint.title|lower }}</button>
+        </form>
+    </section>
+{% endfor %}
+</div>
+{% endblock %}

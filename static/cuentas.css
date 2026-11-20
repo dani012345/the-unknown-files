@@ -40,6 +40,18 @@
     cursor: pointer;
 }
 .access-back:hover { background: #40434b; }
+.access-back { flex-shrink: 0; }
+.document-toolbar .access-back {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid #51545d;
+    border-radius: 50%;
+    background: #303239;
+    color: #f0f0f2;
+    font: 24px/1 Arial, sans-serif;
+}
+.game-header .access-back, .game-quickbar .access-back { font: 24px/1 Arial, sans-serif; }
 .access-kicker { margin: 1.6rem 0 0; font: .75rem Consolas, monospace; letter-spacing: .12em; color: #c4c7d0; }
 .access-tabs { display: flex; gap: .5rem; padding: 5px; border: 1px solid #454850; border-radius: 14px; margin-bottom: 1.2rem; background: #1c1e22; }
 .access-tabs a { flex: 1; padding: .7rem .5rem; border-radius: 10px; color: #bdc0c8; text-decoration: none; text-align: center; font-size: .9rem; }

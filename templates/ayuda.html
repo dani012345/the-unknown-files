@@ -1,66 +1,43 @@
 {% extends 'base.html' %}
-
+{% block titulo %}Manual | The Unknown Files{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='secciones.css') }}">{% endblock %}
+{% block clase_body %}library-page manual-page{% endblock %}
+{% block encabezado %}{% endblock %}
 {% block contenido %}
-
-<section class="card shadow-sm">
-    <div class="card-body p-4">
-
-        <h2 class="h4">Ayuda de The Unknown Files</h2>
-
-        <p class="text-secondary">
-            Fecha del equipo: {{ fecha }}
-        </p>
-
-        <div class="alert alert-info" role="note">
-            Bienvenido al archivo de expedientes.
-            Utiliza datos ficticios durante las pruebas.
-        </div>
-
-        <h3 class="h5">Administración de casos</h3>
-
-        <ol class="mb-4">
-            <li class="mb-2">
-                En Taller de casos → Crear caso, escribe el nombre y la categoría,
-                y selecciona un estado.
-            </li>
-
-            <li class="mb-2">
-                Presiona Guardar caso para registrar el expediente.
-            </li>
-
-            <li class="mb-2">
-                Consulta los casos registrados en el taller.
-            </li>
-
-            <li class="mb-2">
-                Usa Editar para modificar los datos de un caso.
-            </li>
-
-            <li class="mb-2">
-                Usa Eliminar únicamente con los expedientes
-                que quieras quitar de la base de datos.
-            </li>
-
-            <li class="mb-2">
-                Los estados disponibles son Disponible
-                y Bloqueado.
-            </li>
-        </ol>
-
-        <div class="alert alert-warning" role="note">
-            Importante: eliminar un caso lo quita de la base
-            de datos. Por ahora, los estados son etiquetas
-            administrativas y no desbloquean mecánicas del juego.
-        </div>
-
-        <a
-            class="btn btn-primary"
-            href="{{ url_for('inicio') }}"
-        >
-            Volver al archivo de juegos
-        </a>
-
-    </div>
-</section>
-
+<a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
+<header class="section-intro"><h1>Manual del archivo</h1><p>Tu guía para explorar The Unknown Files.</p></header>
+<div class="manual-grid">
+    <section class="manual-card">
+        <h2>Empieza una historia</h2>
+        <p>En Inicio, abre el expediente de Bryan. También puedes encontrarlo en Archivo de casos y pulsar Jugar.</p>
+        <p>Las historias marcadas En proceso se pueden consultar mediante su ficha. Estarán disponibles para jugar cuando se complete su desarrollo.</p>
+    </section>
+    <section class="manual-card">
+        <h2>Explora y decide</h2>
+        <p>Avanza los diálogos, examina los objetos y elige cómo actuar. Historial y Diálogo anterior permiten releer lo ocurrido conservando tus decisiones.</p>
+        <p>En el dormitorio, revisa los tenis antes de salir por la puerta hacia la cocina.</p>
+    </section>
+    <section class="manual-card">
+        <h2>Tu cuenta y tu progreso</h2>
+        <p>Inicia sesión para recuperar tu partida y tus puntos desde otro dispositivo. El icono junto al nombre de la plataforma abre los datos de tu cuenta.</p>
+        <p>Los invitados tienen progreso temporal y las compras requieren una cuenta. Al salir como invitado se pierde el acceso a esa sesión.</p>
+    </section>
+    <section class="manual-card">
+        <h2>Puntos y carrito</h2>
+        <p>Algunas decisiones de Bryan otorgan puntos. En Mis puntos / Carrito puedes consultar el saldo y sus movimientos.</p>
+        <p>Los paquetes actuales son una compra simulada gratuita. El uso de puntos para adquirir contenido está en preparación.</p>
+    </section>
+    <section class="manual-card">
+        <h2>Fichas y códigos QR</h2>
+        <p>Cada caso tiene una ficha pública y un QR. Al escanearlo desde el sitio publicado, se consulta la información actual del expediente.</p>
+    </section>
+    {% if is_admin %}
+    <section class="manual-card">
+        <h2>Administrar casos</h2>
+        <p>En Archivo de casos puedes crear expedientes y editar nombre, categoría, descripción y portada. Las imágenes se guardan en MongoDB.</p>
+        <p>Los estados Disponible, Bloqueado y Completado describen el registro. La etiqueta jugable identifica el acceso al caso de Bryan.</p>
+        <p>La opción Eliminar retira los expedientes futuros. Puedes editar la ficha y la portada de Bryan.</p>
+    </section>
+    {% endif %}
+</div>
 {% endblock %}

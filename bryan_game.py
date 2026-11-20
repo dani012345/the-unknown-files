@@ -31,6 +31,35 @@ INITIAL_FLAGS = {
     'puntos_responsabilidad': 0, 'final': ''
 }
 FINAL_NAMES = {'A':'Por lo menos ayudaste', 'B':'Ya no me pidan favores', 'C':'El favor más caro'}
+TEST_CHECKPOINTS = {
+    'dormitorio': {'scene': FIRST_SCENE, 'title': 'Dormitorio',
+                   'description': 'Desde el despertador, sin decisiones previas.'},
+    'cocina': {'scene': 'bryan_s02', 'title': 'Cocina',
+               'description': 'Teléfono revisado y tenis puestos. Decide qué hacer con Pollo.'},
+    'patio': {'scene': 'bryan_s03', 'title': 'Patio',
+              'description': 'Pasos anteriores completados y Pollo alimentado. Busca la mesa.'},
+}
+
+
+def prepare_test_part(owner, checkpoint, get_scene):
+    """Prepara un punto de prueba recorriendo las mismas reglas del juego."""
+    target = TEST_CHECKPOINTS[checkpoint]['scene']
+    part = new_part(owner, get_scene(FIRST_SCENE))
+    for _ in range(200):
+        if part['scene_id'] == target:
+            return part
+        scene = get_scene(part['scene_id'])
+        choices = available_choices(part, scene)
+        desired = {'bryan_s01': 'telefono', 'bryan_s01_mensaje':
+                   'cocina' if 'zapato' in part['used_choices'] else 'zapato',
+                   'bryan_s02': 'alimentar'}.get(part['scene_id'])
+        if any(choice['id'] == desired for choice in choices):
+            valid = advance(part, scene, 'choice', desired, get_scene)
+        else:
+            valid = advance(part, scene, 'next', '', get_scene)
+        if not valid:
+            break
+    abort(409, description='El guion cambió y este punto de prueba necesita actualizarse. Tu partida no se modificó.')
 
 def matches(when, flags):
     return all(flags.get(key) == value for key, value in (when or {}).items())
@@ -198,6 +227,7 @@ def advance(part, scene, action, value, get_scene):
 def create_game_blueprint(database, points_store=None):
     bp = Blueprint('bryan', __name__)
     scenes = database['escenas']; saves = database['partidas']
+    test_saves = database['partidas_prueba']
     seeded = False
 
     def seed():
@@ -208,6 +238,7 @@ def create_game_blueprint(database, points_store=None):
             # Respeta las escenas editadas en MongoDB y conserva los documentos antiguos.
             scenes.update_one({'_id':doc['_id']},{'$setOnInsert':doc},upsert=True)
         saves.create_index([('owner_hash',1),('case_id',1),('story_version',1),('created_at',-1)])
+        test_saves.create_index('expires_at', expireAfterSeconds=0)
         seeded = True
 
     def get_scene(id):
@@ -215,8 +246,16 @@ def create_game_blueprint(database, points_store=None):
         if not scene: abort(404,description='No se encontró la escena del guion.')
         return scene
 
-    def load():
+    def require_admin():
+        if not g.get('account') or g.account.get('role') != 'admin' or not g.get('access_session'):
+            abort(403, description='El modo de prueba requiere una cuenta de administrador.')
+
+    def load(testing=False):
+        if testing:
+            require_admin()
         seed()
+        if testing:
+            return test_saves.find_one({'_id': g.access_session['_id']}), None
         token = request.cookies.get(COOKIE,'')
         if not re_token(token): token = secrets.token_urlsafe(32)
         access = g.get('access_session')
@@ -236,29 +275,60 @@ def create_game_blueprint(database, points_store=None):
         response.headers['Cache-Control'] = 'no-store'
         return response
 
-    def play():
-        part, token = load()
+    @bp.route('/admin/pruebas/bryan', methods=['GET', 'POST'])
+    def test_menu():
+        require_admin()
+        seed()
+        if request.method == 'POST':
+            if not secrets.compare_digest(request.form.get('csrf', ''), g.access_session['csrf']):
+                abort(400, description='El formulario venció. Recarga la página.')
+            checkpoint = request.form.get('checkpoint', '')
+            if checkpoint not in TEST_CHECKPOINTS:
+                abort(400, description='Selecciona un punto de prueba válido.')
+            part = prepare_test_part(g.access_session['owner'], checkpoint, get_scene)
+            part.update(_id=g.access_session['_id'], expires_at=g.access_session['expires_at'])
+            # Un único espacio de pruebas por sesión; nunca entra en partidas ni saldos.
+            test_saves.replace_one({'_id': part['_id']}, part, upsert=True)
+            return redirect(url_for('bryan.test_play'), code=303)
+        return response_with_cookie(make_response(render_template('pruebas_bryan.html',
+            checkpoints=TEST_CHECKPOINTS, has_test=bool(test_saves.find_one({'_id': g.access_session['_id']})))), None)
+
+    @bp.route('/admin/pruebas/bryan/jugar', methods=['GET', 'POST'])
+    def test_play():
+        return play(testing=True)
+
+    def play(testing=False):
+        part, token = load(testing)
+        if part is None:
+            return redirect(url_for('bryan.test_menu'))
+        play_endpoint = 'bryan.test_play' if testing else 'juego_bryan'
+        history_endpoint = 'bryan.test_history' if testing else 'bryan.history'
+        storage = test_saves if testing else saves
         if request.method == 'POST':
             supplied = request.form.get('csrf','')
             if not secrets.compare_digest(supplied,part['csrf']): abort(400,description='Esta partida cambió. Recarga la página para continuar.')
             try: revision = int(request.form.get('revision','-1'))
             except ValueError: abort(400,description='El avance recibido no es válido.')
             if revision != part['revision']:
-                return response_with_cookie(redirect(url_for('juego_bryan'),code=303),token)
+                return response_with_cookie(redirect(url_for(play_endpoint),code=303),token)
             action = request.form.get('action','')
             if action == 'restart':
                 fresh = new_part(part['owner_hash'],get_scene(FIRST_SCENE))
                 if 'expires_at' in part:
                     fresh['expires_at'] = part['expires_at']
-                fresh['_id'] = saves.insert_one(fresh).inserted_id
+                if testing:
+                    fresh['_id'] = part['_id']
+                    storage.replace_one({'_id': part['_id'], 'csrf': part['csrf'], 'revision': revision}, fresh)
+                else:
+                    fresh['_id'] = saves.insert_one(fresh).inserted_id
             else:
                 scene = get_scene(part['scene_id'])
                 if not advance(part,scene,action,request.form.get('value',''),get_scene):
                     abort(400,description='Esa acción no está disponible en este momento.')
                 part['revision'] += 1; part['updated_at'] = datetime.now(timezone.utc)
-                saves.replace_one({'_id':part['_id'],'revision':revision},part)
-            return response_with_cookie(redirect(url_for('juego_bryan'),code=303),token)
-        wallet = points_store.sync(part['owner_hash']) if points_store else None
+                storage.replace_one({'_id':part['_id'],'csrf':part['csrf'],'revision':revision},part)
+            return response_with_cookie(redirect(url_for(play_endpoint),code=303),token)
+        wallet = points_store.sync(part['owner_hash']) if points_store and not testing else None
         scene = get_scene(part['scene_id'])
         last = len(part['history'])-1
         cursor = request.args.get('h',type=int)
@@ -280,13 +350,24 @@ def create_game_blueprint(database, points_store=None):
                               not reading and not can_next and bool(puzzle or choices), part)
         response = make_response(render_template('juego.html',part=part,scene=scene,entry=entry,
             reading=reading,cursor=cursor,last=last,choices=choices,puzzle=puzzle,
-            puzzle_options=options,can_next=can_next,final_names=FINAL_NAMES,wallet=wallet,visual=visual))
+            puzzle_options=options,can_next=can_next,final_names=FINAL_NAMES,wallet=wallet,visual=visual,
+            testing=testing, play_endpoint=play_endpoint, history_endpoint=history_endpoint))
         return response_with_cookie(response,token)
 
     @bp.route('/caso/bryan/historial')
     def history():
-        part, token = load()
-        response = make_response(render_template('juego_historial.html',part=part,final_names=FINAL_NAMES))
+        return show_history()
+
+    @bp.get('/admin/pruebas/bryan/historial')
+    def test_history():
+        return show_history(testing=True)
+
+    def show_history(testing=False):
+        part, token = load(testing)
+        if part is None:
+            return redirect(url_for('bryan.test_menu'))
+        response = make_response(render_template('juego_historial.html',part=part,final_names=FINAL_NAMES,
+            testing=testing, play_endpoint='bryan.test_play' if testing else 'juego_bryan'))
         return response_with_cookie(response,token)
 
     return bp, play

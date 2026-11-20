@@ -8,13 +8,18 @@
 <section class="office-scene" aria-labelledby="office-title">
     <div class="office-viewport">
         <header class="office-heading office-overlay">
-            <p class="desk-kicker">DEPARTAMENTO DE INVESTIGACIÓN / ARCHIVO CENTRAL</p>
+            <nav class="office-section-nav" aria-label="Secciones del archivo">
+                <a href="{{ url_for('taller') }}">Archivo de casos</a>
+                <a href="{{ url_for('configuracion') }}">Configuración</a>
+                <a href="{{ url_for('ayuda') }}">Manual</a>
+            </nav>
             <h1 id="office-title">Cada archivo, una historia.</h1>
         </header>
         <nav class="desk-links office-overlay" aria-label="Accesos del escritorio">
             <a href="{{ url_for('portada') }}">Menú</a>
             <span aria-hidden="true">/</span>
             <a href="{{ url_for('puntos.cart') }}">Carrito</a>
+            {% if is_admin %}<span aria-hidden="true">/</span><a href="{{ url_for('bryan.test_menu') }}">Modo de prueba</a>{% endif %}
         </nav>
         <div class="office-ribbon office-overlay" aria-label="Toca un expediente para levantarlo">
             <span>Toca un expediente para levantarlo</span>
@@ -33,11 +38,11 @@
                      alt="Escritorio de investigación con el expediente de Bryan a la izquierda y el registro general a la derecha.">
                 <a class="office-hotspot office-hotspot--bryan" href="{{ url_for('juego_bryan') }}"
                    data-document="bryan-document" aria-label="Levantar el expediente de Bryan">
-                    <span>Un favor · Levantar expediente</span>
+                    <span>La suerte de Bryan</span>
                 </a>
                 <a class="office-hotspot office-hotspot--registry" href="{{ url_for('taller') }}"
                    data-document="registry-document" aria-label="Levantar el registro general de casos">
-                    <span>Otros archivos · Levantar registro</span>
+                    <span>Registro general</span>
                 </a>
             </div>
         </div>
@@ -47,7 +52,7 @@
 <noscript><p class="office-noscript">Sin JavaScript: <a href="{{ url_for('juego_bryan') }}">abrir el caso de Bryan</a> · <a href="{{ url_for('taller') }}">abrir el registro general</a>.</p></noscript>
 
 <dialog id="bryan-document" class="document-view" aria-labelledby="bryan-title">
-    <div class="document-toolbar"><button type="button" data-close-document autofocus>← Dejar expediente en la mesa</button></div>
+    <div class="document-toolbar"><button type="button" class="access-back" data-close-document autofocus aria-label="Dejar expediente en la mesa" title="Dejar expediente en la mesa">←</button></div>
     <div class="document-carrier"><article class="bryan-folder">
         <div class="folder-tab">EXPEDIENTE 001</div>
         <span class="folder-backing" aria-hidden="true"></span>
@@ -94,7 +99,7 @@
     </aside></div>
 </dialog>
 <dialog id="registry-document" class="document-view" aria-labelledby="registry-title">
-    <div class="document-toolbar"><button type="button" data-close-document autofocus>← Dejar registro en la mesa</button></div>
+    <div class="document-toolbar"><button type="button" class="access-back" data-close-document autofocus aria-label="Dejar registro en la mesa" title="Dejar registro en la mesa">←</button></div>
     <div class="document-carrier"><article class="bryan-folder registry-folder" aria-labelledby="registry-title">
             <div class="folder-tab">REGISTRO GENERAL</div>
             <span class="folder-backing" aria-hidden="true"></span>

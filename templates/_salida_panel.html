@@ -15,12 +15,12 @@
                 <button type="submit" class="access-submit">Sí, salir</button>
             </div>
         </form>
-        <noscript><a href="{{ url_for('portada') }}">Volver a la portada</a></noscript>
+        <noscript><a class="access-back" href="{{ url_for('portada') }}" aria-label="Volver a la portada" title="Volver a la portada">←</a></noscript>
     </div>
     <div data-exit-complete {% if not exit_closed %}hidden{% endif %}>
         <p class="access-kicker">THE UNKNOWN FILES</p>
         <h2 id="exit-done-title" tabindex="-1" data-exit-done-title>Has salido del archivo</h2>
         <p class="exit-message">Puedes cerrar esta pestaña o volver a la portada.</p>
-        <a class="access-submit" href="{{ url_for('portada') }}">Volver a la portada</a>
+        <a class="access-back" href="{{ url_for('portada') }}" aria-label="Volver a la portada" title="Volver a la portada">←</a>
     </div>
 </dialog>

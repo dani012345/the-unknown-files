@@ -6,7 +6,7 @@
     {% if closed %}
     <h1>Has salido de The Unknown Files</h1>
     <p>Puedes cerrar esta pestaña o volver a entrar.</p>
-    <a href="{{ url_for('portada') }}">Volver a la portada</a>
+    <a class="access-back" href="{{ url_for('portada') }}" aria-label="Volver a la portada" title="Volver a la portada">←</a>
     {% else %}
     <h1>¿Estás seguro de salir?</h1>
     {% if guest %}<p>Al salir perderás el acceso a la partida y los puntos de invitado.</p>{% endif %}
@@ -14,7 +14,7 @@
     <form method="post" action="{{ url_for('cuentas.logout') }}">
         <input type="hidden" name="csrf" value="{{ access_csrf }}">
         <button type="submit" class="access-submit">Sí, salir</button>
-        <a href="{{ url_for('portada') }}" class="access-secondary">Volver</a>
+        <a class="access-back" href="{{ url_for('portada') }}" aria-label="Volver a la portada" title="Volver a la portada">←</a>
     </form>
     {% endif %}
 </section>

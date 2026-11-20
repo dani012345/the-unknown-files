@@ -1,0 +1,27 @@
+<div class="col-md-6">
+    <label for="nombre" class="form-label">Nombre del caso</label>
+    <input id="nombre" name="nombre" class="form-control" required maxlength="80" value="{{ caso_form.get('nombre', '') }}">
+</div>
+<div class="col-md-3">
+    <label for="categoria" class="form-label">Categoría</label>
+    <input id="categoria" name="categoria" class="form-control" required maxlength="20" value="{{ caso_form.get('categoria', '') }}">
+</div>
+<div class="col-md-3">
+    <label for="estado" class="form-label">Estado del registro</label>
+    <select id="estado" name="estado" class="form-select" required>
+        <option value="">Selecciona</option>
+        {% for estado in estados %}
+        <option value="{{ estado }}" {% if caso_form.get('estado') == estado %}selected{% endif %}>{{ estado }}</option>
+        {% endfor %}
+    </select>
+</div>
+<div class="col-12">
+    <label for="descripcion" class="form-label">Descripción</label>
+    <textarea id="descripcion" name="descripcion" class="form-control" rows="4" maxlength="2000">{{ caso_form.get('descripcion', '') }}</textarea>
+</div>
+<div class="col-12">
+    <label for="portada" class="form-label">Imagen de portada</label>
+    <input id="portada" name="portada" class="form-control" type="file" accept="image/png,image/jpeg,image/webp">
+    <p class="form-text">PNG, JPG o WebP de hasta 5 MB. Si dejas este campo vacío, se conserva la portada actual.</p>
+    {% if portada_url %}<img class="cover-preview" src="{{ portada_url }}" alt="Portada actual de {{ caso_form.nombre }}">{% endif %}
+</div>

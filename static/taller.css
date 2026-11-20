@@ -84,6 +84,22 @@
 .case-card__body { flex: 1; padding: 1.1rem 1.25rem; }
 .case-card h3 { margin: 0 0 .75rem; font-size: 1.55rem; overflow-wrap: anywhere; }
 .case-card h2, .case-card h3, .library-page h2 { color: #f0f0f2; }
+.case-title { margin: 0 0 .75rem; font-size: 1.55rem; overflow-wrap: anywhere; }
+.case-description { white-space: pre-line; }
+.case-editor {
+    max-width: 900px;
+    padding: clamp(1.2rem, 4vw, 2rem);
+    margin: 1.5rem auto;
+    border: 1px solid #454850;
+    border-radius: 24px;
+    background: #24262bf5;
+}
+.case-editor h1 { margin-bottom: 1.5rem; color: #f0f0f2; }
+.library-page .form-label { color: #e1e3e9; }
+.library-page .form-text { color: #bfc2cb; }
+.cover-preview { display: block; width: min(100%, 360px); max-height: 240px; object-fit: cover; margin-top: 1rem; border-radius: 16px; }
+.case-detail { max-width: 850px; margin: 1.5rem auto; }
+.case-detail .case-card__cover { aspect-ratio: 16 / 8; }
 .case-card__body p { margin: 0 0 .6rem; color: #c2c5ce; font-size: .92rem; line-height: 1.65; }
 .case-card__body small, .case-card__body .case-admin-state { color: #afb3bf; font-size: .76rem; }
 .case-card__body details { color: #cdd0d8; font-size: .82rem; }

@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 {% block titulo %}{{ caso.nombre }} | The Unknown Files{% endblock %}
 {% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}">{% endblock %}
+{% block clase_body %}library-page{% endblock %}
+{% block encabezado %}{% endblock %}
 {% block contenido %}
-<article class="case-card">
+<a class="access-back" href="{{ url_for('taller') }}" aria-label="Volver a los casos" title="Volver a los casos">←</a>
+<article class="case-card case-detail">
+    <img class="case-card__cover" src="{{ caso.portada_url }}" alt="Portada de {{ caso.nombre }}">
     <div class="case-card__body">
         <h2>{{ caso.nombre }}</h2>
+        <p class="case-description">{{ caso.descripcion }}</p>
         <dl class="mb-0">
             <dt>Categoría</dt>
             <dd>{{ caso.categoria }}</dd>
@@ -12,5 +17,6 @@
             <dd class="mb-0">{{ caso.estado }}</dd>
         </dl>
     </div>
+    {% if caso.jugable %}<div class="case-card__actions"><a class="btn btn-dark" href="{{ url_for('juego_bryan') }}">Jugar</a></div>{% endif %}
 </article>
 {% endblock %}

@@ -1,0 +1,100 @@
+.cart-page {
+    background-image: linear-gradient(#17141070, #171410bf), url("img/fondo-puntos-v2.png");
+}
+.manual-page {
+    background-image: linear-gradient(#17141070, #171410bf), url("img/fondo-manual-v2.png");
+}
+.settings-page { background-image: linear-gradient(#17141070, #171410bf), url("img/fondo-configuracion-v1.png"); }
+.section-intro { margin: 1.5rem 0 2rem; max-width: 760px; }
+.section-intro h1 { color: #f0f0f2; font-size: clamp(2rem, 4vw, 3.25rem); }
+.section-intro p { color: #c2c5ce; line-height: 1.7; }
+.manual-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem; }
+.manual-card, .cart-page .points-card {
+    padding: clamp(1.25rem, 3vw, 1.8rem);
+    background: #24262bf0;
+    color: #e1e3e9;
+    border: 1px solid #454850;
+    border-radius: 24px;
+    box-shadow: 0 16px 40px #0004;
+}
+.manual-card h2 { font-size: 1.45rem; margin-bottom: 1rem; color: #f0f0f2; }
+.manual-card p { line-height: 1.8; color: #c9ccd5; }
+.manual-card p:last-child { margin-bottom: 0; }
+.cart-page .points-page { color: #e1e3e9; padding-top: 0; }
+.cart-page h1, .cart-page h2, .cart-page h3 { color: #f0f0f2; }
+.cart-page .points-heading p { color: #c2c5ce; }
+.cart-page .points-eyebrow { color: #bbc0cd; }
+.cart-page .points-balance { background: #24262bf0; color: #f0f0f2; border-color: #535762; border-radius: 24px; }
+.cart-page .points-button {
+    min-height: 44px;
+    color: #191b20;
+    background: #e1e3e9;
+    border: 1px solid #646976;
+    border-radius: 12px;
+}
+.cart-page .points-button:hover { background: #fff; }
+.cart-page .points-secondary { background: #30333b; color: #f0f0f2; }
+.cart-page .points-secondary:hover { background: #41454f; }
+.cart-page .points-demo, .cart-page .points-notice { background: #24262bf0; border-color: #535762; border-radius: 16px; color: #d3d6df; }
+.cart-page .points-notice { background: #263c34; color: #d0eade; }
+.cart-page .points-footnote, .cart-page .movement small { color: #bbc0cd; }
+.cart-page .movement > span { color: #b9decb; }
+.cart-page .cart-row, .cart-page .movement { border-color: #454850; }
+.cart-page .points-card a { color: #d1dafa; }
+.cart-page .points-button:focus-visible { outline-color: #a9bce7; }
+@media (max-width: 720px) {
+    .manual-grid { grid-template-columns: 1fr; }
+    .cart-page .points-heading { gap: 1.2rem; }
+    .cart-page .points-balance { min-width: 0; }
+}
+
+.cart-page, .manual-page, .settings-page { color: #e9ddc6; }
+:is(.cart-page, .manual-page, .settings-page) .archive-navbar { background: #29261ff5; border-color: #7c6d5290; }
+:is(.cart-page, .manual-page, .settings-page) :is(.system-bar, .archive-footer) { background: #1b1915f0; color: #cbbd9f; }
+:is(.cart-page, .manual-page, .settings-page) :is(.navbar-brand, .nav-link) { color: #e8dbc1; }
+.manual-card, .cart-page .points-card, .settings-card, .settings-account {
+    background: #2b2923ed;
+    border: 1px solid #88775b99;
+    border-radius: 24px;
+    color: #e9ddc6;
+    box-shadow: 0 16px 40px #0004;
+}
+:is(.cart-page, .manual-page, .settings-page) :is(h1, h2, h3) { color: #f0e2c5; }
+.manual-card p, .section-intro p, .cart-page .points-heading p { color: #d9ccb2; }
+.cart-page .points-page { color: #e9ddc6; }
+.cart-page .points-eyebrow { color: #c7b58e; }
+.cart-page .points-balance { background: #2b2923ed; color: #efdfbd; border-color: #88775b99; }
+.cart-page .points-button { background: #e3d1ae; color: #29241b; border-color: #b4a180; }
+.cart-page .points-button:hover { background: #f1e2c8; }
+.cart-page .points-secondary { background: #3b352b; color: #eedfc5; }
+.cart-page .points-secondary:hover { background: #514635; }
+.cart-page :is(.points-demo, .points-notice) { background: #302b23f2; color: #e4d4b6; border-color: #88775b99; }
+.cart-page :is(.points-footnote, .movement small) { color: #c9bca3; }
+.cart-page :is(.cart-row, .movement) { border-color: #7d705766; }
+:is(.cart-page, .manual-page, .settings-page) .access-back { background: #3b352b; color: #eedfc5; border-color: #98815e; }
+:is(.cart-page, .manual-page, .settings-page) .access-back:hover { background: #574a36; }
+.settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem; }
+.settings-card { min-width: 0; padding: 1.6rem; display: flex; flex-direction: column; gap: .8rem; }
+.settings-card legend { float: none; width: auto; margin: 0 0 .5rem; padding: 0 .25rem; color: #efdfbd; font: bold 1.4rem Georgia, serif; }
+.settings-card label { color: #e1d3b9; font-size: .95rem; }
+.settings-card select { width: 100%; padding: .8rem 1rem; border: 1px solid #8f7c5c; border-radius: 12px; background: #211e19; color: #e3d4b6; }
+.settings-card input[type="range"] { width: 100%; accent-color: #c4a976; margin-bottom: .5rem; }
+.settings-card :disabled { opacity: .8; cursor: not-allowed; }
+.settings-toggle { display: flex; align-items: center; gap: .7rem; margin-top: .4rem; }
+.settings-toggle input { width: 18px; height: 18px; flex-shrink: 0; accent-color: #c4a976; }
+.settings-range { display: flex; align-items: center; gap: .8rem; color: #cbbd9f; font-size: .8rem; }
+.settings-range input[type="range"] { margin: 0; }
+.settings-notice { padding: 1rem; border: 1px solid #88775b99; border-radius: 14px; background: #302b23ed; font-size: .9rem; line-height: 1.7; }
+.settings-account { padding: 1.5rem; margin-top: 1.4rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.settings-account h2 { font-size: 1.4rem; }
+.settings-account p { color: #d9ccb2; margin: 0; line-height: 1.7; }
+.settings-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+.settings-actions .access-secondary, .settings-actions button { padding: .8rem 1rem; border: 1px solid #97805b; border-radius: 12px; background: #3b352b; color: #eedfc5; }
+.settings-actions .access-secondary:hover { background: #514635; }
+.settings-save { justify-content: flex-end; margin-top: 1.3rem; }
+.settings-save button:disabled { opacity: .6; cursor: not-allowed; }
+@media (max-width: 720px) {
+    .settings-grid { grid-template-columns: 1fr; }
+    .settings-account { align-items: flex-start; flex-direction: column; }
+    .settings-card { padding: 1.2rem; }
+}

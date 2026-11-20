@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Un favor · Caso 001 | The Unknown Files</title>
     <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='dormitorio-6') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='cuentas.css') }}">
 </head>
 <body class="game-page">
 {% macro action_button(action, text, value='', css='choice-button') -%}
-<form method="post" action="{{ url_for('juego_bryan') }}" class="game-action">
+<form method="post" action="{{ url_for(play_endpoint) }}" class="game-action">
     <input type="hidden" name="csrf" value="{{ part.csrf }}">
     <input type="hidden" name="revision" value="{{ part.revision }}">
     <input type="hidden" name="action" value="{{ action }}">
@@ -44,7 +45,7 @@
             {% if visual.photo_on_shelf %}<img class="scene-photo scene-photo--shelf" src="{{ url_for('static', filename=visual.photo) }}" alt="Fotografía antigua sobre la caja del almacén">{% endif %}
             {% if visual.photo_large %}<img class="scene-photo scene-photo--phone" src="{{ url_for('static', filename=visual.photo) }}" alt="Fotografía de la celebración de 1987">{% endif %}
             {% for hotspot in visual.hotspots %}
-            <form method="post" action="{{ url_for('juego_bryan') }}" class="game-action scene-hotspot" style="--x:{{ hotspot.x }}%;--y:{{ hotspot.y }}%;--w:{{ hotspot.w }}%;--h:{{ hotspot.h }}%">
+            <form method="post" action="{{ url_for(play_endpoint) }}" class="game-action scene-hotspot" style="--x:{{ hotspot.x }}%;--y:{{ hotspot.y }}%;--w:{{ hotspot.w }}%;--h:{{ hotspot.h }}%">
                 <input type="hidden" name="csrf" value="{{ part.csrf }}">
                 <input type="hidden" name="revision" value="{{ part.revision }}">
                 <input type="hidden" name="action" value="{{ hotspot.action }}">
@@ -57,7 +58,7 @@
             {% endif %}
         </div>
         {% if visual.portrait and not hay_decision %}
-            {% if can_next and not reading %}<form method="post" action="{{ url_for('juego_bryan') }}" class="game-action portrait-action">
+            {% if can_next and not reading %}<form method="post" action="{{ url_for(play_endpoint) }}" class="game-action portrait-action">
                 <input type="hidden" name="csrf" value="{{ part.csrf }}"><input type="hidden" name="revision" value="{{ part.revision }}"><input type="hidden" name="action" value="next">
                 <button type="submit" class="portrait-button" aria-label="Continuar el diálogo con Bryan" title="Continuar diálogo">
                     <img class="scene-character portrait-bryan" src="{{ url_for('static', filename='img/personajes/bryan/' ~ visual.portrait) }}" alt="Bryan">
@@ -78,17 +79,20 @@
 
     </section>
     <header class="game-header" aria-label="Controles de la partida">
-        <a class="game-home" href="{{ url_for('inicio') }}" title="Regresar al escritorio">← <span>Escritorio</span></a>
-        <span class="game-case-label">CASO 001 · UN FAVOR</span>
+        <a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
+        <span class="game-case-label">{{ 'PRUEBA ADMIN · UN FAVOR' if testing else 'CASO 001 · UN FAVOR' }}</span>
         <div class="game-header-actions">
             {% if wallet %}<a class="game-points" href="{{ url_for('puntos.cart') }}">{{ wallet.balance }} puntos</a>{% endif %}
-            <span class="save-status" title="{{ 'El progreso de invitado es temporal' if guest else 'Tu progreso se guarda en tu cuenta' }}">● {{ 'Sesión temporal' if guest else 'Guardado automático' }}</span>
+            {% if testing %}<span class="save-status">● PRUEBA ADMIN · SIN PUNTOS</span>
+            {% else %}<span class="save-status" title="{{ 'El progreso de invitado es temporal' if guest else 'Tu progreso se guarda en tu cuenta' }}">● {{ 'Sesión temporal' if guest else 'Guardado automático' }}</span>{% endif %}
             <details class="game-menu">
                 <summary title="Abrir opciones del juego" aria-label="Abrir opciones del juego">
                     <span class="menu-glyph" aria-hidden="true">☰</span><span>Menú</span>
                 </summary>
                 <nav class="game-menu-content" aria-label="Opciones del juego">
-                    <a href="{{ url_for('bryan.history') }}">Historial de diálogos</a>
+                    {% if is_admin %}<a href="{{ url_for('bryan.test_menu') }}">{{ 'Cambiar punto de prueba' if testing else 'Modo de prueba' }}</a>{% endif %}
+                    {% if testing %}<a href="{{ url_for('juego_bryan') }}">Salir de prueba y continuar mi partida</a>{% endif %}
+                    <a href="{{ url_for(history_endpoint) }}">Historial de diálogos</a>
                     <button type="button" data-open-pause>Pausar partida</button>
                 </nav>
             </details>
@@ -106,8 +110,8 @@
         <div class="choice-panel" aria-label="Opciones disponibles">
         {% if reading %}
             <p class="choice-title">LECTURA ANTERIOR · NO MODIFICA TU PARTIDA</p>
-            {% if retro.siguiente is not none %}<a class="choice-button" href="{{ url_for('juego_bryan',h=retro.siguiente) }}">Leer siguiente →</a>{% endif %}
-            <a class="choice-button primary" href="{{ url_for('juego_bryan') }}">Volver al presente</a>
+            {% if retro.siguiente is not none %}<a class="choice-button" href="{{ url_for(play_endpoint,h=retro.siguiente) }}">Leer siguiente →</a>{% endif %}
+            <a class="access-back" href="{{ url_for(play_endpoint) }}" aria-label="Volver al presente" title="Volver al presente">←</a>
         {% elif can_next %}
             {{ action_button('next','Siguiente →',css='choice-button primary') }}
         {% elif puzzle %}
@@ -122,8 +126,8 @@
             {% for choice in choices %}{{ action_button('choice',choice.text,choice.id) }}{% endfor %}
         {% elif part.complete %}
             <p class="ending-label">FINAL {{ part.flags.final }} · {{ final_names[part.flags.final] }}</p>
-            <a class="choice-button primary" href="{{ url_for('bryan.history') }}">Leer el historial de esta partida</a>
-            <form method="post" action="{{ url_for('juego_bryan') }}" class="restart-form">
+            <a class="choice-button primary" href="{{ url_for(history_endpoint) }}">Leer el historial de esta partida</a>
+            <form method="post" action="{{ url_for(play_endpoint) }}" class="restart-form">
                 <input type="hidden" name="csrf" value="{{ part.csrf }}"><input type="hidden" name="revision" value="{{ part.revision }}"><input type="hidden" name="action" value="restart">
                 <button class="choice-button" type="submit">Empezar otra partida</button>
             </form>
@@ -132,12 +136,12 @@
     </section>
     {% if puede_retroceder %}
     <nav class="game-quickbar" aria-label="Volver a diálogos anteriores">
-        <a class="game-dialogue-back" href="{{ url_for('juego_bryan',h=retro.anterior) }}" title="Releer el diálogo anterior sin cambiar puntos ni decisiones">
-            <span aria-hidden="true">↶</span> Diálogo anterior
+        <a class="access-back" href="{{ url_for(play_endpoint,h=retro.anterior) }}" aria-label="Diálogo anterior" title="Diálogo anterior">
+            ←
         </a>
         {% if retro.escena is not none %}
-        <a class="game-dialogue-back game-scene-back" href="{{ url_for('juego_bryan',h=retro.escena) }}" title="Revisar la escena anterior sin modificar las elecciones">
-            <span aria-hidden="true">‹</span> Escena anterior
+        <a class="access-back" href="{{ url_for(play_endpoint,h=retro.escena) }}" aria-label="Escena anterior" title="Escena anterior">
+            ←
         </a>
         {% endif %}
     </nav>
@@ -152,9 +156,9 @@
 </dialog>
 {% endif %}
 <dialog class="pause-dialog" id="pause-dialog" aria-labelledby="pause-title">
-    <h2 id="pause-title">Partida en pausa</h2><p>Tu avance ya está guardado en MongoDB. Puedes continuar aquí desde este navegador.</p>
+    <h2 id="pause-title">Partida en pausa</h2><p>{{ 'Estás probando una partida separada. Tu progreso y tus puntos de la cuenta no cambian.' if testing else 'Tu avance ya está guardado en MongoDB. Puedes continuar aquí desde este navegador.' }}</p>
     <form method="dialog"><button class="choice-button primary">Continuar</button></form>
-    <a class="choice-button" href="{{ url_for('inicio') }}">Volver al escritorio</a>
+    <a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
 </dialog>
 <script defer src="{{ url_for('static',filename='juego.js',v='dormitorio-8') }}"></script>
 </body></html>

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block titulo %}Mis puntos y carrito | The Unknown Files{% endblock %}
-{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='puntos.css') }}">{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='puntos.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='secciones.css') }}">{% endblock %}
+{% block clase_body %}library-page cart-page{% endblock %}
 {% block encabezado %}{% endblock %}
 {% macro form(action, label, package='') %}
 <form method="post" action="{{ url_for('puntos.cart') }}">
@@ -13,9 +14,9 @@
 {% endmacro %}
 {% block contenido %}
 <div class="points-page">
-    <a class="points-back" href="{{ url_for('inicio') }}">← Volver al escritorio</a>
+    <a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
     <header class="points-heading"><div><p class="points-eyebrow">DEPARTAMENTO DE RECURSOS / U.F.</p>
-    <h1>Tu próxima historia empieza aquí.</h1><p>Reúne puntos y conserva tu reserva para los próximos archivos.</p></div>
+    <h1>Mis puntos y carrito</h1><p>Consulta tu saldo y los movimientos de tu cuenta.</p></div>
     <div class="points-balance"><span>SALDO DISPONIBLE</span><strong>{{ wallet.balance }}</strong><span>PUNTOS</span></div></header>
     <p class="points-demo">MODO DEMOSTRACIÓN · Las compras son simuladas y gratuitas. No se realiza ningún cobro.</p>
     {% if notice == 'purchased' %}<p class="points-notice" role="status">Compra simulada completada. Tus puntos ya están en el saldo.</p>{% endif %}

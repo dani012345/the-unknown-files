@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, jsonify, g
+from flask import Flask, render_template, request, redirect, url_for, abort, jsonify, g, send_file
 from pymongo import MongoClient, ReturnDocument
-from pymongo.errors import PyMongoError
+from pymongo.errors import DuplicateKeyError, PyMongoError
 from bson import ObjectId
 from datetime import datetime
 from pathlib import Path
+from io import BytesIO
 from werkzeug.security import safe_join
 from urllib.parse import quote
 import os
@@ -11,9 +12,11 @@ import secrets
 from bryan_game import create_game_blueprint, STORY_VERSION
 from puntos import create_points_blueprint
 from cuentas import create_accounts_blueprint
+from catalogo import BRYAN_ID, CASOS_INICIALES, validar_portada
 
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 6 * 1024 * 1024
 
 @app.url_defaults
 def version_static_asset(endpoint, values):
@@ -43,6 +46,29 @@ cliente = MongoClient(mongo_uri, serverSelectionTimeoutMS=10000)
 base_datos = cliente["the_unknown_files"]
 casos = base_datos["casos"]
 escenas = base_datos["escenas"]
+catalogo_revisado = False
+
+
+def asegurar_catalogo():
+    global catalogo_revisado
+    if catalogo_revisado:
+        return
+    for caso in CASOS_INICIALES:
+        try:
+            casos.update_one({"_id": caso["_id"]}, {"$setOnInsert": caso}, upsert=True)
+        except DuplicateKeyError:
+            if casos.find_one({"_id": caso["_id"]}) is None:
+                raise
+    catalogo_revisado = True
+
+
+def detalles_caso(datos):
+    if "descripcion" not in datos:
+        return {}
+    descripcion = datos["descripcion"]
+    if not isinstance(descripcion, str) or len(descripcion) > 2000:
+        abort(400, description="La descripción admite hasta 2000 caracteres de texto.")
+    return {"descripcion": descripcion.strip()}
 
 app.register_blueprint(create_accounts_blueprint(base_datos))
 
@@ -93,12 +119,14 @@ def leer_formulario(datos=None):
     return {
         "nombre": nombre,
         "categoria": categoria,
-        "estado": estado}
+        "estado": estado,
+        **detalles_caso(datos)}
 
 def buscar_caso(id):
     if not ObjectId.is_valid(id):
         abort(404, description="La clave del caso no es válida.")
-    caso = casos.find_one({"_id": ObjectId(id)})
+    asegurar_catalogo()
+    caso = casos.find_one({"_id": ObjectId(id), "oculto": {"$ne": True}})
     if caso is None:
         abort(404, description="Este expediente ya no existe.")
     return caso
@@ -110,7 +138,14 @@ def caso_a_json(caso):
         "id": str(caso["_id"]),
         "nombre": caso["nombre"],
         "categoria": caso["categoria"],
-        "estado": caso["estado"]
+        "estado": caso["estado"],
+        "descripcion": caso.get("descripcion", "Una historia que todavía espera ser abierta."),
+        "jugable": caso.get("juego") == "bryan",
+        "portada_url": (
+            url_for("imagen_caso", id=str(caso["_id"]), v=caso["portada_hash"])
+            if caso.get("portada_hash")
+            else url_for("static", filename=caso.get("portada_archivo", "img/biblioteca-archivo-v1.png"))
+        ),
     }
 
 
@@ -141,13 +176,15 @@ def validar_json_api():
     return {
         "nombre": nombre,
         "categoria": categoria,
-        "estado": estado
+        "estado": estado,
+        **detalles_caso(datos),
     }, None
 
 
 @app.route("/api/casos", methods=["GET"])
 def api_listar_casos():
-    lista = casos.find().sort("nombre", 1)
+    asegurar_catalogo()
+    lista = casos.find({"oculto": {"$ne": True}}, {"portada_datos": 0}).sort("nombre", 1)
     return jsonify([caso_a_json(caso) for caso in lista]), 200
 
 
@@ -169,7 +206,8 @@ def api_detalle_caso(id):
         return jsonify(error="El ID del caso no es válido."), 404
 
     object_id = ObjectId(id)
-    caso = casos.find_one({"_id": object_id})
+    asegurar_catalogo()
+    caso = casos.find_one({"_id": object_id, "oculto": {"$ne": True}})
 
     if caso is None:
         return jsonify(error="No se encontró el caso solicitado."), 404
@@ -183,14 +221,19 @@ def api_detalle_caso(id):
             return error
 
         actualizado = casos.find_one_and_update(
-            {"_id": object_id}, {"$set": datos}, return_document=ReturnDocument.AFTER
+            {"_id": object_id, "oculto": {"$ne": True}}, {"$set": datos}, return_document=ReturnDocument.AFTER
         )
         if actualizado is None:
             return jsonify(error="Este expediente ya no existe."), 404
 
         return jsonify(caso_a_json(actualizado)), 200
 
-    casos.delete_one({"_id": object_id})
+    if object_id == BRYAN_ID:
+        return jsonify(error="El caso de Bryan se conserva como juego principal. Puedes editar su ficha."), 400
+    if any(caso["_id"] == object_id for caso in CASOS_INICIALES):
+        casos.update_one({"_id": object_id}, {"$set": {"oculto": True}})
+    else:
+        casos.delete_one({"_id": object_id})
     return jsonify(mensaje="Caso eliminado correctamente.", id=id), 200
 
 @app.route("/")
@@ -214,13 +257,14 @@ def configuracion():
 
 @app.route("/taller")
 def taller():
+    asegurar_catalogo()
     base_publica = (
         os.environ.get("APP_BASE_URL", "").strip()
         or os.environ.get("RENDER_EXTERNAL_URL", "").strip()
         or request.host_url
     ).rstrip("/")
     expedientes = []
-    for documento in casos.find().sort("nombre", 1):
+    for documento in casos.find({"oculto": {"$ne": True}}, {"portada_datos": 0}).sort("nombre", 1):
         caso = caso_a_json(documento)
         caso["enlace_ficha"] = base_publica + url_for("ficha_caso", id=caso["id"])
         caso["enlace_qr"] = (
@@ -228,6 +272,7 @@ def taller():
             + quote(caso["enlace_ficha"], safe="")
         )
         expedientes.append(caso)
+    expedientes.sort(key=lambda caso: not caso["jugable"])
     return render_template("taller.html", casos=expedientes, estados=ESTADOS_VALIDOS)
 
 
@@ -236,6 +281,19 @@ def ficha_caso(id):
     caso = caso_a_json(buscar_caso(id))
     return render_template("ficha_caso.html", caso=caso), {"Cache-Control": "no-store"}
 
+
+@app.get("/portada-caso/<id>")
+def imagen_caso(id):
+    caso = buscar_caso(id)
+    if not caso.get("portada_datos"):
+        return redirect(url_for("static", filename=caso.get("portada_archivo", "img/biblioteca-archivo-v1.png")))
+    response = send_file(
+        BytesIO(caso["portada_datos"]), mimetype=caso["portada_tipo"],
+        etag=caso["portada_hash"], conditional=True, max_age=0,
+    )
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
 @app.route("/caso/bryan", methods=["GET", "POST"])
 def juego_bryan():
     return jugar_bryan()
@@ -243,6 +301,7 @@ def juego_bryan():
 @app.route("/agregar", methods=["POST"])
 def agregar():
     datos = leer_formulario()
+    datos.update(validar_portada(request.files.get("portada")))
     casos.insert_one(datos)
     return redirect(url_for("taller", _anchor="lista"))
 
@@ -251,16 +310,22 @@ def editar(id):
     caso = buscar_caso(id)
     if request.method == "POST":
         datos = leer_formulario()
+        datos.update(validar_portada(request.files.get("portada")))
         resultado = casos.update_one({"_id": caso["_id"]}, {"$set": datos})
         if not resultado.matched_count:
             abort(404, description="Este expediente ya no existe.")
         return redirect(url_for("taller", _anchor="lista"))
-    return render_template("editar.html", caso=caso, estados=ESTADOS_VALIDOS)
+    return render_template("editar.html", caso=caso, portada_url=caso_a_json(caso)["portada_url"], estados=ESTADOS_VALIDOS)
 
 @app.route("/eliminar/<id>", methods=["POST"])
 def eliminar(id):
     caso = buscar_caso(id)
-    casos.delete_one({"_id": caso["_id"]})
+    if caso["_id"] == BRYAN_ID:
+        abort(400, description="El caso de Bryan se conserva como juego principal. Puedes editar su ficha.")
+    if any(inicial["_id"] == caso["_id"] for inicial in CASOS_INICIALES):
+        casos.update_one({"_id": caso["_id"]}, {"$set": {"oculto": True}})
+    else:
+        casos.delete_one({"_id": caso["_id"]})
     return redirect(url_for("taller", _anchor="lista"))
     
 @app.errorhandler(PyMongoError)
@@ -273,9 +338,13 @@ def error_mongo(error):
 
 @app.errorhandler(400)
 @app.errorhandler(403)
+@app.errorhandler(413)
 @app.errorhandler(404)
 def error_peticion(error):
-    return render_template("error.html", mensaje=error.description), error.code
+    mensaje = "La portada admite hasta 5 MB. Elige una imagen más pequeña." if error.code == 413 else error.description
+    if request.path.startswith("/api/"):
+        return jsonify(error=mensaje), error.code
+    return render_template("error.html", mensaje=mensaje), error.code
 
 @app.route("/ayuda")
 def ayuda():

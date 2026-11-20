@@ -1,9 +1,56 @@
 {% extends 'base.html' %}
 {% block titulo %}Configuración | The Unknown Files{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='secciones.css') }}">{% endblock %}
+{% block clase_body %}library-page settings-page{% endblock %}
+{% block encabezado %}{% endblock %}
 {% block contenido %}
-<section class="profile-page">
-    <h2>Configuración</h2>
-    <p>Los controles de música y efectos estarán disponibles cuando se incorporen los sonidos.</p>
-    <a href="{{ url_for('portada') }}">← Volver a la portada</a>
+<a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
+<header class="section-intro">
+    <h1>Configuración</h1>
+    <p>Prepara tu forma de explorar el archivo.</p>
+    <p class="settings-notice" role="note">Boceto en proceso. Los controles de idioma, sonido y pantalla están deshabilitados mientras se incorporan sus funciones.</p>
+</header>
+<div class="settings-grid">
+    <fieldset class="settings-card" disabled>
+        <legend>Idioma y diálogo</legend>
+        <label for="game-language">Idioma del juego</label>
+        <select id="game-language"><option>Español</option><option>Inglés · próximamente</option></select>
+        <label for="text-speed">Velocidad del texto</label>
+        <div class="settings-range"><span>Lenta</span><input id="text-speed" type="range" min="0" max="100" value="50"><span>Rápida</span></div>
+        <label class="settings-toggle"><input type="checkbox"> Avance automático del diálogo</label>
+    </fieldset>
+    <fieldset class="settings-card" disabled>
+        <legend>Sonido</legend>
+        <label for="master-volume">Volumen general</label>
+        <input id="master-volume" type="range" min="0" max="100" value="80">
+        <label for="music-volume">Música</label>
+        <input id="music-volume" type="range" min="0" max="100" value="60">
+        <label for="effects-volume">Efectos de sonido</label>
+        <input id="effects-volume" type="range" min="0" max="100" value="70">
+        <label class="settings-toggle"><input type="checkbox"> Silenciar al cambiar de pestaña</label>
+    </fieldset>
+    <fieldset class="settings-card" disabled>
+        <legend>Pantalla</legend>
+        <label for="display-mode">Modo de visualización</label>
+        <select id="display-mode"><option>Ventana del navegador</option><option>Pantalla completa</option></select>
+        <label for="brightness">Brillo</label>
+        <input id="brightness" type="range" min="0" max="100" value="50">
+        <label class="settings-toggle"><input type="checkbox"> Reducir animaciones de cámara</label>
+    </fieldset>
+    <fieldset class="settings-card" disabled>
+        <legend>Lectura y accesibilidad</legend>
+        <label for="text-size">Tamaño del texto</label>
+        <select id="text-size"><option>Estándar</option><option>Grande</option><option>Muy grande</option></select>
+        <label class="settings-toggle"><input type="checkbox" checked> Mostrar diálogos</label>
+        <label class="settings-toggle"><input type="checkbox"> Mayor contraste en el diálogo</label>
+    </fieldset>
+</div>
+<section class="settings-account">
+    <div><h2>Tu cuenta</h2><p>{{ 'Consulta tus datos o cierra la sesión.' if account else 'Crea una cuenta para conservar tu progreso entre dispositivos.' }}</p></div>
+    <div class="settings-actions">
+        <a class="access-secondary" href="{{ url_for('cuentas.profile') }}">{{ 'Ver mi cuenta' if account else 'Crear cuenta' }}</a>
+        {% if account or guest %}<a class="access-secondary" href="{{ url_for('cuentas.logout') }}" data-exit-trigger>Salir</a>{% endif %}
+    </div>
 </section>
+<div class="settings-actions settings-save"><button type="button" disabled>Restablecer ajustes</button><button type="button" disabled>Guardar ajustes · en proceso</button></div>
 {% endblock %}

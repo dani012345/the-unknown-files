@@ -246,10 +246,30 @@ body.document-open { overflow: hidden; }
     filter: drop-shadow(0 3px 10px #090806bb);
 }
 .office-heading .desk-kicker { font-size: clamp(.57rem,.9vw,.75rem); color: #e3d7c3; letter-spacing: .14em; text-shadow: 0 2px 8px #000c; }
+.office-section-nav {
+    display: flex;
+    align-items: center;
+    gap: .65em;
+    margin-bottom: .8rem;
+    pointer-events: auto;
+}
+.office-section-nav a {
+    padding: .4rem 0;
+    color: #e3d7c3;
+    font: clamp(.57rem, .9vw, .75rem)/1.4 Consolas, monospace;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px #000c;
+    text-decoration: none;
+}
+.office-section-nav a + a::before { content: "/"; display: inline-block; padding-right: .65em; color: #e3d7c3; }
+.office-section-nav a:hover { text-decoration: underline; text-underline-offset: .2em; }
+.office-section-nav a:focus-visible { outline: 2px solid #ead7b1; outline-offset: 3px; }
 .office-heading h1 { font-family: Georgia,serif; font-size: clamp(1.3rem,2.25vw,2.3rem); color: #fff0d3; text-shadow: 0 2px 14px #000,0 1px 2px #000; }
 .desk-return { top: clamp(16px,2.4vw,34px); right: clamp(16px,3vw,50px); pointer-events: auto; padding: .5rem .8rem; color: #f3e4c7; background: #15130e91; border: 1px solid #e7d4a146; text-decoration: none; border-radius: 4px; font: .71rem/1.4 Consolas,monospace; box-shadow: 0 2px 12px #0004; }
 .desk-return:hover, .desk-return:focus-visible { background: #231c14de; color: #fff9df; }
 .office-ribbon { top: clamp(85px, 14svh, 155px); left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; width: max-content; max-width: min(92vw,740px); gap: clamp(8px,1.4vw,22px); color: #fff0d7; text-shadow: 0 2px 9px #000e; letter-spacing: .095em; font: clamp(.62rem,1vw,.86rem)/1.5 Consolas,monospace; text-align: center; text-transform: uppercase; filter: drop-shadow(0 2px 5px #0009); }
+.office-ribbon { top: clamp(155px, 20svh, 190px); }
 .office-ribbon::before,.office-ribbon::after { content: ''; display: block; flex: 0 1 clamp(20px,5vw,100px); width: clamp(20px,5vw,100px); height: 1px; background: #ffebcfcc; transform: scaleX(0); animation: desk-line .6s .35s ease-out forwards; }
 .office-ribbon::before { transform-origin: right; }
 .office-ribbon::after { transform-origin: left; }
@@ -276,12 +296,16 @@ body.document-open { overflow: hidden; }
     .office-camera { transform: scale(1.14) translateY(1%); }
     .office-world { width: max(100%, 42rem); }
     .office-heading { max-width: 70vw; }
+    .office-heading { top: 70px; max-width: calc(100% - 36px); }
+    .office-section-nav { flex-wrap: wrap; gap: .65em; }
+    .office-section-nav a { font-size: .6rem; letter-spacing: .08em; }
     .office-heading h1 { font-size: clamp(1.12rem,4vw,1.7rem); }
     .desk-kicker { max-width: 70vw; }
     .desk-return { font-size: .68rem; }
-    .office-ribbon { top: clamp(105px,17svh,155px); font-size: clamp(.55rem,2.2vw,.7rem); letter-spacing: .035em; max-width: 95vw; }
+    .office-ribbon { top: 205px; font-size: clamp(.55rem,2.2vw,.7rem); letter-spacing: .035em; max-width: 95vw; }
     .office-ribbon::before,.office-ribbon::after { width: 18px; flex-basis: 18px; }
     .desk-warning { font-size: .57rem; }
+    .archivo-juegos .desk-warning { bottom: 60px; max-width: calc(100% - 36px); overflow-wrap: anywhere; line-height: 1.6; }
     .desk-brand { font-size: .84rem; }
     .document-view { width: 98vw; max-width: 98vw; padding-inline: .3rem; }
     .document-carrier .bryan-folder, .document-carrier .registry-folder { padding: .5rem; }

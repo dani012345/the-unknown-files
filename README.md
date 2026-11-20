@@ -81,6 +81,16 @@ La base es `the_unknown_files` y contiene las colecciones `casos`, `escenas`, `p
 
 El motor inserta las escenas iniciales que faltan al abrir el juego. El progreso y saldo de una cuenta se recuperan al iniciar sesión. Las antiguas partidas asociadas a `uf_player` pueden abrirse al entrar como invitado desde su navegador original.
 
+## Modo de prueba de administradores
+
+Inicia sesión con una cuenta cuyo `role` sea `admin`. En Inicio aparece **Modo de prueba**; también está en el menú del juego.
+
+- Puedes comenzar desde dormitorio, cocina o patio. Los pasos previos se preparan usando las reglas del motor; en patio se llega con Pollo alimentado.
+- Cada punto reemplaza la prueba actual de esa sesión. Puedes repetirlo sin límite o continuar la prueba que dejaste abierta.
+- La prueba usa `partidas_prueba`, separada de `partidas` y `saldos`, y no genera premios. Se elimina al vencer su sesión mediante un índice TTL de MongoDB.
+- El menú del juego permite cambiar de punto o salir de prueba para continuar la partida real. Los jugadores e invitados no tienen acceso, incluso usando la URL directamente.
+- Si cambia el guion y ya no permite preparar un punto, se informa del problema sin reemplazar la prueba anterior.
+
 ## Render
 
 Configura la rama que vayas a publicar, Python 3, instalación `pip install -r requirements.txt` e inicio `gunicorn app:app --bind 0.0.0.0:$PORT`.

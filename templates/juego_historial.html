@@ -1,11 +1,12 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Historial · Un favor</title><link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='guion-1') }}">
-</head><body class="game-page history-page">
-<header class="game-header"><a href="{{ url_for('juego_bryan') }}">← Volver al presente</a><span>CASO 001 / HISTORIAL</span><a href="{{ url_for('inicio') }}">Escritorio</a></header>
+<link rel="stylesheet" href="{{ url_for('static',filename='cuentas.css') }}"></head><body class="game-page history-page">
+<header class="game-header"><a class="access-back" href="{{ url_for(play_endpoint) }}" aria-label="Volver al presente" title="Volver al presente">←</a><span>CASO 001 / HISTORIAL</span><a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a></header>
 <main class="history-sheet"><p class="choice-title">ARCHIVO DE LA PARTIDA</p><h1>Lo que ha ocurrido</h1>
 <p>Esta lectura conserva tus decisiones. No puedes cambiar elecciones ni volver a obtener puntos desde aquí.</p>
 <p>Acertijos resueltos: {{ part.puzzles_solved|length }} / 3 · Responsabilidad: {{ part.flags.puntos_responsabilidad }} / 3</p>
 {% if part.flags.final %}<p>Final {{ part.flags.final }} · {{ final_names[part.flags.final] }}</p>{% endif %}
-<ol class="history-list">{% for item in part.history %}{% if item.kind != 'exploration' %}<li class="history-entry history-entry--{{ item.kind }}"><span>{{ item.title }} · {{ item.character }}</span><p>{{ item.text }}</p><a href="{{ url_for('juego_bryan',h=loop.index0) }}">Releer aquí</a></li>{% endif %}{% endfor %}</ol>
-<a class="choice-button primary" href="{{ url_for('juego_bryan') }}">Volver al presente</a></main></body></html>
+{% if testing %}<p>PRUEBA ADMIN · Incluye los pasos preparados para llegar a la escena. Tu partida y tus puntos no cambian.</p>{% endif %}
+<ol class="history-list">{% for item in part.history %}{% if item.kind != 'exploration' %}<li class="history-entry history-entry--{{ item.kind }}"><span>{{ item.title }} · {{ item.character }}</span><p>{{ item.text }}</p><a href="{{ url_for(play_endpoint,h=loop.index0) }}">Releer aquí</a></li>{% endif %}{% endfor %}</ol>
+<a class="access-back" href="{{ url_for(play_endpoint) }}" aria-label="Volver al presente" title="Volver al presente">←</a></main></body></html>

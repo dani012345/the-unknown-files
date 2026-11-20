@@ -2,7 +2,7 @@
 {% block titulo %}Mi cuenta | The Unknown Files{% endblock %}
 {% block contenido %}
 <section class="profile-page">
-    <a href="{{ url_for('inicio') }}">← Volver al escritorio</a>
+    <a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
     <h2>Mi cuenta</h2>
     <span class="account-link" aria-label="Icono predeterminado">{{ account.username[0]|upper }}</span>
     <dl>

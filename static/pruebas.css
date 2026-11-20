@@ -1,0 +1,8 @@
+.test-checkpoints { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; padding-bottom: 2rem; }
+.test-checkpoints .manual-card { display: flex; flex-direction: column; }
+.test-checkpoints form { margin-top: auto; padding-top: 1rem; }
+.test-number { letter-spacing: .15em; font: .8rem Consolas, monospace; }
+.test-button { display: inline-flex; justify-content: center; align-items: center; min-height: 44px; padding: .7rem 1rem; border: 1px solid #a18e6c; border-radius: 14px; background: #d4c09b; color: #211e18; font: inherit; text-decoration: none; cursor: pointer; }
+.test-button:hover { background: #e8d6b5; color: #211e18; }
+.test-button:focus-visible { outline: 2px solid #f2dfb9; outline-offset: 4px; }
+@media (max-width: 800px) { .test-checkpoints { grid-template-columns: 1fr; } }
