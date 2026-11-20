@@ -85,6 +85,7 @@
         <a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
         <span class="game-case-label">{{ 'PRUEBA ADMIN · UN FAVOR' if testing else 'CASO 001 · UN FAVOR' }}</span>
         <div class="game-header-actions">
+            {% include '_cuenta_icono.html' %}
             {% if wallet %}<a class="game-points" href="{{ url_for('puntos.cart') }}">{{ wallet.balance }} puntos</a>{% endif %}
             {% if testing %}<span class="save-status">● PRUEBA ADMIN · SIN PUNTOS</span>
             {% else %}<span class="save-status" title="{{ 'El progreso de invitado es temporal' if guest else 'Tu progreso se guarda en tu cuenta' }}">● {{ 'Sesión temporal' if guest else 'Guardado automático' }}</span>{% endif %}

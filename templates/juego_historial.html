@@ -3,7 +3,7 @@
 <title>Historial · Un favor</title><link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='guion-1') }}">
 <link rel="stylesheet" href="{{ url_for('static',filename='cuentas.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='adaptable.css') }}">
 </head><body class="game-page history-page">
-<header class="game-header"><a class="access-back" href="{{ url_for(play_endpoint) }}" aria-label="Volver al presente" title="Volver al presente">←</a><span>CASO 001 / HISTORIAL</span><a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a></header>
+<header class="game-header"><a class="access-back" href="{{ url_for(play_endpoint) }}" aria-label="Volver al presente" title="Volver al presente">←</a><span>CASO 001 / HISTORIAL</span>{% include '_cuenta_icono.html' %}<a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a></header>
 <main class="history-sheet"><p class="choice-title">ARCHIVO DE LA PARTIDA</p><h1>Lo que ha ocurrido</h1>
 <p>Esta lectura conserva tus decisiones. No puedes cambiar elecciones ni volver a obtener puntos desde aquí.</p>
 <p>Acertijos resueltos: {{ part.puzzles_solved|length }} / 3 · Responsabilidad: {{ part.flags.puntos_responsabilidad }} / 3</p>

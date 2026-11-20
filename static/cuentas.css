@@ -112,3 +112,5 @@
     .guest-warning { max-width: calc(100% - 36px); bottom: 60px; font-size: .7rem; }
 }
 @media (max-width: 480px) { .access-overlay { padding: .6rem; } .access-panel { padding: 1.2rem; } }
+
+.game-header-actions .account-link { margin: 0; background: #211b16c7; color: #f1e4cc; text-shadow: none; }

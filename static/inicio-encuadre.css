@@ -1,0 +1,63 @@
+/* Ilustración original y coordenadas originales de las carpetas. */
+body.archivo-juegos .office-topbar {
+    position: absolute; top: clamp(14px,2.4vw,34px); left: clamp(18px,3.7vw,64px); right: clamp(18px,3.7vw,64px);
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; z-index: 7;
+}
+body.archivo-juegos .office-topbar .office-section-nav,
+body.archivo-juegos .office-topbar .desk-links {
+    position: static; inset: auto; margin: 0; padding: 0; display: flex; flex-wrap: wrap;
+    align-items: center; align-content: flex-start; gap: .65em; pointer-events: auto;
+    font: clamp(.57rem,.9vw,.75rem)/1.4 Consolas,monospace;
+    letter-spacing: .08em; text-transform: uppercase;
+}
+body.archivo-juegos .office-topbar .desk-links { justify-content: flex-end; }
+body.archivo-juegos .office-topbar a { display: inline-flex; align-items: center; min-height: 44px; padding: 0; color: #e3d7c3; font: inherit; letter-spacing: inherit; }
+body.archivo-juegos .office-heading { top: clamp(84px,10svh,110px); }
+body.archivo-juegos .desk-brand { display: flex; align-items: center; justify-content: flex-end; gap: .7rem; }
+body.archivo-juegos .desk-brand .account-link { pointer-events: auto; margin: 0; background: #24231cbd; text-shadow: none; text-decoration: none; }
+body.archivo-juegos .office-hotspot:focus span,
+body.archivo-juegos .office-hotspot:active span { opacity: 1; }
+@media (max-width: 900px) {
+    body.archivo-juegos .office-viewport { display: block; height: 100svh; min-height: 560px; padding: 0; overflow: hidden; }
+    body.archivo-juegos .office-camera { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: none; }
+    body.archivo-juegos .office-world { width: max(100%,calc(max(100svh,560px) * 1672 / 941)); flex-shrink: 0; min-width: 0; aspect-ratio: 1672/941; transform: translateX(-.75%); }
+    body.archivo-juegos .office-image { width: 100%; height: 100%; }
+    body.archivo-juegos .office-topbar { top: max(12px,env(safe-area-inset-top)); left: 16px; right: 16px; gap: 14px; }
+    body.archivo-juegos .office-topbar .office-section-nav { flex: 1.55; min-width: 0; }
+    body.archivo-juegos .office-topbar .desk-links { flex: 1; min-width: 0; }
+    body.archivo-juegos .office-topbar a { min-height: 34px; font-size: clamp(.65rem,2.9vw,.78rem); line-height: 1.5; letter-spacing: .01em; white-space: nowrap; }
+    body.archivo-juegos .office-topbar .office-section-nav,
+    body.archivo-juegos .office-topbar .desk-links { gap: 0 .4em; }
+    body.archivo-juegos .office-section-nav a + a::before { padding-right: .4em; }
+    body.archivo-juegos .office-heading { position: absolute; top: 108px; left: 16px; right: 16px; padding: 0; max-width: none; }
+    body.archivo-juegos .office-heading h1 { font-size: clamp(1.1rem,4.5vw,1.65rem); }
+    body.archivo-juegos .office-ribbon { top: 176px; font-size: .6rem; letter-spacing: .04em; }
+    body.archivo-juegos .office-ribbon::before,
+    body.archivo-juegos .office-ribbon::after { display: none; }
+    body.archivo-juegos .office-ribbon > span { opacity: 1; transform: none; animation: none; }
+    body.archivo-juegos .office-hotspot { min-height: 44px; min-width: 44px; }
+    body.archivo-juegos .office-hotspot span { opacity: 0; color: #f1e2c7; background: #201a13ed; border: 1px solid #867153; padding: .5rem .7rem; font: .65rem/1.5 Consolas,monospace; max-width: 150px; }
+    body.archivo-juegos .office-hotspot:hover span,
+    body.archivo-juegos .office-hotspot:focus span,
+    body.archivo-juegos .office-hotspot:active span { opacity: 1; }
+    body.archivo-juegos .office-viewport .desk-warning { position: absolute; bottom: 74px; left: 16px; right: 16px; margin: 0; max-width: none; font-size: .68rem; letter-spacing: .03em; line-height: 1.7; }
+    body.archivo-juegos .office-viewport .desk-brand { position: absolute; bottom: max(18px,env(safe-area-inset-bottom)); left: 16px; right: 16px; margin: 0; font-size: .9rem; }
+}
+@media (max-width: 900px) and (orientation: landscape) {
+    body.archivo-juegos .office-viewport { min-height: 320px; }
+    body.archivo-juegos .office-world { width: max(100%,calc(max(100svh,320px) * 1672 / 941)); transform: none; }
+    body.archivo-juegos .office-topbar .office-section-nav,
+    body.archivo-juegos .office-topbar .desk-links { flex: initial; }
+    body.archivo-juegos .office-topbar a { font-size: .65rem; }
+    body.archivo-juegos .office-heading { top: 64px; }
+    body.archivo-juegos .office-heading h1 { font-size: 1.15rem; }
+    body.archivo-juegos .office-ribbon { top: 110px; }
+    body.archivo-juegos .office-viewport .desk-warning { bottom: 20px; right: 46%; }
+    body.archivo-juegos .office-viewport .desk-brand { left: 55%; bottom: 16px; font-size: .8rem; }
+}
+
+@media (max-width: 500px) and (orientation: portrait) {
+    body.archivo-juegos .office-topbar .admin-nav-separator { display: none; }
+    body.archivo-juegos .office-topbar .admin-nav-link { flex-basis: 100%; justify-content: flex-end; }
+    body.archivo-juegos .office-section-nav a:last-child::before { display: none; }
+}

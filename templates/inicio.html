@@ -1,26 +1,26 @@
 {% extends 'base.html' %}
 {% block titulo %}Escritorio | The Unknown Files{% endblock %}
-{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='puntos.css', v='menu-carrito-enlaces-3') }}"><link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='ui-refinado-1') }}">{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='puntos.css', v='menu-carrito-enlaces-3') }}"><link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='ui-refinado-1') }}"><link rel="stylesheet" href="{{ url_for('static', filename='inicio-encuadre.css') }}">{% endblock %}
 {% block clase_body %}archivo-juegos{% endblock %}
 {% block encabezado %}{% endblock %}
 
 {% block contenido %}
 <section class="office-scene" aria-labelledby="office-title">
     <div class="office-viewport">
-        <header class="office-heading office-overlay">
+        <div class="office-topbar office-overlay">
             <nav class="office-section-nav" aria-label="Secciones del archivo">
                 <a href="{{ url_for('taller') }}">Archivo de casos</a>
                 <a href="{{ url_for('configuracion') }}">Configuración</a>
                 <a href="{{ url_for('ayuda') }}">Manual</a>
             </nav>
-            <h1 id="office-title">Cada archivo, una historia.</h1>
-        </header>
-        <nav class="desk-links office-overlay" aria-label="Accesos del escritorio">
+        <nav class="desk-links" aria-label="Accesos del escritorio">
             <a href="{{ url_for('portada') }}">Menú</a>
             <span aria-hidden="true">/</span>
             <a href="{{ url_for('tienda.catalog') }}">Tienda</a>
-            {% if is_admin %}<span aria-hidden="true">/</span><a href="{{ url_for('bryan.test_menu') }}">Modo de prueba</a>{% endif %}
+            {% if is_admin %}<span class="admin-nav-separator" aria-hidden="true">/</span><a class="admin-nav-link" href="{{ url_for('bryan.test_menu') }}">Modo de prueba</a>{% endif %}
         </nav>
+        </div>
+        <header class="office-heading office-overlay"><h1 id="office-title">Cada archivo, una historia.</h1></header>
         <div class="office-ribbon office-overlay" aria-label="Toca un expediente para levantarlo">
             <span>Toca un expediente para levantarlo</span>
         </div>
@@ -29,7 +29,7 @@
         {% elif guest %}
         <span class="desk-warning office-overlay guest-warning">Estás jugando como invitado. Tu progreso y tus puntos son temporales.</span>
         {% endif %}
-        <span class="desk-brand office-overlay">THE UNKNOWN FILES</span>
+        <span class="desk-brand office-overlay"><span>THE UNKNOWN FILES</span>{% include '_cuenta_icono.html' %}</span>
         <div class="office-camera">
             <div class="office-world">
                 {# Única ruta del fondo. Imagen y zonas pulsables se mueven juntas. #}

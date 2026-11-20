@@ -34,11 +34,7 @@
                 <span class="brand-symbol">U.F.</span>
                 THE UNKNOWN FILES
             </a>
-            {% if account %}
-            <a class="account-link" href="{{ url_for('cuentas.profile') }}" aria-label="Mi cuenta, {{ account.username }}">{{ account.username[0]|upper }}</a>
-            {% elif guest %}
-            <a class="account-link" href="{{ url_for('cuentas.profile') }}" aria-label="Crear mi cuenta">?</a>
-            {% endif %}
+            {% if request.endpoint != 'inicio' %}{% include '_cuenta_icono.html' %}{% endif %}
 
             {% if request.endpoint != 'inicio' %}
             <button class="navbar-toggler"

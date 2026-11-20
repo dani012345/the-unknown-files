@@ -1,0 +1,5 @@
+{% if account %}
+<a class="account-link" href="{{ url_for('cuentas.profile') }}" aria-label="Mi cuenta, {{ account.username }}" title="Mi cuenta">{{ account.username[0]|upper }}</a>
+{% elif guest %}
+<a class="account-link" href="{{ url_for('cuentas.profile') }}" aria-label="Crear mi cuenta" title="Crear mi cuenta">?</a>
+{% endif %}
