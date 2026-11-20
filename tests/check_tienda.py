@@ -7,7 +7,8 @@ from soporte_tienda import project,db,register,post,form
 app,shop=project.app,project.shop_store
 anonymous=app.test_client()
 assert anonymous.get('/tienda').status_code==200
-assert db.productos_tienda.count_documents({})==4
+assert db.productos_tienda.count_documents({})==10
+assert db.productos_tienda.count_documents({'tipo':'merch'})==8
 a,oa=register('ShopAlice');b,ob=register('ShopBob');admin,od=register('ShopAdmin',admin=True)
 poor,op=register('ShopPoor',credit=0)
 marker='CONTENIDO_PRIVADO_SPOILER_NO_PUBLICO'
@@ -106,4 +107,31 @@ assert marker not in a.get('/tienda/coleccion').get_data(as_text=True)
 assert a.get('/tienda/articulo/no-existe').status_code==404
 assert a.get('/tienda/comprobante/no-existe').status_code==404
 assert a.post('/tienda/articulo/fecha-reverso/comprar',data={'csrf':'fake','epoch':1}).status_code==400
-print('OK REAL MONGODB: compra y rollback, privacidad, dos usuarios/última unidad, cancelar, vencer, confirmar sin doble cobro, QR, editor y reinicios.')
+buyer,owner=register('NewCollectionBuyer',credit=1000)
+for sku in ('llavero-archivo','libreta-investigador','taza-turno-nocturno','bolsa-expedientes','credencial-archivo','separadores-archivo'):
+    product=db.productos_tienda.find_one({'_id':sku})
+    available=db.unidades_tienda.count_documents({'producto':sku,'estado':'libre'})
+    assert buyer.get('/tienda/articulo/'+sku).status_code==200
+    r=post(buyer,'/tienda/articulo/'+sku+'/reservar',precio=product['precio'])
+    assert r.status_code==303
+    assert post(buyer,r.location+'/cancelar').status_code==303
+    assert db.unidades_tienda.count_documents({'producto':sku,'estado':'libre'})==available
+    r=post(buyer,'/tienda/articulo/'+sku+'/reservar',precio=product['precio'])
+    assert r.status_code==303
+    assert post(buyer,r.location+'/confirmar',confirm_compra='yes').status_code==303
+    assert db.unidades_tienda.count_documents({'producto':sku,'estado':'libre'})==available-1
+    assert shop.owned(owner,0,sku)
+
+# Actualizar el arte inicial conserva precios, textos, publicación e inventario.
+db.productos_tienda.update_one({'_id':'pin-pollo'},{'$set':{'imagen':'img/tienda/pin-pollo-pinceladas-v1.png','precio':77,'descripcion':'Texto editado','publicado':False},'$unset':{'arte_catalogo_revision':''}})
+units_before=list(db.unidades_tienda.find({}).sort('_id',1))
+shop.prepared=False;shop.prepare()
+pin=db.productos_tienda.find_one({'_id':'pin-pollo'})
+assert pin['imagen'].endswith('pin-real-fondo-pintado-v1.png')
+assert pin['precio']==77 and pin['descripcion']=='Texto editado' and pin['publicado'] is False
+assert list(db.unidades_tienda.find({}).sort('_id',1))==units_before
+# La portada antigua se puede escoger después de la migración sin sobrescribirla.
+db.productos_tienda.update_one({'_id':'pin-pollo'},{'$set':{'imagen':'img/tienda/pin-pollo-pinceladas-v1.png'}})
+shop.prepared=False;shop.prepare()
+assert db.productos_tienda.find_one({'_id':'pin-pollo'})['imagen'].endswith('pin-pollo-pinceladas-v1.png')
+print('OK REAL MONGODB: compras y reservas, privacidad, QR, reinicios, seis productos nuevos y migración de imágenes sin reponer unidades ni borrar ediciones.')

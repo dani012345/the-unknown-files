@@ -72,7 +72,7 @@ def detalles_caso(datos):
     return {"descripcion": descripcion.strip()}
 
 app.register_blueprint(create_accounts_blueprint(base_datos))
-
+#Agrupa rutas y funciones relacionadas: tienda.py y app.py
 
 @app.before_request
 def require_player():

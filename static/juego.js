@@ -42,9 +42,17 @@
         if (!world || !background?.naturalWidth) return;
         const scene = world.parentElement;
         const { clientWidth, clientHeight } = scene;
-        const scale = Math.max(clientWidth / background.naturalWidth, clientHeight / background.naturalHeight);
-        const width = Math.max(clientWidth, background.naturalWidth * scale);
-        const height = Math.max(clientHeight, background.naturalHeight * scale);
+        const portrait = matchMedia('(max-width: 700px) and (orientation: portrait), (max-width: 1000px) and (max-height: 600px) and (orientation: landscape)').matches;
+        const scale = (portrait ? Math.min : Math.max)(clientWidth / background.naturalWidth, clientHeight / background.naturalHeight);
+        const width = portrait ? background.naturalWidth * scale : Math.max(clientWidth, background.naturalWidth * scale);
+        const height = portrait ? background.naturalHeight * scale : Math.max(clientHeight, background.naturalHeight * scale);
+        if (portrait) {
+            world.style.left = `${clientWidth / 2}px`;
+            world.style.top = `${clientHeight / 2}px`;
+            world.style.width = `${width}px`;
+            world.style.height = `${height}px`;
+            return;
+        }
         let focusX = Number.isFinite(bedroomFocus) ? bedroomFocus : .5;
         if (Number.isFinite(bedroomFocus) && hotspots.length) {
             const leftEdge = Math.min(...hotspots.map(spot => spot.x));

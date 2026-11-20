@@ -6,6 +6,7 @@
     <title>Un favor · Caso 001 | The Unknown Files</title>
     <link rel="stylesheet" href="{{ url_for('static',filename='juego.css',v='dormitorio-6') }}">
     <link rel="stylesheet" href="{{ url_for('static',filename='cuentas.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='adaptable.css') }}">
 </head>
 <body class="game-page">
 {% set can_restart = part.history|length > 1 or part.decisions|length > 0 %}

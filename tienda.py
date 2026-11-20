@@ -19,8 +19,16 @@ from werkzeug.exceptions import HTTPException
 HOLD_SECONDS = 300
 ART = {
     'sobre': 'img/tienda/sobre-pinceladas-v1.png',
-    'pin': 'img/tienda/pin-pollo-pinceladas-v1.png',
-    'expediente': 'img/tienda/expediente-pinceladas-v1.png',
+    'pin': 'img/tienda/pin-real-fondo-pintado-v1.png',
+    'expediente': 'img/tienda/expediente-real-fondo-pintado-v1.png',
+    'llavero': 'img/tienda/llavero-real-fondo-pintado-v1.png',
+    'libreta': 'img/tienda/libreta-real-fondo-pintado-v1.png',
+    'taza': 'img/tienda/taza-real-fondo-pintado-v1.png',
+    'bolsa': 'img/tienda/bolsa-real-fondo-pintado-v1.png',
+    'credencial': 'img/tienda/credencial-real-fondo-pintado-v1.png',
+    'separadores': 'img/tienda/separadores-real-fondo-pintado-v1.png',
+    'pin anterior': 'img/tienda/pin-pollo-pinceladas-v1.png',
+    'expediente anterior': 'img/tienda/expediente-pinceladas-v1.png',
 }
 INITIAL_PRODUCTS = [
     {'_id': 'fecha-reverso', 'nombre': 'La fecha del reverso', 'tipo': 'archivo', 'precio': 10,
@@ -37,6 +45,24 @@ INITIAL_PRODUCTS = [
     {'_id': 'expediente-bryan', 'nombre': 'El expediente de Bryan', 'tipo': 'merch', 'precio': 60,
      'descripcion': 'Concepto de réplica del expediente: carpeta, fotografías y pequeños objetos de investigación.',
      'nivel': 'Edición limitada · 1 unidad inicial', 'imagen': ART['expediente'], 'publicado': True, 'unidades': 1},
+    {'_id': 'llavero-archivo', 'nombre': 'La llave del archivo', 'tipo': 'merch', 'precio': 25,
+     'descripcion': 'Llavero de bronce envejecido con una pequeña llave y placa U.F. Para llevar un fragmento del archivo contigo.',
+     'nivel': 'Edición limitada · 5 unidades iniciales', 'imagen': ART['llavero'], 'publicado': True, 'unidades': 5},
+    {'_id': 'libreta-investigador', 'nombre': 'Notas del investigador', 'tipo': 'merch', 'precio': 45,
+     'descripcion': 'Libreta de tela gris carbón, hojas color crema y detalles de bronce. Incluye una pluma para registrar tus teorías.',
+     'nivel': 'Edición limitada · 4 unidades iniciales', 'imagen': ART['libreta'], 'publicado': True, 'unidades': 4},
+    {'_id': 'taza-turno-nocturno', 'nombre': 'Turno nocturno', 'tipo': 'merch', 'precio': 40,
+     'descripcion': 'Taza de cerámica gris carbón con interior crema y sello U.F. Una compañera para las noches entre expedientes.',
+     'nivel': 'Edición limitada · 4 unidades iniciales', 'imagen': ART['taza'], 'publicado': True, 'unidades': 4},
+    {'_id': 'bolsa-expedientes', 'nombre': 'Bolsa del archivo central', 'tipo': 'merch', 'precio': 55,
+     'descripcion': 'Bolsa de lona beige con asas oscuras y la marca del archivo. Espacio para tus carpetas, cuadernos y descubrimientos.',
+     'nivel': 'Edición limitada · 3 unidades iniciales', 'imagen': ART['bolsa'], 'publicado': True, 'unidades': 3},
+    {'_id': 'credencial-archivo', 'nombre': 'Identificación de colección', 'tipo': 'merch', 'precio': 35,
+     'descripcion': 'Placa U.F. de metal oscuro con marco de bronce y cinta de tejido beige. Una pieza de colección del archivo central.',
+     'nivel': 'Edición limitada · 3 unidades iniciales', 'imagen': ART['credencial'], 'publicado': True, 'unidades': 3},
+    {'_id': 'separadores-archivo', 'nombre': 'Entre páginas y pistas', 'tipo': 'merch', 'precio': 20,
+     'descripcion': 'Set de tres separadores en papel texturizado y metal, con borlas oscuras. Para marcar el lugar de la siguiente pista.',
+     'nivel': 'Edición limitada · 6 unidades iniciales', 'imagen': ART['separadores'], 'publicado': True, 'unidades': 6},
 ]
 PUBLIC_FIELDS = ('_id', 'nombre', 'tipo', 'precio', 'descripcion', 'nivel', 'imagen', 'publicado')
 
@@ -67,8 +93,11 @@ class ShopStore:
         self.orders.create_index([('owner', 1), ('epoch', 1), ('producto', 1)], unique=True)
         self.units.create_index([('producto', 1), ('estado', 1)])
         for product in INITIAL_PRODUCTS:
+            initial = dict(product)
+            if product['_id'] in ('pin-pollo', 'expediente-bryan'):
+                initial['arte_catalogo_revision'] = 2
             try:
-                self.products.update_one({'_id': product['_id']}, {'$setOnInsert': product}, upsert=True)
+                self.products.update_one({'_id': product['_id']}, {'$setOnInsert': initial}, upsert=True)
             except DuplicateKeyError:
                 pass  # Otro worker insertó el mismo catálogo inicial.
             for number in range(product.get('unidades', 0)):
@@ -77,6 +106,15 @@ class ShopStore:
                     self.units.update_one({'_id': unit['_id']}, {'$setOnInsert': unit}, upsert=True)
                 except DuplicateKeyError:
                     pass
+        # Cambia solo las portadas iniciales antiguas, una vez. Conserva los
+        # precios, las ediciones del administrador y todas las unidades vendidas.
+        for sku, old_image, new_image in (
+            ('pin-pollo', ART['pin anterior'], ART['pin']),
+            ('expediente-bryan', ART['expediente anterior'], ART['expediente']),
+        ):
+            self.products.update_one({'_id': sku, 'imagen': old_image,
+                                      'arte_catalogo_revision': {'$exists': False}},
+                {'$set': {'imagen': new_image, 'arte_catalogo_revision': 2}})
         self.prepared = True
 
     def transaction(self, callback):

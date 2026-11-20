@@ -324,3 +324,22 @@ a:focus-visible,button:focus-visible,summary:focus-visible { outline: 2px solid 
     .is-exploring .choice-button { font-size:.76rem; padding:.5rem .6rem; }
     .is-exploring .dialogue-box { min-height:0; padding:.65rem .85rem; }
 }
+
+/* En vertical, el escenario completo y el diálogo ocupan zonas separadas. */
+@media (max-width: 700px) and (orientation: portrait) {
+    .game-page { overflow-y: auto; }
+    .game-screen { display: flex; flex-direction: column; height: auto; min-height: 100svh; overflow: visible; }
+    .game-scene { position: relative; inset: auto; flex: 0 0 auto; width: 100%; height: auto; aspect-ratio: 16/9; min-height: 0; margin-top: 112px; }
+    .game-interface, .has-dialogue-back .game-interface { position: relative; inset: auto; width: 100%; max-height: none; overflow: visible; padding: 14px 10px 70px; display: flex; flex-direction: column; gap: 12px; }
+    .game-interface .dialogue-box { min-height: 0; }
+    .game-interface .choice-panel { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .game-interface .choice-button { min-height: 44px; }
+    .game-header { flex-wrap: wrap; gap: 6px; }
+    .scene-objective,.inventory-panel { top: 6px; font-size: .65rem; }
+    .scene-interaction-tools { top: 76px; }
+    .puzzle-card--compact { top: auto; bottom: 6px; }
+    .portrait-action { height: 78%; width: 35%; }
+    .scene-character.portrait-bryan { height: 78%; max-width: 38%; }
+    .scene-hotspot button { min-width: 28px; min-height: 28px; }
+    .game-quickbar { bottom: 12px; }
+}

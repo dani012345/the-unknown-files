@@ -17,6 +17,7 @@
         if (skip) skip.hidden = true;
     }
     function startApproach() {
+        if (matchMedia('(max-width: 900px)').matches) return;
         if (!camera || !skip || reduced.matches || !camera.animate) return;
         try { if (sessionStorage.getItem(storageKey)) return; } catch (_) {}
         try { sessionStorage.setItem(storageKey, '1'); } catch (_) {}

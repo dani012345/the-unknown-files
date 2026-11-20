@@ -40,7 +40,20 @@ Las cuentas conservan sus datos al salir. Los invitados usan una sesión de nave
 Abre **Tienda** desde el menú superior o desde Mis puntos / Carrito. Los visitantes e invitados pueden explorar; comprar y reservar requiere una cuenta.
 
 - Archivos digitales: 10 y 20 puntos inicialmente. Antes de comprar se muestra el nivel de spoiler y se solicita confirmación. El texto completo solo se envía a propietarios y administradores. Las notas iniciales recogen detalles del caso 001; el significado del triángulo continúa abierto.
-- Merch de demostración: pin de Pollo (30 puntos, 3 unidades iniciales) y réplica del expediente de Bryan (60 puntos, 1 unidad inicial). No se cobra dinero ni se realizan envíos.
+- Merch de demostración: ocho productos con stock limitado. No se cobra dinero ni se realizan envíos. El producto tiene apariencia realista y el entorno conserva el acabado con pinceladas.
+
+| Artículo | Puntos | Unidades iniciales |
+| --- | ---: | ---: |
+| Pollo, jefe de la casa | 30 | 3 |
+| El expediente de Bryan | 60 | 1 |
+| La llave del archivo | 25 | 5 |
+| Notas del investigador | 45 | 4 |
+| Turno nocturno | 40 | 4 |
+| Bolsa del archivo central | 55 | 3 |
+| Identificación de colección | 35 | 3 |
+| Entre páginas y pistas | 20 | 6 |
+
+Estos son los valores iniciales. Las ediciones del administrador y las existencias actuales se conservan al actualizar.
 - La reserva dura **5 minutos**, usa fechas UTC del servidor y aparta una unidad concreta. Reservar no cobra puntos; confirmar sí. Cada cuenta puede tener una reserva temporal activa y adquirir una copia de cada artículo por periodo.
 - Cancelar o vencer cambia el estado y libera la unidad. El contador consulta al servidor cada 5 segundos. Si se cierra el navegador, la próxima consulta o intento de reserva procesa los vencimientos antes de revisar disponibilidad.
 - El comprobante público muestra folio, artículo, precio y estado. Su QR se genera localmente con `qrcode` y consulta siempre la misma ficha. No incluye datos de la persona ni contenido privado.

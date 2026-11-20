@@ -141,3 +141,9 @@
  .shop-reservations > a { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) { .shop-card,.shop-image-link img { transition: none; }.shop-card:hover { transform: none; } }
+
+@media (max-width: 700px) and (orientation: portrait) {
+    .shop-receipt-image { max-height: none; height: auto; object-fit: contain; }
+    .shop-image-dialog { width: 96vw; padding: .5rem; }
+    .shop-image-dialog img { height: auto; object-fit: contain; }
+}
