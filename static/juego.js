@@ -9,8 +9,16 @@
         if (event.key === 'Escape' && menu?.open) menu.open = false;
     });
     document.querySelector('[data-open-pause]')?.addEventListener('click', () => { if (menu) menu.open = false; pause?.showModal(); });
-    document.querySelectorAll('.restart-form').forEach(form => form.addEventListener('submit', event => {
-        if (!confirm('¿Empezar una nueva partida? La actual quedará archivada y la nueva comenzará desde el principio.')) event.preventDefault();
+    const restart = document.getElementById('restart-dialog');
+    document.querySelectorAll('[data-open-restart]').forEach(button => button.addEventListener('click', () => {
+        if (menu) menu.open = false;
+        restart?.showModal();
+    }));
+    document.querySelectorAll('[data-close-restart]').forEach(button => button.addEventListener('click', () => restart?.close()));
+    restart?.addEventListener('close', () => restart.querySelector('form')?.reset());
+    if (restart?.dataset.openInitial === 'true') restart.showModal();
+    document.querySelectorAll('.restart-form').forEach(form => form.addEventListener('submit', () => {
+        form.querySelector('button[type="submit"]').disabled = true;
     }));
     // Evita dobles clics; la revisión de MongoDB también evita aplicar acciones dos veces.
     document.querySelectorAll('.game-action').forEach(form => form.addEventListener('submit', () => {

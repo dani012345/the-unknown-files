@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='cuentas.css') }}">
 </head>
 <body class="game-page">
+{% set can_restart = part.history|length > 1 or part.decisions|length > 0 %}
+{% set loses_points = not testing and part.get('restart_count', 0) >= 1 %}
 {% macro action_button(action, text, value='', css='choice-button') -%}
 <form method="post" action="{{ url_for(play_endpoint) }}" class="game-action">
     <input type="hidden" name="csrf" value="{{ part.csrf }}">
@@ -94,6 +96,7 @@
                     {% if testing %}<a href="{{ url_for('juego_bryan') }}">Salir de prueba y continuar mi partida</a>{% endif %}
                     <a href="{{ url_for(history_endpoint) }}">Historial de diálogos</a>
                     <button type="button" data-open-pause>Pausar partida</button>
+                    {% if can_restart %}<button type="button" data-open-restart>Nueva partida</button>{% endif %}
                 </nav>
             </details>
         </div>
@@ -127,10 +130,7 @@
         {% elif part.complete %}
             <p class="ending-label">FINAL {{ part.flags.final }} · {{ final_names[part.flags.final] }}</p>
             <a class="choice-button primary" href="{{ url_for(history_endpoint) }}">Leer el historial de esta partida</a>
-            <form method="post" action="{{ url_for(play_endpoint) }}" class="restart-form">
-                <input type="hidden" name="csrf" value="{{ part.csrf }}"><input type="hidden" name="revision" value="{{ part.revision }}"><input type="hidden" name="action" value="restart">
-                <button class="choice-button" type="submit">Empezar otra partida</button>
-            </form>
+            <button class="choice-button" type="button" data-open-restart>Empezar otra partida</button>
         {% endif %}
         </div>
     </section>
@@ -160,5 +160,31 @@
     <form method="dialog"><button class="choice-button primary">Continuar</button></form>
     <a class="access-back" href="{{ url_for('inicio') }}" aria-label="Volver al inicio" title="Volver al inicio">←</a>
 </dialog>
+{% if can_restart %}
+<dialog id="restart-dialog" class="access-panel exit-panel" aria-labelledby="restart-title" aria-describedby="restart-description"
+        data-open-initial="{{ 'true' if request.args.get('reiniciar') == '1' else 'false' }}">
+    <button type="button" class="access-back" data-close-restart aria-label="Cancelar reinicio" title="Cancelar reinicio">←</button>
+    <p class="access-kicker">{{ 'MODO DE PRUEBA' if testing else 'NUEVA PARTIDA' }}</p>
+    <h2 id="restart-title">¿Comenzar desde el principio?</h2>
+    <p id="restart-description" class="exit-message">
+        {% if testing %}Solo se reiniciará esta prueba. Tu partida real, puntos y compras se conservan.
+        {% elif loses_points %}Ya utilizaste tu reinicio con beneficios. Al reiniciar se borrarán el progreso del caso, tus puntos y las compras simuladas. También se vaciará el carrito. Esta acción no se puede deshacer.
+        {% else %}Este es tu primer reinicio: conservarás tus puntos, compras y carrito. El progreso del caso comenzará desde cero. Los siguientes reinicios borrarán también tus puntos y compras.
+        {% endif %}
+    </p>
+    <form method="post" action="{{ url_for(play_endpoint) }}" class="restart-form">
+        <input type="hidden" name="csrf" value="{{ part.csrf }}">
+        <input type="hidden" name="revision" value="{{ part.revision }}">
+        <input type="hidden" name="action" value="restart">
+        <label class="restart-confirm"><input type="checkbox" name="confirm_restart" value="yes" required>
+            {{ 'Entiendo que perderé el progreso, los puntos y las compras.' if loses_points else 'Entiendo y quiero comenzar desde cero.' }}
+        </label>
+        <div class="exit-actions">
+            <button type="button" class="access-secondary" data-close-restart>Cancelar</button>
+            <button type="submit" class="access-submit">{{ 'Borrar y reiniciar' if loses_points else 'Reiniciar partida' }}</button>
+        </div>
+    </form>
+</dialog>
+{% endif %}
 <script defer src="{{ url_for('static',filename='juego.js',v='dormitorio-8') }}"></script>
 </body></html>

@@ -1,0 +1,33 @@
+{% extends 'tienda_base.html' %}
+{% block shop_content %}
+<header class="shop-hero">
+    <div><p class="shop-eyebrow">U.F. / DEPARTAMENTO DE SUMINISTROS</p>
+        <h1>No todo está<br><em>a simple vista.</em></h1>
+        <p class="shop-lead">Hay archivos que se abren con paciencia.<br>Y otros, con los puntos que has ganado.</p>
+        <div class="shop-chips"><span>Archivos reservados</span><span>Objetos de colección</span><span>Detalles por descubrir</span></div>
+    </div>
+    <figure class="shop-hero-art"><img src="{{ url_for('static', filename='img/tienda/sobre-pinceladas-v1.png') }}" alt="Sobre de archivo sellado, fotografías y una lupa pintados a mano" fetchpriority="high"><figcaption>CATÁLOGO DEL ARCHIVO / VOL. 01</figcaption></figure>
+</header>
+{% if active %}<aside class="shop-active" role="status"><div><span class="shop-eyebrow">TIENES UNA EDICIÓN APARTADA</span><p>{{ active.nombre }}</p></div><a class="shop-button" href="{{ url_for('tienda.receipt_page', folio=active.folio) }}">Ver mi reserva →</a></aside>{% endif %}
+{% if not account %}<p class="shop-note">Puedes explorar libremente. <a href="{{ url_for('cuentas.entry') }}">Inicia sesión o regístrate</a> para desbloquear archivos y reservar ediciones.</p>{% endif %}
+<nav class="shop-filters" aria-label="Ir a una colección"><a href="#archivos">01 / Archivos secretos</a><a href="#ediciones">02 / Ediciones de colección</a></nav>
+{% if is_admin %}<p><a class="shop-admin-link" href="{{ url_for('tienda.edit', sku='nuevo') }}">+ Preparar un nuevo artículo</a></p>{% endif %}
+{% for kind, section_id, title, intro in [('archivo','archivos','Archivos secretos','Revelaciones opcionales del caso de Bryan. Lee el nivel de spoiler antes de abrir un sello.'),('merch','ediciones','Ediciones de colección','Pequeños objetos de un universo que apenas comienza. Aparta una unidad durante cinco minutos.')] %}
+<section id="{{ section_id }}" class="shop-section" aria-labelledby="title-{{ section_id }}">
+    <header class="shop-section-heading"><div><p class="shop-eyebrow">COLECCIÓN / {{ '01' if kind == 'archivo' else '02' }}</p><h2 id="title-{{ section_id }}">{{ title }}</h2></div><p>{{ intro }}</p></header>
+    <div class="shop-grid">
+    {% for product in products if product.tipo == kind %}
+        <article class="shop-card">
+            <a class="shop-image-link" href="{{ url_for('tienda.detail', sku=product._id) }}"><img src="{{ url_for('static', filename=product.imagen) }}" alt="{{ product.nombre }} · ilustración de catálogo" loading="lazy" width="1536" height="1024"><span class="shop-image-label">{{ 'ARCHIVO DESBLOQUEADO' if product.owned else 'SELLO RESERVADO' if kind == 'archivo' else 'EDICIÓN DE COLECCIÓN' }}</span></a>
+            <div class="shop-card-content"><p class="shop-eyebrow">{% if not product.publicado %}BORRADOR · {% endif %}{{ product.nivel }}</p><h3><a href="{{ url_for('tienda.detail', sku=product._id) }}">{{ product.nombre }}</a></h3><p>{{ product.descripcion }}</p>
+                <div class="shop-card-bottom"><span class="shop-price">{{ product.precio }} <small>PT</small></span><span class="shop-stock">{{ 'Sin límite de copias' if kind == 'archivo' else (product.disponibles|string + ' disponibles') }}</span></div>
+                <a class="shop-button {{ 'shop-button-dark' if product.owned else '' }}" href="{{ url_for('tienda.read_file', sku=product._id) if product.owned and kind == 'archivo' else url_for('tienda.detail', sku=product._id) }}">{{ 'Leer archivo' if product.owned and kind == 'archivo' else 'En mi colección' if product.owned else 'Examinar archivo' if kind == 'archivo' else 'Ver edición' }} <span aria-hidden="true">↗</span></a>
+                {% if is_admin %}<a class="shop-admin-link" href="{{ url_for('tienda.edit', sku=product._id) }}">Editar artículo</a>{% endif %}
+            </div>
+        </article>
+    {% endfor %}
+    </div>
+</section>
+{% endfor %}
+<aside class="shop-closing"><span aria-hidden="true">✧</span><p>Algunos detalles merecen una segunda mirada.</p><small>Explora las ilustraciones desde la ficha de cada artículo.</small></aside>
+{% endblock %}

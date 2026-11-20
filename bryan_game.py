@@ -114,7 +114,8 @@ def new_part(owner_hash, scene):
     part = {'owner_hash':owner_hash, 'case_id':'bryan', 'story_version':STORY_VERSION,
             'revision':0, 'csrf':secrets.token_urlsafe(32), 'created_at':now, 'updated_at':now,
             'flags':deepcopy(INITIAL_FLAGS), 'inventory':[], 'history':[],
-            'decisions':[], 'puzzles_solved':[], 'puzzle_errors':0}
+            'decisions':[], 'puzzles_solved':[], 'puzzle_errors':0,
+            'restart_count':0, 'economy_epoch':0}
     enter_scene(part, scene)
     return part
 
@@ -313,6 +314,13 @@ def create_game_blueprint(database, points_store=None):
                 return response_with_cookie(redirect(url_for(play_endpoint),code=303),token)
             action = request.form.get('action','')
             if action == 'restart':
+                if not testing:
+                    if request.form.get('confirm_restart') != 'yes':
+                        abort(400, description='Confirma el reinicio antes de continuar.')
+                    if len(part['history']) <= 1 and not part['decisions']:
+                        abort(400, description='Todavía no hay progreso para reiniciar.')
+                    if points_store:
+                        points_store.sync(part['owner_hash'])
                 fresh = new_part(part['owner_hash'],get_scene(FIRST_SCENE))
                 if 'expires_at' in part:
                     fresh['expires_at'] = part['expires_at']
@@ -320,7 +328,13 @@ def create_game_blueprint(database, points_store=None):
                     fresh['_id'] = part['_id']
                     storage.replace_one({'_id': part['_id'], 'csrf': part['csrf'], 'revision': revision}, fresh)
                 else:
-                    fresh['_id'] = saves.insert_one(fresh).inserted_id
+                    fresh.update(_id=part['_id'], restart_count=part.get('restart_count', 0) + 1,
+                                 economy_epoch=part.get('economy_epoch', 0) + int(part.get('restart_count', 0) >= 1))
+                    # Una sola escritura decide el reinicio. Formularios repetidos no lo cuentan dos veces.
+                    result = storage.replace_one({'_id': part['_id'], 'csrf': part['csrf'], 'revision': revision}, fresh)
+                    if result.modified_count and points_store:
+                        # Si falla la conexión aquí, la siguiente sincronización completa el borrado.
+                        points_store.sync(part['owner_hash'])
             else:
                 scene = get_scene(part['scene_id'])
                 if not advance(part,scene,action,request.form.get('value',''),get_scene):

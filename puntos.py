@@ -4,7 +4,7 @@ from hashlib import sha256
 import secrets
 import os
 from flask import Blueprint, abort, g, make_response, redirect, render_template, request, url_for
-from bryan_game import COOKIE, re_token
+from bryan_game import COOKIE, STORY_VERSION, re_token
 
 PACKAGES = {
     'archivo': {'name': 'Sobre de puntos', 'points': 50},
@@ -26,22 +26,25 @@ class PointsStore:
         self.wallets.update_one({'_id': owner}, {'$setOnInsert': {
             'balance': 0, 'cart': {}, 'revision': 0,
             'csrf': secrets.token_urlsafe(32), 'events': [], 'transactions': [],
-            'created_at': datetime.now(timezone.utc),
+            'created_at': datetime.now(timezone.utc), 'economy_epoch': 0,
             **temporary,
         }}, upsert=True)
         return self.wallets.find_one({'_id': owner})
 
-    def award(self, owner, key, amount, label):
+    def award(self, owner, key, amount, label, epoch=0):
         # El saldo y el identificador del premio cambian juntos: recargar o
         # reiniciar la historia no permite cobrar dos veces la misma decisión.
         for _ in range(12):
             wallet = self.get(owner)
+            if wallet.get('economy_epoch', 0) != epoch:
+                return
             if key in wallet['events']:
                 return
             delta = max(0, wallet['balance'] + amount) - wallet['balance']
             result = self.wallets.update_one(
-                {'_id': owner, 'balance': wallet['balance'], 'events': {'$ne': key}},
-                {'$inc': {'balance': delta}, '$push': {
+                {'_id': owner, 'balance': wallet['balance'], 'events': {'$ne': key},
+                 'economy_epoch': epoch if epoch else {'$in': [None, 0]}},
+                {'$inc': {'balance': delta, 'revision': 1}, '$push': {
                     'events': key, 'transactions': {
                         'label': label, 'amount': delta,
                         'at': datetime.now(timezone.utc),
@@ -51,6 +54,26 @@ class PointsStore:
         abort(409, description='El saldo cambió. Recarga para sincronizarlo.')
 
     def sync(self, owner):
+        current = self.saves.find_one({'owner_hash': owner, 'case_id': 'bryan', 'story_version': STORY_VERSION},
+                                     sort=[('created_at', -1), ('_id', -1)])
+        epoch = (current or {}).get('economy_epoch', 0)
+        for _ in range(12):
+            wallet = self.get(owner)
+            if wallet.get('economy_epoch', 0) >= epoch:
+                break
+            result = self.wallets.update_one(
+                {'_id': owner, 'revision': wallet['revision'], 'balance': wallet['balance']},
+                {'$set': {'balance': 0, 'cart': {}, 'events': [], 'economy_epoch': epoch,
+                          'csrf': secrets.token_urlsafe(32)},
+                 '$inc': {'revision': 1}, '$push': {'transactions': {
+                     'label': 'Reinicio de partida · puntos y compras restablecidos',
+                     'amount': -wallet['balance'], 'at': datetime.now(timezone.utc)}}})
+            if result.modified_count:
+                wallet = self.get(owner)
+                break
+        else:
+            abort(409, description='El saldo cambió. Recarga para sincronizarlo.')
+        epoch = wallet.get('economy_epoch', 0)
         # Reconcilia decisiones ya guardadas, incluso partidas anteriores.
         # Las reglas se mantienen en el servidor y no dependen del formulario.
         rules = {
@@ -59,11 +82,14 @@ class PointsStore:
             ('bryan_s09_luces', 'ayudar'): 10,
         }
         for part in self.saves.find({'owner_hash': owner, 'case_id': 'bryan'}):
+            # Las partidas anteriores al borrado nunca vuelven a acreditar sus premios.
+            if part.get('economy_epoch', 0) != epoch:
+                continue
             for decision in part.get('decisions', []):
                 pair = (decision['scene_id'], decision['id'])
                 if pair in rules:
                     self.award(owner, 'bryan:' + ':'.join(pair), rules[pair],
-                               'Bryan · ' + decision.get('text', decision['id']))
+                               'Bryan · ' + decision.get('text', decision['id']), epoch)
         return self.get(owner)
 
 

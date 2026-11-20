@@ -54,6 +54,12 @@
                  id="menuPrincipal">
 
                 <ul class="navbar-nav ms-auto">
+                    {% if request.blueprint == 'tienda' or request.endpoint == 'puntos.cart' %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('inicio') }}">INICIO</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('tienda.catalog') }}" {% if request.endpoint == 'tienda.catalog' %}aria-current="page"{% endif %}>TIENDA</a></li>
+                    {% if account %}<li class="nav-item"><a class="nav-link" href="{{ url_for('tienda.collection') }}" {% if request.endpoint == 'tienda.collection' %}aria-current="page"{% endif %}>MI COLECCIÓN</a></li>{% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('puntos.cart') }}" {% if request.endpoint == 'puntos.cart' %}aria-current="page"{% endif %}>MIS PUNTOS</a></li>
+                    {% else %}
 
                     {% if request.endpoint != 'inicio' %}<li class="nav-item">
                         <a class="nav-link"
@@ -62,13 +68,16 @@
                         </a>
                     </li>{% endif %}
 
+                    {% if request.endpoint != 'inicio' and request.blueprint != 'tienda' %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('tienda.catalog') }}">TIENDA</a></li>
+                    {% endif %}
                     {% if request.endpoint not in ('inicio', 'puntos.cart') %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('puntos.cart') }}">MIS PUNTOS / CARRITO</a>
                     </li>
                     {% endif %}
 
-
+                    {% endif %}
                 </ul>
             </div>
             {% endif %}

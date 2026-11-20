@@ -1,0 +1,14 @@
+{% extends 'tienda_base.html' %}
+{% block shop_content %}
+<header class="shop-page-heading"><p class="shop-eyebrow">ACCESO DE ADMINISTRADOR</p><h1>Preparar un artículo.</h1><p>El contenido completo del spoiler solo se muestra a sus propietarios y a los administradores.</p></header>
+<form class="shop-editor shop-panel" method="post"><input type="hidden" name="csrf" value="{{ access_csrf }}"><input type="hidden" name="epoch" value="{{ wallet.get('economy_epoch',0) }}">
+    {% if creating %}<label>Tipo de artículo<select name="tipo"><option value="archivo">Archivo secreto digital</option><option value="merch">Edición de merch limitada</option></select></label>{% endif %}
+    <label>Nombre<input name="nombre" value="{{ product.nombre }}" maxlength="90" required></label>
+    <div class="shop-editor-columns"><label>Precio en puntos<input type="number" name="precio" min="1" max="10000" value="{{ product.precio }}" required></label><label>Nivel o edición<input name="nivel" value="{{ product.nivel }}" maxlength="100"></label></div>
+    <label>Descripción pública<textarea name="descripcion" rows="3" maxlength="1200" required>{{ product.descripcion }}</textarea></label>
+    <label>Portada<select name="imagen">{% for key,path in art.items() %}<option value="{{ path }}" {% if path == product.imagen %}selected{% endif %}>{{ key|capitalize }}</option>{% endfor %}</select></label>
+    {% if product.tipo == 'archivo' or creating %}<label>Contenido privado del spoiler<textarea name="contenido" rows="10" maxlength="12000">{{ product.contenido }}</textarea></label><p class="shop-muted">Separa los párrafos con una línea vacía. Puedes sustituir las notas iniciales por los spoilers de la saga que acuerden ustedes.</p>{% endif %}
+    {% if product.tipo == 'merch' or creating %}<label>Añadir unidades al inventario<input name="unidades" type="number" min="0" max="20" value="0"></label><p class="shop-muted">Para merch: se agregan unidades nuevas. Las reservas y compras existentes se conservan.</p>{% endif %}
+    <label class="shop-confirm"><input type="checkbox" name="publicado" {% if product.publicado %}checked{% endif %}> Visible en el catálogo</label><button type="submit" class="shop-button">Guardar artículo</button>
+</form>
+{% endblock %}

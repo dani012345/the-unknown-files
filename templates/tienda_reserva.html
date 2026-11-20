@@ -1,0 +1,18 @@
+{% extends 'tienda_base.html' %}
+{% block shop_content %}
+<header class="shop-page-heading"><p class="shop-eyebrow">COMPROBANTE / EDICIÓN DE COLECCIÓN</p><h1>Una pieza del archivo.</h1><p>La ficha se actualiza con el mismo folio y código QR.</p></header>
+<div class="shop-receipt-grid" data-reservation data-status-url="{{ url_for('tienda.status', folio=hold.folio) }}" data-expires="{{ expires }}" data-server-time="{{ server_time }}" data-state="{{ hold.estado }}">
+    <article class="shop-panel"><img class="shop-receipt-image" src="{{ url_for('static', filename=hold.imagen) }}" alt="{{ hold.nombre }}"><div class="shop-panel-body"><span class="shop-state" data-state-label>{{ hold.estado|capitalize }}</span><h2>{{ hold.nombre }}</h2>
+        <dl class="shop-facts"><div><dt>Precio</dt><dd>{{ hold.precio }} puntos</dd></div><div><dt>Unidad</dt><dd>1 edición de colección</dd></div><div><dt>Folio</dt><dd class="shop-folio">{{ hold.folio }}</dd></div></dl>
+        <div class="shop-countdown" data-countdown {% if hold.estado != 'temporal' %}hidden{% endif %}><span>TIEMPO PARA CONFIRMAR</span><strong data-clock>--:--</strong><p>El tiempo se conserva aunque recargues o cierres esta pestaña.</p></div>
+        <p class="shop-note" data-state-message aria-live="polite">{{ 'La unidad está apartada hasta el vencimiento.' if hold.estado == 'temporal' else 'Compra simulada confirmada. Puedes encontrarla en tu colección.' if hold.estado == 'confirmada' else 'Esta reserva terminó y la unidad se liberó.' }}</p>
+        {% if mine and hold.estado == 'temporal' %}<div data-hold-actions>
+        <form class="shop-purchase-form" method="post" action="{{ url_for('tienda.update_hold', folio=hold.folio, action='confirmar') }}">
+            <input type="hidden" name="csrf" value="{{ access_csrf }}"><input type="hidden" name="epoch" value="{{ wallet.get('economy_epoch',0) }}">
+            <label class="shop-confirm"><input type="checkbox" name="confirm_compra" value="yes" required> Confirmo la compra simulada por {{ hold.precio }} puntos.</label><button type="submit" class="shop-button">Confirmar compra simulada</button>
+        </form><form method="post" action="{{ url_for('tienda.update_hold', folio=hold.folio, action='cancelar') }}"><input type="hidden" name="csrf" value="{{ access_csrf }}"><input type="hidden" name="epoch" value="{{ wallet.get('economy_epoch',0) }}"><button class="shop-button shop-button-dark" type="submit">Cancelar y liberar unidad</button></form>
+        </div>{% elif not mine and hold.estado == 'temporal' %}<p class="shop-muted">Solo la cuenta que creó la reserva puede confirmarla o cancelarla.</p>{% endif %}
+    </div></article>
+    <aside class="shop-panel shop-qr"><p class="shop-eyebrow">CONSULTA DESDE OTRO DISPOSITIVO</p><h2>El mismo QR.<br>El estado actual.</h2><img src="{{ url_for('tienda.qr', folio=hold.folio) }}" alt="Código QR para abrir este comprobante público" width="220" height="220"><p>Este comprobante muestra el artículo y su estado. El contenido de los spoilers permanece en tu cuenta.</p><a href="{{ public_url }}" class="shop-text-link">Abrir ficha pública ↗</a><a href="{{ url_for('tienda.catalog') }}" class="shop-button shop-button-dark">Explorar el catálogo</a></aside>
+</div>
+{% endblock %}

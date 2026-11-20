@@ -13,6 +13,7 @@ from bryan_game import create_game_blueprint, STORY_VERSION
 from puntos import create_points_blueprint
 from cuentas import create_accounts_blueprint
 from catalogo import BRYAN_ID, CASOS_INICIALES, validar_portada
+from tienda import create_shop_blueprint
 
 
 app = Flask(__name__)
@@ -97,6 +98,8 @@ def require_player():
 
 puntos_blueprint, mostrar_inicio, points_store = create_points_blueprint(base_datos)
 app.register_blueprint(puntos_blueprint)
+tienda_blueprint, shop_store = create_shop_blueprint(base_datos, points_store)
+app.register_blueprint(tienda_blueprint)
 
 bryan_blueprint, jugar_bryan = create_game_blueprint(base_datos, points_store)
 app.register_blueprint(bryan_blueprint)
@@ -241,9 +244,10 @@ def portada():
     access = g.get("access_session")
     has_progress = False
     if access and (g.account or access["guest"]):
-        has_progress = base_datos["partidas"].find_one({
+        part = base_datos["partidas"].find_one({
             "owner_hash": access["owner"], "case_id": "bryan", "story_version": STORY_VERSION,
-        }) is not None
+        }, sort=[('created_at', -1), ('_id', -1)])
+        has_progress = bool(part and (len(part.get('history', [])) > 1 or part.get('decisions')))
     return render_template("portada.html", has_progress=has_progress)
 
 @app.route("/inicio")

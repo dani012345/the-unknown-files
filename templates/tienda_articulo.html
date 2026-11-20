@@ -1,0 +1,24 @@
+{% extends 'tienda_base.html' %}
+{% block shop_content %}
+<article class="shop-detail">
+    <figure class="shop-detail-image"><button class="shop-zoom" type="button" data-open-image aria-label="Ampliar imagen de {{ product.nombre }}"><img src="{{ url_for('static', filename=product.imagen) }}" alt="{{ product.nombre }} · ilustración pintada a mano"><span>Examinar ilustración ↗</span></button></figure>
+    <div class="shop-detail-copy"><p class="shop-eyebrow">{{ 'ARCHIVO SECRETO / CASO 001' if product.tipo == 'archivo' else 'EDICIÓN DE COLECCIÓN' }}</p>
+        <h1>{{ product.nombre }}</h1><p class="shop-lead">{{ product.descripcion }}</p>
+        <p class="shop-level">{{ product.nivel }}</p>
+        <div class="shop-card-bottom"><span class="shop-price">{{ product.precio }} <small>PT</small></span>{% if product.tipo == 'merch' %}<span>{{ available }} unidades disponibles</span>{% endif %}</div>
+        {% if owned %}<p class="shop-note">Este artículo ya forma parte de tu colección.</p><a class="shop-button" href="{{ url_for('tienda.read_file', sku=product._id) if product.tipo == 'archivo' else url_for('tienda.collection') }}">{{ 'Leer archivo' if product.tipo == 'archivo' else 'Ver mi colección' }}</a>
+        {% elif not account %}<p class="shop-note">Necesitas una cuenta para guardar tus compras.</p><a class="shop-button" href="{{ url_for('cuentas.entry') }}">Entrar al archivo →</a>
+        {% else %}
+        <form method="post" action="{{ url_for('tienda.buy' if product.tipo == 'archivo' else 'tienda.reserve', sku=product._id) }}" class="shop-purchase-form">
+            <input type="hidden" name="csrf" value="{{ access_csrf }}"><input type="hidden" name="epoch" value="{{ wallet.get('economy_epoch',0) }}"><input type="hidden" name="precio" value="{{ product.precio }}">
+            {% if product.tipo == 'archivo' %}<p class="shop-note">Este contenido adelanta detalles de la historia. Podrás leerlo de nuevo desde tu cuenta, sin volver a pagar.</p><label class="shop-confirm"><input type="checkbox" name="confirm_spoiler" value="yes" required> Quiero revelar este spoiler y gastar {{ product.precio }} puntos.</label>
+            {% else %}<p class="shop-note">La reserva dura cinco minutos. Tus puntos se descuentan solo cuando confirmas la compra simulada.</p>{% endif %}
+            <button class="shop-button" type="submit" {% if wallet.balance < product.precio or product.tipo == 'merch' and available < 1 %}disabled{% endif %}>{{ 'Desbloquear archivo' if product.tipo == 'archivo' else 'Apartar durante 5 minutos' }}</button>
+            {% if wallet.balance < product.precio %}<p class="shop-muted">Te faltan {{ product.precio-wallet.balance }} puntos. <a href="{{ url_for('puntos.cart') }}">Conseguir puntos ↗</a></p>{% endif %}
+            {% if product.tipo == 'merch' and available < 1 %}<p class="shop-muted">No quedan unidades libres en este momento.</p>{% endif %}
+        </form>{% endif %}
+        {% if is_admin %}<p><a class="shop-admin-link" href="{{ url_for('tienda.edit', sku=product._id) }}">Editar artículo y contenido</a></p>{% if product.tipo == 'archivo' %}<a class="shop-admin-link" href="{{ url_for('tienda.read_file', sku=product._id) }}">Vista previa de administrador</a>{% endif %}{% endif %}
+    </div>
+</article>
+<dialog class="shop-image-dialog" id="shop-image-dialog" aria-label="Ilustración ampliada"><button type="button" class="access-back" data-close-image aria-label="Cerrar imagen">←</button><img src="{{ url_for('static', filename=product.imagen) }}" alt="Vista ampliada de {{ product.nombre }}"></dialog>
+{% endblock %}

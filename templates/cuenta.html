@@ -11,6 +11,7 @@
         <dt>Descripción</dt><dd>{{ account.description or 'Puedes añadir una descripción al crear tu cuenta.' }}</dd>
     </dl>
     <p>La selección de iconos y la recuperación por correo están en preparación.</p>
+    <p><a href="{{ url_for('tienda.collection') }}">Mis archivos desbloqueados y colección ↗</a></p>
     <a href="{{ url_for('cuentas.logout') }}" data-exit-trigger>Salir de mi cuenta</a>
 </section>
 {% endblock %}

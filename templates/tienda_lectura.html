@@ -1,0 +1,4 @@
+{% extends 'tienda_base.html' %}
+{% block shop_content %}
+<article class="shop-reading"><p class="shop-eyebrow">{{ 'VISTA PREVIA DE ADMINISTRADOR' if preview else 'ARCHIVO PERSONAL / DESBLOQUEADO' }}</p><p class="shop-level">{{ product.nivel }}</p><h1>{{ product.nombre }}</h1><div class="shop-reading-rule" aria-hidden="true"></div>{% for paragraph in product.contenido.split('\n\n') %}<p>{{ paragraph }}</p>{% endfor %}<footer>THE UNKNOWN FILES / CASO 001</footer></article>
+{% endblock %}

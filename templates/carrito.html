@@ -34,10 +34,12 @@
         {% if rows %}<p class="cart-total">Total a recibir <strong>{{ total }} puntos</strong></p>
         <div class="cart-actions">{{ form('checkout', 'Confirmar compra simulada') }}{{ form('clear', 'Vaciar carrito') }}</div>{% endif %}
     </section>
-    <section class="points-card"><p class="points-eyebrow">PRÓXIMAMENTE</p><h2>Más archivos por descubrir</h2>
-        <p>Tu saldo se acumula desde ahora. Los siguientes capítulos y casos todavía están en preparación; el canje se habilitará cuando estén disponibles.</p>
-        <p>En Bryan, revisar el seguro de la mesa, recoger la bicicleta y ayudar a acomodar otorgan <strong>10 puntos cada uno</strong>, una sola vez por decisión en tu cuenta.</p>
-        <p>Reiniciar conserva tu saldo. Los puntos de responsabilidad siguen determinando el final de la historia.</p>
+    <section class="points-card"><p class="points-eyebrow">SUMINISTROS DEL ARCHIVO</p><h2>Hay cosas que aún no has visto.</h2>
+        <p>Usa tus puntos para abrir archivos con spoilers o apartar una edición de colección durante cinco minutos.</p>
+        <p><a class="points-button" href="{{ url_for('tienda.catalog') }}">Explorar la tienda ↗</a></p>
+        <p><a href="{{ url_for('tienda.collection') }}">Mis archivos y colección</a></p>
+        <p>En Bryan, revisar el seguro de la mesa, recoger la bicicleta y ayudar a acomodar otorgan <strong>10 puntos cada uno</strong>, una sola vez por decisión hasta que un reinicio con borrado restablezca el saldo.</p>
+        <p>El primer reinicio conserva tu saldo, compras y carrito. A partir del segundo, se borran el saldo y las compras simuladas y se vacía el carrito. Los puntos de responsabilidad siguen determinando el final de la historia.</p>
         <p class="points-footnote">El saldo está vinculado a tu cuenta y puedes consultarlo al iniciar sesión desde otro dispositivo.</p>
     </section></div>
     {% else %}

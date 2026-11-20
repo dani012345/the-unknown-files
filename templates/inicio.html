@@ -18,7 +18,7 @@
         <nav class="desk-links office-overlay" aria-label="Accesos del escritorio">
             <a href="{{ url_for('portada') }}">Menú</a>
             <span aria-hidden="true">/</span>
-            <a href="{{ url_for('puntos.cart') }}">Carrito</a>
+            <a href="{{ url_for('tienda.catalog') }}">Tienda</a>
             {% if is_admin %}<span aria-hidden="true">/</span><a href="{{ url_for('bryan.test_menu') }}">Modo de prueba</a>{% endif %}
         </nav>
         <div class="office-ribbon office-overlay" aria-label="Toca un expediente para levantarlo">

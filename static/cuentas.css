@@ -96,6 +96,8 @@
 }
 .exit-panel::backdrop { background: #0c0d10d9; backdrop-filter: blur(6px); }
 .exit-message { color: #c9cbd3; line-height: 1.7; }
+.restart-confirm { display: flex; align-items: flex-start; gap: .7rem; color: #e1e3e9; font-size: .9rem; line-height: 1.6; }
+.restart-confirm input { flex-shrink: 0; margin-top: .3rem; accent-color: #bbc3d7; }
 .exit-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.6rem; }
 .exit-actions button { flex: 1; margin: 0; }
 .exit-panel button:disabled { opacity: .6; cursor: wait; }

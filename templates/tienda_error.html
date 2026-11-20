@@ -1,0 +1,2 @@
+{% extends 'tienda_base.html' %}
+{% block shop_content %}<section class="shop-panel shop-empty"><p class="shop-eyebrow">EL ARCHIVO NOS AVISA</p><h1>Un momento.</h1><p role="alert">{{ message }}</p><a class="shop-button" href="{{ url_for('tienda.catalog') }}">Volver al catálogo</a>{% if account %}<a class="shop-button shop-button-dark" href="{{ url_for('tienda.collection') }}">Consultar mi colección</a>{% endif %}</section>{% endblock %}

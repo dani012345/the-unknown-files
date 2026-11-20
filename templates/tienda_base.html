@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block titulo %}Suministros del archivo | The Unknown Files{% endblock %}
+{% block estilos %}
+<link rel="stylesheet" href="{{ url_for('static', filename='taller.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='tienda.css') }}">
+{% endblock %}
+{% block clase_body %}library-page shop-page{% endblock %}
+{% block encabezado %}{% endblock %}
+{% block contenido %}
+<div class="shop-topline">
+    <a class="access-back" href="{{ url_for('inicio') if request.endpoint == 'tienda.catalog' else url_for('tienda.catalog') }}" aria-label="{{ 'Volver al inicio' if request.endpoint == 'tienda.catalog' else 'Volver a la tienda' }}" title="Volver">←</a>
+    {% if wallet is defined and wallet %}<span class="shop-wallet">{{ wallet.balance }} <small>PT</small></span>{% endif %}
+</div>
+{% block shop_content %}{% endblock %}
+<p class="shop-demo">TIENDA DE DEMOSTRACIÓN · Todo se adquiere con puntos del juego. No se cobra dinero ni se realizan envíos.</p>
+<script src="{{ url_for('static', filename='tienda.js') }}" defer></script>
+{% endblock %}

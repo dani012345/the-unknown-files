@@ -1,0 +1,27 @@
+{
+  "herramienta": "image_gen integrada, sin CLI",
+  "referencia_estilo": "static/img/escenas/BG02_cocina_pinceladas.png",
+  "criterio": "Pinceladas angulares visibles, acabado mate, grises cálidos y beige. Las marcas de registro son propuestas visuales; no fijan el significado del triángulo ni modifican las escenas existentes.",
+  "imagenes": [
+    {
+      "archivo": "static/img/tienda/fondo-suministros-pinceladas-v1.png",
+      "tipo": "Edición de la primera propuesta de fondo con referencia de estilo",
+      "prompt_final": "EDIT Image 1 (archive shop background), use Image 2 ONLY as painting style reference. Preserve the archive counter layout, shelves, filing cabinets, boxes, lamp and dark central negative space of Image 1. Repaint the WHOLE image with the exact painterly visual vocabulary of Image 2: conspicuous broad angular opaque brushstrokes, broken color patches, hand-painted gouache/oil game background, simplified faceted surfaces, soft imperfect painted edges. Visible individual brush marks across every surface including wood, paper and metal. Matte finish, muted warm beige taupe and charcoal, atmospheric amber lighting. The user explicitly requires maintaining the obvious brushstroke style of the game. No photorealism, no polished 3D, no smooth digital gradients, no photographic grain overlay pretending to be paint. No text, logo, UI or people. Landscape16:9."
+    },
+    {
+      "archivo": "static/img/tienda/pin-pollo-pinceladas-v1.png",
+      "tipo": "Edición de la primera propuesta del pin con referencia de estilo",
+      "prompt_final": "EDIT Image 1 chicken collectible enamel pin, use Image 2 only as painterly brush style reference. Keep chicken design and key charm, dark backing card and small faint V at lower corner, wood counter/paper arrangement. Completely repaint as a hand-painted gouache game illustration with visible broad angular brushstrokes on EVERYTHING, broken patches of muted cream beige bronze charcoal paint, faceted matte brush marks, softened painterly edges just like Image 2. Gold edges read through warm painted accents, not polished photographic highlights. Coherent lovely collectible item. Landscape3:2. No photographic texture, no photorealism, no 3D render, no text, no UI, no watermark."
+    },
+    {
+      "archivo": "static/img/tienda/expediente-pinceladas-v1.png",
+      "tipo": "Edición de la primera propuesta de expediente con referencia de estilo",
+      "prompt_final": "EDIT Image1 dossier collectible still life. Image2 is only a painting style reference. Preserve arrangement of closed manila dossier tied with dark ribbon, binder clip, two cream photo backs and small brass key. Repaint every surface in the very visible angular broad brushwork of Image2: hand-painted gouache/oil game concept art, opaque broken color shapes and imperfect painted edges, matte wood and paper, expressive visible individual brushstrokes. Charcoal warm taupe beige paper bronze palette, restrained warm desk lamp glow. Keep a tiny understated pencil V mark at corner of a photo back as a plausible registration mark. Landscape3:2 catalog artwork. No text, no numbers, no logos, no UI, no watermark. Absolutely no photographic finish or smooth 3D render."
+    },
+    {
+      "archivo": "static/img/tienda/sobre-pinceladas-v1.png",
+      "tipo": "Generación nueva con referencia de estilo",
+      "prompt_final": "Create a NEW landscape3:2 hand-painted mystery game catalog illustration using the attached image ONLY as the painting style authority. Thick very visible broad angular gouache/oil brushstrokes, broken opaque color patches and matte imperfect painterly edges over every surface, muted charcoal taupe beige amber. Subject: a sealed aged cream evidence envelope on a dark archive desk, a dark cotton tie, two sepia photographic prints face DOWN peeking out beneath it, an old magnifying glass resting near the lower edge, and a small curled contact sheet with completely indistinct abstract silhouettes. A single soft lamp out of frame casts warm painted light, filing cabinets dimly visible in background. Restrained mysterious visual storytelling, no sinister glowing symbol. One nearly invisible small graphite V registration mark on the back corner of a photo, plausible everyday print mark. No written text, letters, legible numbers, logos, UI or watermark. Do NOT render photographically. This must look like an illustrated asset from the same visibly brush-painted game as the reference. Main envelope centered, spacious framing."
+    }
+  ]
+}

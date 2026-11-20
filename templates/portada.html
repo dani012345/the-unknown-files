@@ -42,6 +42,9 @@
         </a>
      
         <nav class="menu-principal" aria-label="Menú principal">
+            {% if has_progress %}
+            <a href="{{ url_for('juego_bryan', reiniciar=1) }}" class="boton-menu">NUEVA PARTIDA</a>
+            {% endif %}
 
             <a href="{{ url_for('taller') }}" class="boton-menu">
                 ARCHIVO DE CASOS
