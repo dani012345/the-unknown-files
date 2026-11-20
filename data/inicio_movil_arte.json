@@ -1,0 +1,14 @@
+{
+  "herramienta": "image_gen integrada",
+  "archivo": "static/img/oficina-inicio-vertical-pinceladas-v1.png",
+  "dimensiones": [
+    941,
+    1672
+  ],
+  "prompt_final": "Recompose Image 1 (the abandoned investigation office) into a NEW TALL PORTRAIT 9:16 mobile game home screen background. Image 2 is the authority for painting technique: visible broad angular matte gouache/oil brushstrokes, faceted patches of muted beige, warm grey and dark brown. Keep the world recognizable: abandoned archive, tall shelves with folders and boxes at both sides, small window with blinds above center, old filing cabinets, investigation board, old wooden desk and warm brass desk lamp. Camera is closer to the desk, adapted for a phone, not a tiny landscape image in a portrait frame. Full-height richly painted room, no black bars. CRITICAL composition: TWO LARGE CLOSED BLANK manila case folders laid SIDE BY SIDE on the desk in the lower-middle area, not stacked, their surfaces mostly front facing and legible for later HTML labels. Left folder center at x34% y69%, right folder center at x66% y69%. Each folder covers approximately 25% of image width and 17% of image height, flat recognizable beige rectangles with slight hand-painted perspective. Keep both folders completely within the central 60% width so phone edge cropping preserves them. Top 26% is relatively calm dark wall/window area for navigation text overlay. Bottom 12% is dark wooden desk/cabinet for a welcome line and title overlay. Keep lamp on right edge above the folders, not covering them. NO text at all, no lettering or stamps on the folders, no logos, no UI, no watermarks, no characters. Strongly painterly like Image 2, not photorealistic. Portrait9:16.",
+  "referencias": [
+    "static/img/oficina-abandonada.png",
+    "static/img/escenas/BG02_cocina_pinceladas.png"
+  ],
+  "carpeta_proyecto": "C:\\Users\\gracia\\OneDrive\\Escritorio\\App Web\\Proyecto Files\\Files"
+}

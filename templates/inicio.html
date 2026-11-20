@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block titulo %}Escritorio | The Unknown Files{% endblock %}
-{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='puntos.css', v='menu-carrito-enlaces-3') }}"><link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='ui-refinado-1') }}">{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{{ url_for('static', filename='puntos.css', v='menu-carrito-enlaces-3') }}"><link rel="stylesheet" href="{{ url_for('static', filename='inicio.css', v='ui-refinado-1') }}"><link rel="stylesheet" href="{{ url_for('static', filename='inicio-movil.css') }}">{% endblock %}
 {% block clase_body %}archivo-juegos{% endblock %}
 {% block encabezado %}{% endblock %}
 
@@ -32,10 +32,13 @@
         <span class="desk-brand office-overlay">THE UNKNOWN FILES</span>
         <div class="office-camera">
             <div class="office-world">
-                {# Única ruta del fondo. Imagen y zonas pulsables se mueven juntas. #}
+                {# Cada orientación comparte el plano de su imagen y sus zonas pulsables. #}
+                <picture class="office-picture">
+                <source media="(max-width: 900px) and (orientation: portrait)" srcset="{{ url_for('static', filename='img/oficina-inicio-vertical-pinceladas-v1.png') }}">
                 <img class="office-image" src="{{ url_for('static', filename='img/oficina-abandonada.png') }}"
                      width="1672" height="941" fetchpriority="high"
                      alt="Escritorio de investigación con el expediente de Bryan a la izquierda y el registro general a la derecha.">
+                </picture>
                 <a class="office-hotspot office-hotspot--bryan" href="{{ url_for('juego_bryan') }}"
                    data-document="bryan-document" aria-label="Levantar el expediente de Bryan">
                     <span>La suerte de Bryan</span>
